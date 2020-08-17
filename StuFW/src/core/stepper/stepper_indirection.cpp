@@ -31,7 +31,7 @@
  * Copyright (c) 2015 Dominik Wenger
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 #include "stepper_indirection.h"
 
 //

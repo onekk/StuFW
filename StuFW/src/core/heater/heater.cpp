@@ -24,7 +24,7 @@
  * heater.cpp - heater object
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 #include "sensor/thermistor.h"
 
 #if HEATER_COUNT > 0

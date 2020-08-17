@@ -24,7 +24,7 @@
  * endstops.cpp - A singleton object to manage endstops hardware and software
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 #include "../../platform/common/endstop_interrupts.h"
 
 Endstops endstops;

@@ -20,7 +20,7 @@
  *
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #define STATS_EEPROM_ADDRESS  0x32
 #define STATS_UPDATE_INTERVAL   10

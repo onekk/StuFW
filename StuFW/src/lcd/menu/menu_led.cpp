@@ -24,7 +24,7 @@
 // LED Menu
 //
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if HAS_LCD_MENU && ENABLED(LED_CONTROL_MENU)
 

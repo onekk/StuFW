@@ -27,7 +27,7 @@
 
 #include <binary.h>
 
-#include "../../../../MK4duo.h"
+#include "../../../../StuFW.h"
 
 #define BW(N) ((N + 7) / 8)
 

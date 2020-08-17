@@ -41,7 +41,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if HAS_SD_SUPPORT
 

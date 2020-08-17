@@ -26,7 +26,7 @@
  * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 const char axis_codes[XYZE] = {'X', 'Y', 'Z', 'E'};
 

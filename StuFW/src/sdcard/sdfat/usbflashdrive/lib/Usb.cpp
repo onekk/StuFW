@@ -23,7 +23,7 @@ e-mail   :  support@circuitsathome.com
  */
 /* USB functions */
 
-#include "../../../../../MK4duo.h"
+#include "../../../../../StuFW.h"
 
 #if ENABLED(USB_FLASH_DRIVE_SUPPORT)
 

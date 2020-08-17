@@ -24,7 +24,7 @@
  * PWM print routines for Atmel 8 bit AVR CPUs
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #define NUMBER_PINS_TOTAL NUM_DIGITAL_PINS
 

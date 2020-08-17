@@ -38,7 +38,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if HAS_SERVOS
 

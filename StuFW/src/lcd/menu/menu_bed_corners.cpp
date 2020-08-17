@@ -24,7 +24,7 @@
 // Level Bed Corners menu
 //
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if HAS_LCD_MENU && ENABLED(LEVEL_BED_CORNERS)
 

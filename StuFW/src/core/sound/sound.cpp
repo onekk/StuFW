@@ -20,7 +20,7 @@
  *
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 SoundModeEnum Sound::mode = SOUND_MODE_ON;
 

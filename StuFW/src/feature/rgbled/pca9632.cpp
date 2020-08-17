@@ -25,7 +25,7 @@
  * Written by Robert Mendon Feb 2017.
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if ENABLED(PCA9632)
 

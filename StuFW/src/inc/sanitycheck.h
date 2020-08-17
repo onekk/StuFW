@@ -56,12 +56,6 @@
   #error "DEPENDENCY ERROR: You have to set a valid MOTHERBOARD."
 #endif
 
-// Alligator board
-#if MB(ALLIGATOR_R2) || MB(ALLIGATOR_R3)
-  #if DISABLED(UI_VOLTAGE_LEVEL)
-    #error "DEPENDENCY ERROR: Missing setting UI_VOLTAGE_LEVEL."
-  #endif
-#endif
 
 // Limited number of servos
 #if NUM_SERVOS > 4
@@ -109,18 +103,15 @@
 #include "../feature/advanced_pause/sanitycheck.h"
 #include "../feature/bedlevel/sanitycheck.h"
 #include "../feature/caselight/sanitycheck.h"
-#include "../feature/cncrouter/sanitycheck.h"
 #include "../feature/filament/sanitycheck.h"
 #include "../feature/filamentrunout/sanitycheck.h"
 #include "../feature/flowmeter/sanitycheck.h"
 #include "../feature/fwretract/sanitycheck.h"
-#include "../feature/laser/sanitycheck.h"
 #include "../feature/mixing/sanitycheck.h"
 #include "../feature/power/sanitycheck.h"
 #include "../feature/probe/sanitycheck.h"
 #include "../feature/restart/sanitycheck.h"
 #include "../feature/rgbled/sanitycheck.h"
-#include "../feature/tmc/sanitycheck.h"
 
 // CONTROLLI ANCORA DA RICOLLOCARE...
 

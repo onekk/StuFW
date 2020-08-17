@@ -33,7 +33,7 @@
  * License: http://opensource.org/licenses/BSD-3-Clause
  */
 
-#include "../../../../MK4duo.h"
+#include "../../../../StuFW.h"
 
 #if HAS_GRAPHICAL_LCD
 

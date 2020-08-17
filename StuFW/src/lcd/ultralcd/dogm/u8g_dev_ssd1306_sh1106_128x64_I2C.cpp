@@ -65,7 +65,7 @@
  * beginning.
  */
 
-#include "../../../../MK4duo.h"
+#include "../../../../StuFW.h"
 
 #if HAS_GRAPHICAL_LCD
 

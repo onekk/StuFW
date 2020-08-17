@@ -62,7 +62,7 @@
  * was designed, written and tested by Eduardo José Tagle on April/2018
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 // Delay for delivery of first block to the stepper ISR, if the queue contains 2 or
 // less movements. The delay is measured in milliseconds, and must be less than 250ms

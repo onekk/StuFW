@@ -26,7 +26,7 @@
  * Copyright (C) 2016 Alberto Cotronei @MagoKimbra
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if MECH(DELTA)
 

@@ -26,7 +26,7 @@
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
 

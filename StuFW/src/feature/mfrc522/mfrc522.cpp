@@ -40,7 +40,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if ENABLED(RFID_MODULE)
 

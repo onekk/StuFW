@@ -76,7 +76,7 @@
  * to avoid impacting ISR speed.
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 #include "stepper.h"
 
 Stepper stepper;

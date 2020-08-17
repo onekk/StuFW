@@ -20,7 +20,7 @@
  *
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if ENABLED(NOZZLE_CLEAN_FEATURE)
 

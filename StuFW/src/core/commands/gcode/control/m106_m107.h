@@ -81,6 +81,12 @@
 
     fan->Speed = constrain(speed, fan->data.min_Speed, fan->data.max_Speed);
 
+    #if ENABLED(DUAL_X_CARRIAGE) && FAN_COUNT > 1
+      // Check for Clone fan
+      if (f == 0 && mechanics.dual_x_carriage_mode == DXC_DUPLICATION_MODE && TEST(fans[1].data.autoMonitored, 6))
+        fans[1].Speed = fan->Speed;
+    #endif
+
     #if DISABLED(DISABLE_M503)
       // No arguments? Show M106 report.
       if (!parser.seen("SUIHLXFT")) fan->print_M106();

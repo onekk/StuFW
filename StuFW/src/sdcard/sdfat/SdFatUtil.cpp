@@ -27,7 +27,7 @@
  * This file is part of the Arduino Sd2Card Library
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if HAS_SD_SUPPORT
 

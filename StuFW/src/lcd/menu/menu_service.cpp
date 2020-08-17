@@ -24,7 +24,7 @@
 // Service Menus
 //
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if HAS_LCD_MENU && HAS_SERVICE_TIMES
 

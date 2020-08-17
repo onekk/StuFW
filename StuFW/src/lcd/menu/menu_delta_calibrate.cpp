@@ -24,7 +24,7 @@
 // Delta Calibrate Menu
 //
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if HAS_LCD_MENU && MECH(DELTA)
 

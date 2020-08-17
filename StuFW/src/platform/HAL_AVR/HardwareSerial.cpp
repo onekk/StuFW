@@ -32,7 +32,7 @@
 
 #ifdef __AVR__
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 // Disable HardwareSerial.cpp to support chips without a UART (Attiny, etc.)
 #if ENABLED(UBRRH) || ENABLED(UBRR0H) || ENABLED(UBRR1H) || ENABLED(UBRR2H) || ENABLED(UBRR3H)

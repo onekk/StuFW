@@ -24,7 +24,7 @@
  * parser.cpp - Parser for a GCode line, providing a parameter interface.
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 // Must be declared for allocation and to satisfy the linker
 // Zero values need no initialisation.

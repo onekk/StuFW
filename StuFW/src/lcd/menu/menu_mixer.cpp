@@ -24,7 +24,7 @@
 // Mixer Menu
 //
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if HAS_LCD_MENU && ENABLED(COLOR_MIXING_EXTRUDER) && DISABLED(NEXTION)
 

@@ -53,7 +53,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "../../../../MK4duo.h"
+#include "../../../../StuFW.h"
 
 #if HAS_GRAPHICAL_LCD
 

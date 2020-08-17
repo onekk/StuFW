@@ -24,7 +24,7 @@
  * temperature.cpp - temperature control
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 Temperature thermalManager;
 

@@ -25,7 +25,7 @@
  * Created by Tim Koster, August 21 2013.
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if ENABLED(BLINKM)
 

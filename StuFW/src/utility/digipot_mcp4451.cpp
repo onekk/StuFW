@@ -20,7 +20,7 @@
  *
  */
 
-#include "../../MK4duo.h"
+#include "../../StuFW.h"
 
 #if ENABLED(DIGIPOT_I2C)
 

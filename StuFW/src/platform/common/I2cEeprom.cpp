@@ -25,7 +25,7 @@
  * Not platform dependent.
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if HAS_EEPROM_I2C
 

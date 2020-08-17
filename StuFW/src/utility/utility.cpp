@@ -20,7 +20,7 @@
  *
  */
 
-#include "../../MK4duo.h"
+#include "../../StuFW.h"
 
 #ifdef CPU_32_BIT
   constexpr int byte_start = 4;

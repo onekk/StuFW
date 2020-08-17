@@ -22,7 +22,7 @@
 
 #ifdef __AVR__
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if HAS_EEPROM
 

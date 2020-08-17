@@ -24,7 +24,7 @@
  * emergency_parser.cpp - Intercept special commands directly in the serial stream
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if ENABLED(EMERGENCY_PARSER)
 

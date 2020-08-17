@@ -12,7 +12,7 @@
  *   Western(English), Cyrillic(Russian), Kana(Japanese) charsets.
  */
 
-#include "../../../../MK4duo.h"
+#include "../../../../StuFW.h"
 
 #if HAS_CHARACTER_LCD
 
