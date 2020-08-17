@@ -1,9 +1,9 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,6 @@
  */
 
 /**
- * gcode.h
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
- */
-
 /**
  * G2: Clockwise Arc
  * G3: Counterclockwise Arc
@@ -73,20 +68,6 @@
 
       commands.get_destination();
 
-      #if ENABLED(LASER) && ENABLED(LASER_FIRE_G1)
-        #if ENABLED(INTENSITY_IN_BYTE)
-          if (parser.seenval('S')) laser.intensity = ((float)parser.value_byte() / 255.0) * 100.0;
-        #else
-          if (parser.seenval('S')) laser.intensity = parser.value_float();
-        #endif
-        if (parser.seenval('L')) laser.duration = parser.value_ulong();
-        if (parser.seenval('P')) laser.ppm = parser.value_float();
-        if (parser.seenval('D')) laser.diagnostics = parser.value_bool();
-        if (parser.seenval('B')) laser.set_mode(parser.value_int());
-
-        laser.status = LASER_ON;
-      #endif
-
       #if ENABLED(SF_ARC_FIX)
         printer.setRelativeMode(relative_mode_backup);
       #endif
@@ -132,10 +113,6 @@
         // Bad arguments
         SERIAL_LM(ER, MSG_ERR_ARC_ARGS);
       }
-
-      #if ENABLED(LASER) && ENABLED(LASER_FIRE_G1)
-        laser.status = LASER_OFF;
-      #endif
     }
   }
 

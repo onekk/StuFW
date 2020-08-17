@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -153,12 +153,6 @@ class Stepper {
       static constexpr int motor_current_setting[3] = PWM_MOTOR_CURRENT;
     #endif
 
-    #if ENABLED(LASER)
-      static int32_t delta_error_laser;
-      #if ENABLED(LASER_RASTER)
-        static int counter_raster;
-      #endif
-    #endif
 
   public: /** Public Function */
 
@@ -330,10 +324,6 @@ class Stepper {
     }
     FORCE_INLINE static bool isStepDir(const AxisEnum axis) { return TEST(direction_flag._word, axis); }
 
-    #if ENABLED(LASER)
-      static bool laser_status();
-      FORCE_INLINE static float laser_intensity() { return current_block->laser_intensity; }
-    #endif
 
   private: /** Private Function */
 

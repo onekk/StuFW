@@ -2,12 +2,11 @@
 
 # StuFW 3D Printer Firmware for simple Atmel AVR boards
 
-## Version 0.0.1 revision 20200817
+## Version 0.0.3 revision 20200819
 
+## Why another firmware?
 
-## Why another fimrware?
-
-It is an hard question, after many request on the forum for help in setting up some basic and economic printers, some people have decided to form the good MK4Duo and strip of all the complicated features and leave only some basic requirements:
+It is an hard question, after many request on the forum for help in setting up some basic and economic printers, some people have decided to fork the good MK4Duo and strip of all the complicated features and leave only some basic requirements:
 
 -- Motherboards, RAMPS and cheap all in one derivative board.
 -- Mechanic Cartesian and CoreXY, no delta, scara and so on
@@ -22,7 +21,11 @@ It is an hard question, after many request on the forum for help in setting up s
 
 ### Features
 
-Forked from MK4Duo 4.3.8
+Forked from MK4Duo 4.3.8 revisione 19042019
+
+### new branch "development" as wip place - WARNING usually the code in the development branch is broken as it is a WIP.
+
+As soon the code is mature enough a new milestone will appear in the form of [version]-dev as a possible example 0.0.6-dev
 
 ## License
 

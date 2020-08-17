@@ -1,9 +1,9 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,19 +21,11 @@
  */
 
 /**
- * tcode.h
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
- */
-
-/**
- * T0-TN: Switch tool, usually switching extruders or CNC tools
+ * T0-TN: Switch tool, usually switching extruders
  *
  * For Extruders:
  *   F[units/min] Set the movement feedrate
  *   S1           Don't move the tool in XY after change
- *
- * For CNC no other parameters are expected
  *
  */
 inline void gcode_T(const uint8_t tool_id) {
@@ -47,21 +39,6 @@ inline void gcode_T(const uint8_t tool_id) {
     }
   #endif
 
-  #if ENABLED(CNCROUTER)
-    
-    bool wait = true;
-    bool raise_z = false;
-
-    if (printer.mode == PRINTER_MODE_CNC) {
-      // Host manage wait on change, don't block
-      if (parser.seen('W')) wait = false;
-      // Host manage position, don't raise Z
-      if (parser.seen('Z')) raise_z = false;
-
-      cnc.tool_change(tool_id, wait, raise_z);
-    }
-
-  #endif
 
   #if EXTRUDERS == 1 && ENABLED(ADVANCED_PAUSE_FEATURE)
 

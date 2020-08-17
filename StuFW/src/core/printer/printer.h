@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -21,11 +21,6 @@
  */
 #pragma once
 
-/**
- * printer.h
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
- */
 
 union flagdebug_t {
   uint8_t all;
@@ -96,18 +91,6 @@ class Printer {
 
     static InterruptEventEnum interruptEvent;
     static PrinterModeEnum    mode;
-
-    #if ENABLED(RFID_MODULE)
-      static uint32_t Spool_ID[EXTRUDERS];
-      static bool     RFID_ON,
-                      Spool_must_read[EXTRUDERS],
-                      Spool_must_write[EXTRUDERS];
-    #endif
-
-    #if ENABLED(BARICUDA)
-      static int baricuda_valve_pressure;
-      static int baricuda_e_to_p_pressure;
-    #endif
 
     #if ENABLED(IDLE_OOZING_PREVENT)
       static bool IDLE_OOZING_enabled;

@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -35,8 +35,6 @@
  * - Volumetric extrusion
  * - Filament Diameter
  * - Single nozzle
- * - BariCUDA paste extruder
- * - Solenoid extruder
  * - Color Mixing Extruder
  * - Multiextruder old MKR4
  * - Multiextruder MKR6
@@ -86,14 +84,11 @@
  * - LCD Options
  * - Canon RC-1 Remote
  * - Camera trigger
- * - RFID card reader
  * - BLINKM
  * - RGB LED
  * - PCA 9632 PWM LED
  * - Adafruit Neopixel LED driver
  * - Printer Event LEDs
- * - Laser beam
- * - CNC Router
  * - Case Light
  * ADVANCED MOTION FEATURES:
  * - Double / Quad Stepping
@@ -285,31 +280,6 @@
  *                                                                     *
  ***********************************************************************/
 //#define SINGLENOZZLE
-/***********************************************************************/
-
-
-/***********************************************************************
- *********************** BariCUDA paste extruder ***********************
- ***********************************************************************
- *                                                                     *
- * Support for the BariCUDA paste extruder.                            *
- *                                                                     *
- ***********************************************************************/
-//#define BARICUDA
-/***********************************************************************/
-
-
-/***********************************************************************
- ************************** Solenoid extruder **************************
- ***********************************************************************
- *                                                                     *
- * Activate a solenoid on the active extruder with M380.               *
- * Disable all with M381.                                              *
- * Define SOL0_PIN, SOL1_PIN, etc., for each extruder that             *
- * has a solenoid.                                                     *
- *                                                                     *
- ***********************************************************************/
-//#define EXT_SOLENOID
 /***********************************************************************/
 
 
@@ -1845,24 +1815,6 @@
 /**************************************************************************/
 
 
-/**************************************************************************
- *********************** RIFD module card reader **************************
- **************************************************************************
- *                                                                        *
- * Support RFID module card reader with UART interface.                   *
- * This module mount chip MFRC522 designed to communicate with            *
- * ISO/IEC 14443 A/MIFARE cards and transponders without additional       *
- * active circuitry                                                       *
- *                                                                        *
- * New command for this system is:                                        *
- * M522 T<extruder> R<read> or W<write>                                   *
- *                                                                        *
- * Define if you used and Serial used.                                    *
- *                                                                        *
- **************************************************************************/
-//#define RFID_MODULE
-
-#define RFID_SERIAL 1
 /**************************************************************************/
 
 
@@ -1952,30 +1904,6 @@
  ********************************************************************************/
 //#define PRINTER_EVENT_LEDS
 /********************************************************************************/
-
-
-/**************************************************************************
- ********************************* Laser **********************************
- **************************************************************************
- *                                                                        *
- * Support for laser beam                                                 *
- * Check also Configuration_Laser.h                                       *
- *                                                                        *
- **************************************************************************/
-//#define LASER
-/**************************************************************************/
-
-
-/**************************************************************************
- ******************************* CNC Router *******************************
- **************************************************************************
- *                                                                        *
- * Support for CNC Router                                                 *
- * Check also Configuration_CNCRouter.h                                   *
- *                                                                        *
- **************************************************************************/
-//#define CNCROUTER
-/**************************************************************************/
 
 
 /**************************************************************************
@@ -2266,7 +2194,6 @@
 #define MM_PER_ARC_SEGMENT 1    // Length of each arc segment
 #define N_ARC_CORRECTION  25    // Number of intertpolated segments between corrections
 //#define ARC_P_CIRCLES         // Enable the 'P' parameter to specify complete circles
-//#define CNC_WORKSPACE_PLANES  // Allow G2/G3 to operate in XY, ZX, or YZ planes
 
 // Moves with fewer segments than this will be ignored and joined with the next movement
 #define MIN_STEPS_PER_SEGMENT 6

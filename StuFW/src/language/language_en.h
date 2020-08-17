@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -1365,15 +1365,13 @@
   #define MSG_SERVICE_RESET                   _UxGT("Service Reset")
 #endif
 
+
 // Extra
 #ifndef MSG_RESTART_PRINT
   #define MSG_RESTART_PRINT                   _UxGT("Restart print")
 #endif
 #ifndef MSG_FIX_LOSE_STEPS
   #define MSG_FIX_LOSE_STEPS                  _UxGT("Fix axis steps")
-#endif
-#ifndef MSG_LASER
-  #define MSG_LASER                           _UxGT("Laser Preset")
 #endif
 #ifndef MSG_CONFIG
   #define MSG_CONFIG                          _UxGT("Configuration")
@@ -1398,41 +1396,6 @@
 #endif
 #ifndef MSG_NO
   #define MSG_NO                              _UxGT("No")
-#endif
-
-// Rfid module
-#ifndef MSG_RFID_SPOOL
-  #define MSG_RFID_SPOOL                      _UxGT("Spool on E")
-#endif
-#ifndef MSG_RFID_BRAND
-  #define MSG_RFID_BRAND                      _UxGT("Brand: ")
-#endif
-#ifndef MSG_RFID_TYPE
-  #define MSG_RFID_TYPE                       _UxGT("Type: ")
-#endif
-#ifndef MSG_RFID_COLOR
-  #define MSG_RFID_COLOR                      _UxGT("Color: ")
-#endif
-#ifndef MSG_RFID_SIZE
-  #define MSG_RFID_SIZE                       _UxGT("Size: ")
-#endif
-#ifndef MSG_RFID_TEMP_HOTEND
-  #define MSG_RFID_TEMP_HOTEND                _UxGT("Temperature Hotend: ")
-#endif
-#ifndef MSG_RFID_TEMP_BED
-  #define MSG_RFID_TEMP_BED                   _UxGT("Temperature Bed: ")
-#endif
-#ifndef MSG_RFID_TEMP_USER_HOTEND
-  #define MSG_RFID_TEMP_USER_HOTEND           _UxGT("User temperature Hotend: ")
-#endif
-#ifndef MSG_RFID_TEMP_USER_BED
-  #define MSG_RFID_TEMP_USER_BED              _UxGT("User temperatura Bed: ")
-#endif
-#ifndef MSG_RFID_DENSITY
-  #define MSG_RFID_DENSITY                    _UxGT("Density: ")
-#endif
-#ifndef MSG_RFID_SPOOL_LENGHT
-  #define MSG_RFID_SPOOL_LENGHT               _UxGT("Spool Lenght: ")
 #endif
 
 // Sound

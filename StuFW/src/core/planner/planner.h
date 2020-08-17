@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -100,24 +100,8 @@ typedef struct {
             final_rate,                     // The minimal rate at exit
             acceleration_steps_per_s2;      // acceleration steps/sec^2
 
-  #if ENABLED(BARICUDA)
-    uint8_t valve_pressure, e_to_p_pressure;
-  #endif
-
   uint32_t segment_time_us;
 
-  #if ENABLED(LASER)
-    uint8_t   laser_mode;       // CONTINUOUS, PULSED, RASTER
-    bool      laser_status;     // LASER_OFF, LASER_ON
-    float     laser_ppm,        // pulses per millimeter, for pulsed and raster firing modes
-              laser_intensity;  // Laser firing instensity in clock cycles for the PWM timer
-    uint32_t  laser_duration,   // Laser firing duration in microseconds, for pulsed and raster firing modes
-              steps_l;          // Step count between firings of the laser, for pulsed firing mode
-
-    #if ENABLED(LASER_RASTER)
-      unsigned char laser_raster_data[LASER_MAX_RASTER_LINE];
-    #endif
-  #endif
 
 } block_t;
 
@@ -402,15 +386,8 @@ class Planner {
     static bool buffer_line(const float &rx, const float &ry, const float &rz, const float &e, const float &fr_mm_s, const uint8_t extruder, const float millimeters=0.0);
 
     FORCE_INLINE static bool buffer_line(const float (&cart)[XYZE], const float &fr_mm_s, const uint8_t extruder, const float millimeters=0.0
-      #if ENABLED(SCARA_FEEDRATE_SCALING)
-        , const float &inv_duration=0.0
-      #endif
     ) {
-      return buffer_line(cart[X_AXIS], cart[Y_AXIS], cart[Z_AXIS], cart[E_AXIS], fr_mm_s, extruder, millimeters
-        #if ENABLED(SCARA_FEEDRATE_SCALING)
-          , inv_duration
-        #endif
-      );
+      return buffer_line(cart[X_AXIS], cart[Y_AXIS], cart[Z_AXIS], cart[E_AXIS], fr_mm_s, extruder, millimeters);
     }
 
     /**
@@ -444,13 +421,6 @@ class Planner {
      * For CORE machines apply translation from ABC to XYZ.
      */
     static float get_axis_position_mm(const AxisEnum axis);
-
-    /**
-     * SCARA AB axes are in degrees, not mm
-     */
-    #if IS_SCARA
-      FORCE_INLINE static float get_axis_position_degrees(const AxisEnum axis) { return get_axis_position_mm(axis); }
-    #endif
 
     /**
      * Block until all buffered steps are executed / cleaned

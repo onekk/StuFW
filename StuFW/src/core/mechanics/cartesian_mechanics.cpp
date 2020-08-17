@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -20,13 +20,8 @@
  *
  */
 
-/**
- * cartesian_mechanics.cpp
- *
- * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
- */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if MECH(CARTESIAN)
 
@@ -170,9 +165,6 @@ void Cartesian_Mechanics::home(const bool homeX/*=false*/, const bool homeY/*=fa
 
   if (printer.debugSimulation()) {
     LOOP_XYZ(axis) set_axis_is_at_home((AxisEnum)axis);
-    #if HAS_NEXTION_LCD && ENABLED(NEXTION_GFX)
-      mechanics.Nextion_gfx_clear();
-    #endif
     return;
   }
 
@@ -197,10 +189,6 @@ void Cartesian_Mechanics::home(const bool homeX/*=false*/, const bool homeY/*=fa
   #if HAS_LEVELING
     const bool leveling_was_active = bedlevel.flag.leveling_active;
     bedlevel.set_bed_leveling_enabled(false);
-  #endif
-
-  #if ENABLED(CNC_WORKSPACE_PLANES)
-    workspace_plane = PLANE_XY;
   #endif
 
   // Always home with tool 0 active
@@ -342,10 +330,6 @@ void Cartesian_Mechanics::home(const bool homeX/*=false*/, const bool homeY/*=fa
     feedrate_mm_s = old_feedrate_mm_s;
   }
 
-  #if HAS_NEXTION_LCD && ENABLED(NEXTION_GFX)
-    mechanics.Nextion_gfx_clear();
-  #endif
-
   #if HAS_LEVELING
     bedlevel.set_bed_leveling_enabled(leveling_was_active);
   #endif
@@ -398,9 +382,6 @@ void Cartesian_Mechanics::do_homing_move(const AxisEnum axis, const float distan
     get_homedir(axis);
   const bool is_home_dir = (axis_home_dir > 0) == (distance > 0);
 
-  #if ENABLED(SENSORLESS_HOMING)
-    sensorless_t stealth_states;
-  #endif
 
   if (is_home_dir) {
 
@@ -414,11 +395,6 @@ void Cartesian_Mechanics::do_homing_move(const AxisEnum axis, const float distan
         #endif
       #endif
     }
-
-    // Disable stealthChop if used. Enable diag1 pin on driver.
-    #if ENABLED(SENSORLESS_HOMING)
-      stealth_states = start_sensorless_homing_per_axis(axis);
-    #endif
   }
 
   float target[ABCE] = { planner.get_axis_position_mm(A_AXIS), planner.get_axis_position_mm(B_AXIS), planner.get_axis_position_mm(C_AXIS), planner.get_axis_position_mm(E_AXIS) };
@@ -445,11 +421,6 @@ void Cartesian_Mechanics::do_homing_move(const AxisEnum axis, const float distan
     }
 
     endstops.validate_homing_move();
-
-    // Re-enable stealthChop if used. Disable diag1 pin on driver.
-    #if ENABLED(SENSORLESS_HOMING)
-      stop_sensorless_homing_per_axis(axis, stealth_states);
-    #endif
   }
 
   #if ENABLED(DEBUG_FEATURE)
@@ -470,13 +441,6 @@ void Cartesian_Mechanics::do_homing_move(const AxisEnum axis, const float distan
  * Returns true if current_position[] was set to destination[]
  */
 bool Cartesian_Mechanics::prepare_move_to_destination_mech_specific() {
-
-  #if ENABLED(LASER) && ENABLED(LASER_FIRE_E)
-    if (current_position[E_AXIS] < destination[E_AXIS] && ((current_position[X_AXIS] != destination [X_AXIS]) || (current_position[Y_AXIS] != destination [Y_AXIS])))
-      laser.status = LASER_ON;
-    else
-      laser.status = LASER_OFF;
-  #endif
 
   #if HAS_MESH
     if (bedlevel.flag.leveling_active) {
@@ -663,17 +627,7 @@ void Cartesian_Mechanics::report_current_position_detail() {
     const uint8_t clockwise     // Clockwise?
   ) {
 
-    #if ENABLED(CNC_WORKSPACE_PLANES)
-      AxisEnum p_axis, q_axis, l_axis;
-      switch (workspace_plane) {
-        default:
-        case PLANE_XY: p_axis = X_AXIS; q_axis = Y_AXIS; l_axis = Z_AXIS; break;
-        case PLANE_ZX: p_axis = Z_AXIS; q_axis = X_AXIS; l_axis = Y_AXIS; break;
-        case PLANE_YZ: p_axis = Y_AXIS; q_axis = Z_AXIS; l_axis = X_AXIS; break;
-      }
-    #else
-      constexpr AxisEnum p_axis = X_AXIS, q_axis = Y_AXIS, l_axis = Z_AXIS;
-    #endif
+    constexpr AxisEnum p_axis = X_AXIS, q_axis = Y_AXIS, l_axis = Z_AXIS;
 
     // Radius vector from center to current location
     float r_P = -offset[0], r_Q = -offset[1];
@@ -713,7 +667,7 @@ void Cartesian_Mechanics::report_current_position_detail() {
      * vector rotations. This requires only two cos() and sin() computations to form the rotation
      * matrix for the duration of the entire arc. Error may accumulate from numerical round-off, since
      * all double numbers are single precision on the Arduino. (True double precision will not have
-     * round off issues for CNC applications.) Single precision error can accumulate to be greater than
+     * round off issues for machining applications.) Single precision error can accumulate to be greater than
      * tool precision in some cases. Therefore, arc path correction is implemented.
      *
      * Small angle approximation may be used to reduce computation overhead further. This approximation
@@ -721,7 +675,7 @@ void Cartesian_Mechanics::report_current_position_detail() {
      * theta_per_segment would need to be greater than 0.1 rad and N_ARC_CORRECTION would need to be large
      * to cause an appreciable drift error. N_ARC_CORRECTION~=25 is more than small enough to correct for
      * numerical drift error. N_ARC_CORRECTION may be on the order a hundred(s) before error becomes an
-     * issue for CNC machines with the single precision Arduino calculations.
+     * issue for machining machines with the single precision Arduino calculations.
      *
      * This approximation also allows plan_arc to immediately insert a line segment into the planner
      * without the initial overhead of computing cos() or sin(). By the time the arc needs to be applied
@@ -1029,14 +983,6 @@ void Cartesian_Mechanics::report_current_position_detail() {
 
 #endif // DISABLED(DISABLE_M503)
 
-#if HAS_NEXTION_LCD && ENABLED(NEXTION_GFX)
-
-  void Cartesian_Mechanics::Nextion_gfx_clear() {
-    gfx_clear(X_MAX_POS, Y_MAX_POS, Z_MAX_POS);
-    gfx_cursor_to(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS]);
-  }
-
-#endif
 
 /** Private Function */
 void Cartesian_Mechanics::homeaxis(const AxisEnum axis) {
@@ -1260,34 +1206,11 @@ void Cartesian_Mechanics::homeaxis(const AxisEnum axis) {
                 mlratio = mlx > mly ? mly / mlx : mlx / mly,
                 fr_mm_s = MIN(homing_feedrate_mm_s[X_AXIS], homing_feedrate_mm_s[Y_AXIS]) * SQRT(sq(mlratio) + 1.0);
 
-    #if ENABLED(SENSORLESS_HOMING)
-      sensorless_t stealth_states;
-      stealth_states.x = tmc.enable_stallguard(stepperX);
-      stealth_states.y = tmc.enable_stallguard(stepperY);
-      #if X2_HAS_SENSORLESS
-        stealth_states.x2 = tmc.enable_stallguard(stepperX2);
-      #endif
-      #if Y2_HAS_SENSORLESS
-        stealth_states.y2 = tmc.enable_stallguard(stepperY2);
-      #endif
-    #endif
-
     do_blocking_move_to_xy(1.5f * mlx * x_axis_home_dir, 1.5f * mly * home_dir.Y, fr_mm_s);
 
     endstops.validate_homing_move();
 
     current_position[X_AXIS] = current_position[Y_AXIS] = 0.0f;
-
-    #if ENABLED(SENSORLESS_HOMING)
-      tmc.disable_stallguard(stepperX, stealth_states.x);
-      tmc.disable_stallguard(stepperY, stealth_states.y);
-      #if X2_HAS_SENSORLESS
-        tmc.disable_stallguard(stepperX2, stealth_states.x2);
-      #endif
-      #if Y2_HAS_SENSORLESS
-        tmc.disable_stallguard(stepperY2, stealth_states.y2);
-      #endif
-    #endif
   }
 
 #endif // QUICK_HOME
@@ -1330,10 +1253,6 @@ void Cartesian_Mechanics::homeaxis(const AxisEnum axis) {
       // This causes the carriage on Dual X to unpark
       #if ENABLED(DUAL_X_CARRIAGE)
         active_extruder_parked = false;
-      #endif
-
-      #if ENABLED(SENSORLESS_HOMING)
-        printer.safe_delay(500);
       #endif
 
       do_blocking_move_to_xy(destination[X_AXIS], destination[Y_AXIS]);

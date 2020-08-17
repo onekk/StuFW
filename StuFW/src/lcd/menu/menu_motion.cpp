@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -24,12 +24,13 @@
 // Motion Menu
 //
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if HAS_LCD_MENU
 
 extern millis_t manual_move_start_time;
 extern int8_t manual_move_axis;
+
 #if ENABLED(MANUAL_E_MOVES_RELATIVE)
   float manual_move_e_origin = 0;
 #endif
@@ -299,12 +300,6 @@ void lcd_move_get_z_amount()            { _menu_move_distance(Z_AXIS, lcd_move_z
  *
  */
 
-#if MECH(DELTA)
-  void lcd_lower_z_to_clip_height() {
-    line_to_z(mechanics.delta_clip_start_height);
-    lcdui.synchronize();
-  }
-#endif
 
 void menu_move() {
   START_MENU();
@@ -321,19 +316,12 @@ void menu_move() {
     constexpr bool do_move_xyz = true;
   #endif
   if (do_move_xyz) {
-    #if MECH(DELTA)
-      const bool do_move_xy = mechanics.current_position[Z_AXIS] <= mechanics.delta_clip_start_height;
-    #else
-      constexpr bool do_move_xy = true;
-    #endif
+    constexpr bool do_move_xy = true;
+
     if (do_move_xy) {
       MENU_ITEM(submenu, MSG_MOVE_X, lcd_move_get_x_amount);
       MENU_ITEM(submenu, MSG_MOVE_Y, lcd_move_get_y_amount);
     }
-    #if MECH(DELTA)
-      else
-        MENU_ITEM(function, MSG_FREE_XY, lcd_lower_z_to_clip_height);
-    #endif
 
     MENU_ITEM(submenu, MSG_MOVE_Z, lcd_move_get_z_amount);
   }
@@ -393,23 +381,7 @@ void menu_motion() {
   //
   // Auto Home
   //
-  if (printer.mode == PRINTER_MODE_LASER)
-    MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28 X Y F2000"));
-  else {
-    MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28"));
-    #if NOMECH(DELTA)
-      MENU_ITEM(gcode, MSG_AUTO_HOME_X, PSTR("G28 X"));
-      MENU_ITEM(gcode, MSG_AUTO_HOME_Y, PSTR("G28 Y"));
-      MENU_ITEM(gcode, MSG_AUTO_HOME_Z, PSTR("G28 Z"));
-    #endif
-  }
-
-  //
-  // TMC Z Calibration
-  //
-  #if ENABLED(TMC_Z_CALIBRATION)
-    MENU_ITEM(gcode, MSG_TMC_Z_CALIBRATION, PSTR("G28\nM915"));
-  #endif
+  MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28"));
 
   //
   // Level Bed

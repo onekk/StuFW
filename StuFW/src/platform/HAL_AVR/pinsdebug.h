@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -24,7 +24,7 @@
  * PWM print routines for Atmel 8 bit AVR CPUs
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #define NUMBER_PINS_TOTAL NUM_DIGITAL_PINS
 

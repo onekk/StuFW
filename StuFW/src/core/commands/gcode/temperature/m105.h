@@ -1,9 +1,9 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,6 @@
  *
  */
 
-/**
- * mcode
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
- */
-
 #define CODE_M105
 
 /**
@@ -40,10 +34,6 @@ inline void gcode_M105(void) {
     thermalManager.report_temperatures(showRaw);
     #if ENABLED(FLOWMETER_SENSOR)
       flowmeter.print_flow_rate_state();
-    #endif
-    #if ENABLED(CNCROUTER) && ENABLED(FAST_PWM_CNCROUTER)
-      cnc.print_Speed();
-      SERIAL_MV(" fr:", MMS_TO_MMM(mechanics.feedrate_mm_s));
     #endif
   #else
     SERIAL_LM(ER, MSG_ERR_NO_THERMISTORS);

@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -24,7 +24,7 @@
 // Configuration Menu
 //
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if HAS_LCD_MENU
 
@@ -160,90 +160,6 @@ static void lcd_reset_settings() { eeprom.reset(); }
 
 #endif
 
-#if ENABLED(LASER)
-
-  float focalLength = 0;
-
-  void laser_test_fire(uint8_t power, int dwell) {
-    commands.enqueue_and_echo_P(PSTR("M80"));  // Enable laser accessories since we don't know if its been done (and there's no penalty for doing it again).
-    laser.fire(power);
-    delay(dwell);
-    laser.extinguish();
-  }
-
-  void action_laser_acc_on() { commands.enqueue_and_echo_P(PSTR("M80")); }
-  void action_laser_acc_off() { commands.enqueue_and_echo_P(PSTR("M81")); }
-  void action_laser_test_weak() { laser.fire(0.3); }
-  void action_laser_test_20_50ms() { laser_test_fire(20, 50); }
-  void action_laser_test_20_100ms() { laser_test_fire(20, 100); }
-  void action_laser_test_100_50ms() { laser_test_fire(100, 50); }
-  void action_laser_test_100_100ms() { laser_test_fire(100, 100); }
-  void action_laser_test_warm() { laser_test_fire(15, 2000); }
-
-  void menu_laser_test_fire() {
-    START_MENU();
-     MENU_BACK("Laser Functions");
-     MENU_ITEM(function, "Weak ON", action_laser_test_weak);
-     MENU_ITEM(function, " 20%  50ms", action_laser_test_20_50ms);
-     MENU_ITEM(function, " 20% 100ms", action_laser_test_20_100ms);
-     MENU_ITEM(function, "100%  50ms", action_laser_test_100_50ms);
-     MENU_ITEM(function, "100% 100ms", action_laser_test_100_100ms);
-     MENU_ITEM(function, "Warm-up Laser 2sec", action_laser_test_warm);
-     END_MENU();
-  }  
-
-  void laser_set_focus(float f_length) {
-    if (!mechanics.home_flag.ZHomed ) {
-      commands.enqueue_and_echo_P(PSTR("G28 Z F150"));
-    }
-    focalLength = f_length;
-    float focus = LASER_FOCAL_HEIGHT - f_length;
-    char cmd[20];
-
-    sprintf_P(cmd, PSTR("G0 Z%s F150"), ftostr52sign(focus));
-    commands.enqueue_and_echo_P(cmd);
-  }
-
-  void action_laser_focus_custom() { laser_set_focus(focalLength); }
-  void action_laser_focus_1mm() { laser_set_focus(1); }
-  void action_laser_focus_2mm() { laser_set_focus(2); }
-  void action_laser_focus_3mm() { laser_set_focus(3); }
-  void action_laser_focus_4mm() { laser_set_focus(4); }
-  void action_laser_focus_5mm() { laser_set_focus(5); }
-  void action_laser_focus_6mm() { laser_set_focus(6); }
-  void action_laser_focus_7mm() { laser_set_focus(7); }
-
-  void menu_laser_focus() {
-    START_MENU();
-    MENU_BACK("Laser Functions");
-    MENU_ITEM(function, "1mm", action_laser_focus_1mm);
-    MENU_ITEM(function, "2mm", action_laser_focus_2mm);
-    MENU_ITEM(function, "3mm - 1/8in", action_laser_focus_3mm);
-    MENU_ITEM(function, "4mm", action_laser_focus_4mm);
-    MENU_ITEM(function, "5mm", action_laser_focus_5mm);
-    MENU_ITEM(function, "6mm - 1/4in", action_laser_focus_6mm);
-    MENU_ITEM(function, "7mm", action_laser_focus_7mm);
-    MENU_ITEM_EDIT_CALLBACK(float52, "Custom", &focalLength, 0, LASER_FOCAL_HEIGHT, action_laser_focus_custom);
-    END_MENU();
-  }
-
-  void menu_laser() {
-    START_MENU();
-    MENU_BACK(MSG_MAIN);
-    MENU_ITEM(submenu, "Set Focus", menu_laser_focus);
-    MENU_ITEM(submenu, "Test Fire", menu_laser_test_fire);
-    #if ENABLED(LASER_PERIPHERALS)
-      if (laser.peripherals_ok()) {
-        MENU_ITEM(function, "Turn On Pumps/Fans", action_laser_acc_on);
-      }
-      else if (!printer.isPrinting()) {
-        MENU_ITEM(function, "Turn Off Pumps/Fans", action_laser_acc_off);
-      }
-    #endif // LASER_PERIPHERALS
-    END_MENU();
-  }
-
-#endif // LASER
 
 #if DISABLED(SLIM_LCD_MENUS)
 
@@ -297,12 +213,6 @@ void menu_configuration() {
 
   const bool busy = printer.isPrinting();
   if (!busy) {
-    //
-    // Delta Calibration
-    //
-    #if MECH(DELTA)
-      MENU_ITEM(submenu, MSG_DELTA_CALIBRATE, menu_delta_calibrate);
-    #endif
 
     #if ENABLED(DUAL_X_CARRIAGE)
       MENU_ITEM(submenu, MSG_DXC_MENU, menu_DXC);

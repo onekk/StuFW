@@ -148,10 +148,5 @@
 #define DEBUG_PIN                  NoPin
 #define SUICIDE_PIN                NoPin
 
-//###LASER
-#define ORIG_LASER_PWR_PIN         NoPin
-#define ORIG_LASER_PWM_PIN         NoPin
-
-
 
 

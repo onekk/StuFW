@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -23,11 +23,11 @@
 #ifndef _CONFIGURATION_VERSION_H_
 #define _CONFIGURATION_VERSION_H_
 
-#define FIRMWARE_NAME             "MK4duo"
-#define SHORT_BUILD_VERSION       "4.3.8"
-#define FIRMWARE_REVISION         "19042019"
+#define FIRMWARE_NAME             "StuFW"
+#define SHORT_BUILD_VERSION       "0.0.3"
+#define FIRMWARE_REVISION         "20200519"
 #define BUILD_VERSION             FIRMWARE_NAME "_" SHORT_BUILD_VERSION
 #define STRING_DISTRIBUTION_DATE  __DATE__ " " __TIME__    // build date and time
-#define FIRMWARE_URL              "marlinkimbra.it"
+#define FIRMWARE_URL              "none"
 
 #endif /* _CONFIGURATION_VERSION_H_ */

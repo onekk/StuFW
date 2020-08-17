@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -76,7 +76,7 @@
  * to avoid impacting ISR speed.
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 #include "stepper.h"
 
 Stepper stepper;
@@ -182,12 +182,6 @@ volatile int32_t  Stepper::count_position[NUM_AXIS]   = { 0 };
 
 int8_t  Stepper::count_direction[NUM_AXIS]  = { 1, 1, 1, 1 };
 
-#if ENABLED(LASER)
-  int32_t Stepper::delta_error_laser = 0;
-  #if ENABLED(LASER_RASTER)
-    int Stepper::counter_raster = 0;
-  #endif // LASER_RASTER
-#endif // LASER
 
 /** Public Function */
 void Stepper::init() {
@@ -1343,25 +1337,6 @@ void Stepper::pulse_phase_step() {
     // Stop an active pulse
     pulse_tick_stop();
 
-    #if ENABLED(LASER)
-      delta_error_laser += current_block->steps_l;
-      if (delta_error_laser >= 0) {
-        if (current_block->laser_mode == PULSED && current_block->laser_status == LASER_ON) // Pulsed Firing Mode
-          laser.fire(current_block->laser_intensity);
-        #if ENABLED(LASER_RASTER)
-          if (current_block->laser_mode == RASTER && current_block->laser_status == LASER_ON) { // Raster Firing Mode
-            // For some reason, when comparing raster power to ppm line burns the rasters were around 2% more powerful
-            // going from darkened paper to burning through paper.
-            laser.fire(current_block->laser_raster_data[counter_raster]);
-            counter_raster++;
-          }
-        #endif // LASER_RASTER
-
-        delta_error_laser -= current_block->step_event_count;
-      }
-      if (current_block->laser_duration != 0 && (laser.last_firing + current_block->laser_duration < micros()))
-        laser.extinguish();
-    #endif // LASER
 
     // Decrement the count of pending pulses to do
     --events_to_do;
@@ -1393,9 +1368,6 @@ uint32_t Stepper::block_phase_step() {
       current_block = NULL;
       planner.discard_current_block();
 
-      #if ENABLED(LASER)
-        laser.extinguish();
-      #endif
     }
     // Are we in data.acceleration phase
     else if (step_events_completed <= accelerate_until) {
@@ -1609,10 +1581,6 @@ uint32_t Stepper::block_phase_step() {
       // Initialize Bresenham delta errors to 1/2
       delta_error[X_AXIS] = delta_error[Y_AXIS] = delta_error[Z_AXIS] = delta_error[E_AXIS] = -int32_t(step_event_count);
 
-      #if ENABLED(LASER)
-        delta_error_laser = delta_error[X_AXIS];
-        laser.dur = current_block->laser_duration;
-      #endif
 
       // Calculate Bresenham dividends
       advance_dividend[X_AXIS] = current_block->steps[X_AXIS] << 1;
@@ -1697,23 +1665,11 @@ uint32_t Stepper::block_phase_step() {
         bezier_2nd_half = false;
       #endif
 
-      #if ENABLED(LASER) && ENABLED(LASER_RASTER)
-         if (current_block->laser_mode == RASTER) counter_raster = 0;
-      #endif
-
       // Calculate the initial timer interval
       interval = HAL_calc_timer_interval(current_block->initial_rate, &steps_per_isr, oversampling_factor);
     }
   }
 
-  // Continuous firing of the laser during a move happens here, PPM and raster happen further down
-  #if ENABLED(LASER)
-    if (current_block->laser_mode == CONTINUOUS && current_block->laser_status == LASER_ON)
-      laser.fire(current_block->laser_intensity);
-
-    if (current_block->laser_status == LASER_OFF)
-      laser.extinguish();
-  #endif
 
   #if ENABLED(BABYSTEPPING)
     LOOP_XYZ(axis) {
@@ -3302,6 +3258,3 @@ void Stepper::_set_position(const int32_t &a, const int32_t &b, const int32_t &c
 
 #endif
 
-#if ENABLED(LASER)
-  bool Stepper::laser_status() { return current_block->laser_status == LASER_ON; }
-#endif

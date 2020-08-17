@@ -1,0 +1,26 @@
+// Multi Mode
+
+CODE_M3
+CODE_M4
+CODE_M5
+CODE_M6
+CODE_M450 451 452 453
+
+
+MB(ALLIGATOR_R2) || MB(ALLIGATOR_R3)
+HAS_TRINAMIC
+
+MECH(MUVE3D) && ENABLED(PROJECTOR_PORT) && ENABLED(PROJECTOR_BAUDRATE)
+
+  #if ENABLED(DELTA_HOME_ON_POWER)
+
+    mechanics.home();
+
+  #endif
+
+  #if HAS_TRINAMIC && !PS_DEFAULT_OFF
+
+    tmc.test_connection(true, true, true, true);
+
+  #endif
+

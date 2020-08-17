@@ -22,7 +22,7 @@ Web      :  http://www.circuitsathome.com
 e-mail   :  support@circuitsathome.com
  */
 
-#include "../../../../../MK4duo.h"
+#include "../../../../../StuFW.h"
 
 #if ENABLED(USB_FLASH_DRIVE_SUPPORT)
 

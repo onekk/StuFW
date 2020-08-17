@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -82,7 +82,6 @@
 #include "control/m226.h"                 // Wait until a pin
 #include "control/m350_m351.h"            // Microstep
 #include "control/m355.h"                 // Set Case Light
-#include "control/m380_m381.h"            // Extruder Solenoid
 #include "control/m400.h"                 // Finish all moves
 #include "control/m410.h"                 // Quickstop
 #include "control/m540.h"                 // Enable/disable SD card abort on endstop hit
@@ -93,12 +92,6 @@
 // Debug Commands
 #include "debug/m43.h"
 #include "debug/m44_pre_table.h"          // Debug Code Info
-
-// Delta Commands
-#include "delta/g33_type1.h"              // Autocalibration 7 point
-#include "delta/g33_type2.h"              // Autocalibration matrix
-#include "delta/g34.h"                    // Set Delta Height
-#include "delta/m666.h"                   // Set delta parameters
 
 // EEPROM Commands
 #include "eeprom/m500_m503.h"             // Eeprom read write and print
@@ -111,7 +104,6 @@
 #include "feature/m99.h"                  // Hysteresis feature
 #include "feature/m100.h"                 // Free Memory Watcher
 #include "feature/m125.h"
-#include "feature/m126_m129.h"            // Solenoid feature
 #include "feature/m150.h"
 #include "feature/m240.h"                 // Photo Camera
 #include "feature/m600.h"                 // Advanced Pause change filament
@@ -125,7 +117,6 @@
 #include "feature/m922.h"                 // TMC DEBUG
 
 // Geometry Commands
-#include "geometry/g17_g19.h"
 #include "geometry/g92.h"
 #include "geometry/m206.h"
 #include "geometry/m428.h"                // Set the home_offset
@@ -163,20 +154,6 @@
 #include "motion/g91.h"
 #include "motion/m290.h"
 
-// MultiMode Commands (Laser - CNC)
-#include "multimode/g7.h"
-#include "multimode/m3_m4.h"
-#include "multimode/m5.h"
-#include "multimode/m6.h"
-#include "multimode/m450_m453.h"
-#include "multimode/m649.h"               // Set laser options
-
-// Muve3D Commands
-#include "muve3d/m650_m655.h"             // Muve3D control
-
-// Nextion Commands
-#include "nextion/m35.h"                  // Upload firmware to Nextion from SD
-#include "nextion/m995_m996.h"            // Setting GFX for Nextion
 
 // Power Commands
 #include "power/m80.h"
@@ -189,16 +166,10 @@
 #include "probe/m401_m402.h"              // Lower e Raise probe
 #include "probe/m851.h"                   // Set probe offset
 
-// Rfid Commands
-#include "rfid/m522.h"                    // Rfid read and write
-
 // Servo Commands
 #include "servo/m280.h"                   // Servo move
 #include "servo/m281.h"                   // Servo Angles
 
-// Scara Commands
-#include "scara/m360_m364.h"
-#include "scara/m665.h"
 
 // SDCard Commands
 #include "sdcard/sdcard.h"

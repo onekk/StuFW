@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -657,12 +657,6 @@
 #endif
 #if PIN_EXISTS(SPINDLE_ENABLE)
   REPORT_NAME_DIGITAL(__LINE__, SPINDLE_ENABLE_PIN)
-#endif
-#if PIN_EXISTS(SPINDLE_LASER_ENABLE)
-  REPORT_NAME_DIGITAL(__LINE__, SPINDLE_LASER_ENABLE_PIN)
-#endif
-#if PIN_EXISTS(SPINDLE_LASER_PWM)
-  REPORT_NAME_DIGITAL(__LINE__, SPINDLE_LASER_PWM_PIN)
 #endif
 #if PIN_EXISTS(SR_CLK)
   REPORT_NAME_DIGITAL(__LINE__, SR_CLK_PIN)

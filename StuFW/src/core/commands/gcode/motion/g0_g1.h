@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -21,21 +21,9 @@
  */
 
 /**
- * gcode.h
- *
- * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
- */
-
-/**
  * G0, G1: Coordinated movement of X Y Z E axes
  */
-inline void gcode_G0_G1(
-  #if IS_SCARA
-    bool fast_move = false
-  #elif ENABLED(LASER)
-    bool lfire = false
-  #endif
-) {
+inline void gcode_G0_G1() {
   if (printer.isRunning()) {
     commands.get_destination(); // For X Y Z E F
 
@@ -54,31 +42,7 @@ inline void gcode_G0_G1(
       }
     #endif // FWRETRACT
 
-    #if ENABLED(LASER) && ENABLED(LASER_FIRE_G1)
-      if (lfire) {
-        #if ENABLED(INTENSITY_IN_BYTE)
-          if (parser.seenval('S')) laser.intensity = parser.value_byte();
-        #else
-          if (parser.seenval('S')) laser.intensity = 255 * parser.value_float() * 0.01;
-        #endif
-        if (parser.seen('L')) laser.duration = parser.value_ulong();
-        if (parser.seen('P')) laser.ppm = parser.value_float();
-        if (parser.seen('D')) laser.diagnostics = parser.value_bool();
-        if (parser.seen('B')) laser.set_mode(parser.value_int());
-
-        laser.status = LASER_ON;
-      }
-    #endif
-
-    #if IS_SCARA
-      fast_move ? mechanics.prepare_uninterpolated_move_to_destination() : mechanics.prepare_move_to_destination();
-    #else
-      mechanics.prepare_move_to_destination();
-    #endif
-
-    #if ENABLED(LASER) && ENABLED(LASER_FIRE_G1)
-      if (lfire) laser.status = LASER_OFF;
-    #endif
+    mechanics.prepare_move_to_destination();
 
   }
 }

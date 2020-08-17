@@ -1,10 +1,8 @@
 /******************************************************************************************
  * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- *
- * forked from MK4Duo
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,6 +21,8 @@
  * ----------------------------------------------------------------------------------------
  *
  * StuFW - Main Include
+ * This includes all the other include files in the right order and defines some globals.
+ *
  *
  * Licence: GPL
  *
@@ -43,9 +43,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include <avr/pgmspace.h>
-#include <avr/eeprom.h>
-#include <avr/interrupt.h>
+#ifdef __AVR__
+  #include <avr/pgmspace.h>
+  #include <avr/eeprom.h>
+  #include <avr/interrupt.h>
+#endif
 
 #include <SPI.h>
 
@@ -144,8 +146,6 @@
 #include "src/feature/filamentrunout/filamentrunout.h"
 #include "src/feature/fwretract/fwretract.h"
 #include "src/feature/advanced_pause/advanced_pause.h"
-
-#include "src/feature/mfrc522/mfrc522.h"
 #include "src/feature/pcf8574/pcf8574.h"
 #include "src/feature/flowmeter/flowmeter.h"
 #include "src/feature/dhtsensor/dhtsensor.h"

@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -21,11 +21,6 @@
  */
 #pragma once
 
-/**
- * mechanics.h
- *
- * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
- */
 
 #define LOGICAL_X_POSITION(POS) mechanics.native_to_logical(POS, X_AXIS)
 #define LOGICAL_Y_POSITION(POS) mechanics.native_to_logical(POS, Y_AXIS)
@@ -199,13 +194,6 @@ class Mechanics {
       static float workspace_offset[XYZ];
     #endif
 
-    #if ENABLED(CNC_WORKSPACE_PLANES)
-      /**
-       * Workspace planes only apply to G2/G3 moves
-       * (and "canned cycles" - not a current feature)
-       */
-      static WorkspacePlaneEnum workspace_plane = PLANE_XY;
-    #endif
 
     #if ENABLED(BABYSTEPPING)
       static volatile int16_t babystepsTodo[XYZ];
@@ -347,14 +335,6 @@ class Mechanics {
 
   protected: /** Protected Function */
 
-    /**
-     * Set sensorless homing if the axis has it.
-     */
-    #if ENABLED(SENSORLESS_HOMING)
-      static sensorless_t start_sensorless_homing_per_axis(const AxisEnum axis);
-      static void stop_sensorless_homing_per_axis(const AxisEnum axis, sensorless_t enable_stealth);
-    #endif
-
     static void report_xyze(const float pos[], const uint8_t n=4, const uint8_t precision=3);
 
     /**
@@ -368,8 +348,4 @@ class Mechanics {
   #include "cartesian_mechanics.h"
 #elif IS_CORE
   #include "core_mechanics.h"
-#elif MECH(DELTA)
-  #include "delta_mechanics.h"
-#elif IS_SCARA
-  #include "scara_mechanics.h"
 #endif

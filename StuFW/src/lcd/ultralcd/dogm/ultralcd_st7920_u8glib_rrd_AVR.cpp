@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -23,7 +23,7 @@
 // NOTE - the HAL version of the rrd device uses a generic ST7920 device. See the
 // file u8g_dev_st7920_128x64_HAL.cpp for the HAL version.
 
-#include "../../../../MK4duo.h"
+#include "../../../../StuFW.h"
 
 #if ENABLED(U8GLIB_ST7920) && !defined(U8G_HAL_LINKS) && !defined(__SAM3X8E__) && !defined(ARDUINO_ARCH_SAMD)
 

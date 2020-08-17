@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -62,7 +62,7 @@
  * was designed, written and tested by Eduardo José Tagle on April/2018
  */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 // Delay for delivery of first block to the stepper ISR, if the queue contains 2 or
 // less movements. The delay is measured in milliseconds, and must be less than 250ms
@@ -695,43 +695,15 @@ float Planner::previous_speed[NUM_AXIS]   = { 0.0 },
 void Planner::check_axes_activity() {
   unsigned char axis_active[NUM_AXIS] = { 0 };
 
-  #if ENABLED(BARICUDA)
-    #if HAS_HEATER_1
-      uint8_t tail_valve_pressure;
-    #endif
-    #if HAS_HEATER_2
-      uint8_t tail_e_to_p_pressure;
-    #endif
-  #endif
 
   if (has_blocks_queued()) {
 
     block_t* block;
 
-    #if ENABLED(BARICUDA)
-      block = &block_buffer[block_buffer_tail];
-      #if HAS_HEATER_1
-        tail_valve_pressure = block->valve_pressure;
-      #endif
-      #if HAS_HEATER_2
-        tail_e_to_p_pressure = block->e_to_p_pressure;
-      #endif
-    #endif
-
     for (uint8_t b = block_buffer_tail; b != block_buffer_head; b = next_block_index(b)) {
       block = &block_buffer[b];
       LOOP_XYZE(i) if (block->steps[i]) axis_active[i]++;
     }
-  }
-  else {
-    #if ENABLED(BARICUDA)
-      #if HAS_HEATER_1
-        tail_valve_pressure = printer.baricuda_valve_pressure;;
-      #endif
-      #if HAS_HEATER_2
-        tail_e_to_p_pressure = printer.baricuda_e_to_p_pressure;
-      #endif
-    #endif
   }
 
   #if DISABLE_X
@@ -749,15 +721,6 @@ void Planner::check_axes_activity() {
 
   #if HAS_TEMP_HOTEND && ENABLED(AUTOTEMP)
     getHighESpeed();
-  #endif
-
-  #if ENABLED(BARICUDA)
-    #if HAS_HEATER_1
-      analogWrite(HEATER_1_PIN, tail_valve_pressure);
-    #endif
-    #if HAS_HEATER_2
-      analogWrite(HEATER_2_PIN, tail_e_to_p_pressure);
-    #endif
   #endif
 }
 
@@ -1179,11 +1142,6 @@ bool Planner::fill_block(block_t * const block, bool split_move,
     mixer.populate_block(block->b_color);
   #endif
 
-  #if ENABLED(BARICUDA)
-    block->valve_pressure   = printer.baricuda_valve_pressure;
-    block->e_to_p_pressure  = printer.baricuda_e_to_p_pressure;
-  #endif
-
   #if EXTRUDERS > 1
     block->active_extruder = extruder;
   #endif
@@ -1404,48 +1362,6 @@ bool Planner::fill_block(block_t * const block, bool split_move,
   else
     NOLESS(fr_mm_s, mechanics.data.min_travel_feedrate_mm_s);
 
-  #if ENABLED(LASER)
-
-    block->laser_intensity  = laser.intensity;
-    block->laser_duration   = laser.duration;
-    block->laser_status     = laser.status;
-    block->laser_mode       = laser.mode;
-
-    // When operating in PULSED or RASTER modes, laser pulsing must operate in sync with movement.
-    // Calculate steps between laser firings (steps_l) and consider that when determining largest
-    // interval between steps for X, Y, Z, E, L to feed to the motion control code.
-    if (laser.mode == RASTER || laser.mode == PULSED) {
-      block->steps_l = ABS(block->millimeters * laser.ppm);
-      #if ENABLED(LASER_RASTER)
-        for (uint8_t i = 0; i < LASER_MAX_RASTER_LINE; i++) {
-          // Scale the image intensity based on the raster power.
-          // 100% power on a pixel basis is 255, convert back to 255 = 100.
-          #if ENABLED(LASER_REMAP_INTENSITY)
-            const int NewRange = (laser.rasterlaserpower * 255.0 / 100.0 - LASER_REMAP_INTENSITY);
-            float     NewValue = (float)(((((float)laser.raster_data[i] - 0) * NewRange) / 255.0) + LASER_REMAP_INTENSITY);
-          #else
-            const int NewRange = (laser.rasterlaserpower * 255.0 / 100.0);
-            float     NewValue = (float)(((((float)laser.raster_data[i] - 0) * NewRange) / 255.0));
-          #endif
-
-          #if ENABLED(LASER_REMAP_INTENSITY)
-            // If less than 7%, turn off the laser tube.
-            if (NewValue <= LASER_REMAP_INTENSITY) NewValue = 0;
-          #endif
-
-          block->laser_raster_data[i] = NewValue;
-        }
-      #endif
-    }
-    else
-      block->steps_l = 0;
-
-    block->step_event_count = MAX(block->step_event_count, block->steps_l);
-
-    if (laser.diagnostics && block->laser_status == LASER_ON)
-      SERIAL_LM(ECHO, "Laser firing enabled");
-
-  #endif // LASER
 
   const float inverse_millimeters = 1.0f / block->millimeters;  // Inverse millimeters to remove multiple divides
 
@@ -2058,15 +1974,7 @@ bool Planner::buffer_line(const float &rx, const float &ry, const float &rz, con
       mm = (delta_mm_cart[X_AXIS] != 0.0 || delta_mm_cart[Y_AXIS] != 0.0) ? SQRT(sq(delta_mm_cart[X_AXIS]) + sq(delta_mm_cart[Y_AXIS]) + sq(delta_mm_cart[Z_AXIS])) : ABS(delta_mm_cart[Z_AXIS]);
 
     mechanics.Transform(raw);
-
-    #if ENABLED(SCARA_FEEDRATE_SCALING)
-      // For SCARA scale the feed rate from mm/s to degrees/s
-      // i.e., Complete the angular vector in the given time.
-      const float duration_recip = inv_duration ? inv_duration : fr_mm_s / mm,
-                  feedrate = HYPOT(delta[A_AXIS] - position_float[A_AXIS], delta[B_AXIS] - position_float[B_AXIS]) * duration_recip;
-    #else
-      const float feedrate = fr_mm_s;
-    #endif
+    const float feedrate = fr_mm_s;
 
     if (buffer_segment(mechanics.delta[A_AXIS], mechanics.delta[B_AXIS], mechanics.delta[C_AXIS], raw[E_AXIS]
       #if ENABLED(JUNCTION_DEVIATION)

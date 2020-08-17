@@ -1,9 +1,9 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,8 @@
  *
  */
 
-/**
- * commands.cpp
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
- */
 
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 #include "gcode/gcode.h"
 
 Commands commands;
@@ -201,28 +196,12 @@ void Commands::get_destination() {
   if (!printer.debugDryrun() && !printer.debugSimulation()) {
     const float diff = mechanics.destination[E_AXIS] - mechanics.current_position[E_AXIS];
     print_job_counter.incFilamentUsed(diff);
-    #if ENABLED(RFID_MODULE)
-      rfid522.RfidData[tools.active_extruder].data.lenght -= diff;
-    #endif
   }
 
   #if ENABLED(COLOR_MIXING_EXTRUDER)
     gcode_M165();
   #endif
 
-  #if HAS_NEXTION_LCD && ENABLED(NEXTION_GFX)
-    #if MECH(DELTA)
-      if ((parser.seen('X') || parser.seen('Y')) && parser.seen('E'))
-        gfx_line_to(mechanics.destination[X_AXIS] + (X_MAX_POS), mechanics.destination[Y_AXIS] + (Y_MAX_POS), mechanics.destination[Z_AXIS]);
-      else
-        gfx_cursor_to(mechanics.destination[X_AXIS] + (X_MAX_POS), mechanics.destination[Y_AXIS] + (Y_MAX_POS), mechanics.destination[Z_AXIS]);
-    #else
-      if ((parser.seen('X') || parser.seen('Y')) && parser.seen('E'))
-        gfx_line_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.destination[Z_AXIS]);
-      else
-        gfx_cursor_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.destination[Z_AXIS]);
-    #endif
-  #endif
 }
 
 bool Commands::get_target_tool(const uint16_t code) {
@@ -652,13 +631,7 @@ bool Commands::drain_injected_P() {
  * G0 and G1 are sent to the machine way more frequently than any other GCode.
  * We want to make sure that their use is optimized to its maximum.
  */
-#if IS_SCARA
-  #define EXECUTE_G0_G1(NUM) gcode_G0_G1(NUM == 0)
-#elif ENABLED(LASER)
-  #define EXECUTE_G0_G1(NUM) gcode_G0_G1(NUM == 1)
-#else
-  #define EXECUTE_G0_G1(NUM) gcode_G0_G1()
-#endif
+#define EXECUTE_G0_G1(NUM) gcode_G0_G1()
 
 void Commands::process_parsed(const bool say_ok/*=true*/) {
 
@@ -751,9 +724,6 @@ void Commands::process_parsed(const bool say_ok/*=true*/) {
         #endif
         #if ENABLED(CODE_G6)
           case 6: gcode_G6(); break;
-        #endif
-        #if ENABLED(CODE_G7)
-          case 7: gcode_G7(); break;
         #endif
         #if ENABLED(CODE_G8)
           case 8: gcode_G8(); break;
@@ -1047,18 +1017,6 @@ void Commands::process_parsed(const bool say_ok/*=true*/) {
         #if ENABLED(CODE_M2)
           case 2: gcode_M2(); break;
         #endif
-        #if ENABLED(CODE_M3)
-          case 3: gcode_M3(); break;
-        #endif
-        #if ENABLED(CODE_M4)
-          case 4: gcode_M4(); break;
-        #endif
-        #if ENABLED(CODE_M5)
-          case 5: gcode_M5(); break;
-        #endif
-        #if ENABLED(CODE_M6)
-          case 6: gcode_M6(); break;
-        #endif
         #if ENABLED(CODE_M7)
           case 7: gcode_M7(); break;
         #endif
@@ -1142,9 +1100,6 @@ void Commands::process_parsed(const bool say_ok/*=true*/) {
         #endif
         #if ENABLED(CODE_M34)
           case 34: gcode_M34(); break;
-        #endif
-        #if ENABLED(CODE_M35)
-          case 35: gcode_M35(); break;
         #endif
         #if ENABLED(CODE_M36)
           case 36: gcode_M36(); break;
@@ -1415,18 +1370,6 @@ void Commands::process_parsed(const bool say_ok/*=true*/) {
         #endif
         #if ENABLED(CODE_M125)
           case 125: gcode_M125(); break;
-        #endif
-        #if ENABLED(CODE_M126)
-          case 126: gcode_M126(); break;
-        #endif
-        #if ENABLED(CODE_M127)
-          case 127: gcode_M127(); break;
-        #endif
-        #if ENABLED(CODE_M128)
-          case 128: gcode_M128(); break;
-        #endif
-        #if ENABLED(CODE_M129)
-          case 129: gcode_M129(); break;
         #endif
         #if ENABLED(CODE_M130)
           case 130: gcode_M130(); break;
@@ -2178,12 +2121,6 @@ void Commands::process_parsed(const bool say_ok/*=true*/) {
         #if ENABLED(CODE_M379)
           case 379: gcode_M379(); break;
         #endif
-        #if ENABLED(CODE_M380)
-          case 380: gcode_M380(); break;
-        #endif
-        #if ENABLED(CODE_M381)
-          case 381: gcode_M381(); break;
-        #endif
         #if ENABLED(CODE_M382)
           case 382: gcode_M382(); break;
         #endif
@@ -2387,18 +2324,6 @@ void Commands::process_parsed(const bool say_ok/*=true*/) {
         #endif
         #if ENABLED(CODE_M449)
           case 449: gcode_M449(); break;
-        #endif
-        #if ENABLED(CODE_M450)
-          case 450: gcode_M450(); break;
-        #endif
-        #if ENABLED(CODE_M451)
-          case 451: gcode_M451(); break;
-        #endif
-        #if ENABLED(CODE_M452)
-          case 452: gcode_M452(); break;
-        #endif
-        #if ENABLED(CODE_M453)
-          case 453: gcode_M453(); break;
         #endif
         #if ENABLED(CODE_M454)
           case 454: gcode_M454(); break;
@@ -2984,9 +2909,6 @@ void Commands::process_parsed(const bool say_ok/*=true*/) {
         #endif
         #if ENABLED(CODE_M648)
           case 648: gcode_M648(); break;
-        #endif
-        #if ENABLED(CODE_M649)
-          case 649: gcode_M649(); break;
         #endif
         #if ENABLED(CODE_M650)
           case 650: gcode_M650(); break;

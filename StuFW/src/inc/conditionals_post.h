@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -578,15 +578,6 @@
 #define HAS_MOTOR_CURRENT_PWM_XY  (PIN_EXISTS(MOTOR_CURRENT_PWM_XY))
 #define HAS_MOTOR_CURRENT_PWM     (PIN_EXISTS(MOTOR_CURRENT_PWM_XY) || PIN_EXISTS(MOTOR_CURRENT_PWM_Z) || PIN_EXISTS(MOTOR_CURRENT_PWM_E))
 
-// Laser support
-#define HAS_LASER_POWER     (PIN_EXISTS(LASER_PWR))
-#define HAS_LASER_PWM       (PIN_EXISTS(LASER_PWM))
-
-// CNC
-#define HAS_CNCROUTER       (PIN_EXISTS(CNCROUTER))
-
-// Multi Mode
-#define HAS_MULTI_MODE      (ENABLED(LASER) || ENABLED(CNCROUTER) || ENABLED(MILLING) || ENABLED(PICK_AND_PLACE) || ENABLED(SOLDER) || ENABLED(PLOTTER))
 
 // MK Multi tool system
 #define HAS_MKMULTI_TOOLS   (ENABLED(MKSE6) || ENABLED(MKR4) || ENABLED(MKR6) || ENABLED(MKR12) || ENABLED(DONDOLO_SINGLE_MOTOR))
@@ -1048,13 +1039,6 @@
 #endif
 #define QUIET_PROBING       (HAS_BED_PROBE && (ENABLED(PROBING_HEATERS_OFF) || ENABLED(PROBING_FANS_OFF)))
 
-#if HAS_CNCROUTER
-  #if ENABLED(INVERTED_CNCROUTER_PIN)
-    #define WRITE_CNCROUTER(v) WRITE(CNCROUTER_PIN, !v)
-  #else
-    #define WRITE_CNCROUTER(v) WRITE(CNCROUTER_PIN, v)
-  #endif
-#endif
 
 /**
  * Multiextruder with relè system

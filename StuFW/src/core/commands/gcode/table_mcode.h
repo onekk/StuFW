@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -45,18 +45,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#endif
 	#if ENABLED(CODE_M2)
 		{ 2, gcode_M2 },
-	#endif
-	#if ENABLED(CODE_M3)
-		{ 3, gcode_M3 },
-	#endif
-	#if ENABLED(CODE_M4)
-		{ 4, gcode_M4 },
-	#endif
-	#if ENABLED(CODE_M5)
-		{ 5, gcode_M5 },
-	#endif
-	#if ENABLED(CODE_M6)
-		{ 6, gcode_M6 },
 	#endif
 	#if ENABLED(CODE_M7)
 		{ 7, gcode_M7 },
@@ -414,18 +402,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#endif
 	#if ENABLED(CODE_M125)
 		{ 125, gcode_M125 },
-	#endif
-	#if ENABLED(CODE_M126)
-		{ 126, gcode_M126 },
-	#endif
-	#if ENABLED(CODE_M127)
-		{ 127, gcode_M127 },
-	#endif
-	#if ENABLED(CODE_M128)
-		{ 128, gcode_M128 },
-	#endif
-	#if ENABLED(CODE_M129)
-		{ 129, gcode_M129 },
 	#endif
 	#if ENABLED(CODE_M130)
 		{ 130, gcode_M130 },
@@ -1177,12 +1153,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#if ENABLED(CODE_M379)
 		{ 379, gcode_M379 },
 	#endif
-	#if ENABLED(CODE_M380)
-		{ 380, gcode_M380 },
-	#endif
-	#if ENABLED(CODE_M381)
-		{ 381, gcode_M381 },
-	#endif
 	#if ENABLED(CODE_M382)
 		{ 382, gcode_M382 },
 	#endif
@@ -1386,18 +1356,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#endif
 	#if ENABLED(CODE_M449)
 		{ 449, gcode_M449 },
-	#endif
-	#if ENABLED(CODE_M450)
-		{ 450, gcode_M450 },
-	#endif
-	#if ENABLED(CODE_M451)
-		{ 451, gcode_M451 },
-	#endif
-	#if ENABLED(CODE_M452)
-		{ 452, gcode_M452 },
-	#endif
-	#if ENABLED(CODE_M453)
-		{ 453, gcode_M453 },
 	#endif
 	#if ENABLED(CODE_M454)
 		{ 454, gcode_M454 },
@@ -1983,9 +1941,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#endif
 	#if ENABLED(CODE_M648)
 		{ 648, gcode_M648 },
-	#endif
-	#if ENABLED(CODE_M649)
-		{ 649, gcode_M649 },
 	#endif
 	#if ENABLED(CODE_M650)
 		{ 650, gcode_M650 },

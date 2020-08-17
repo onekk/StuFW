@@ -1,9 +1,9 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2016 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,7 @@
  *
  */
 
-/**
- * core_mechanics.cpp
- *
- * Copyright (C) 2016 Alberto Cotronei @MagoKimbra
- */
-
-#include "../../../MK4duo.h"
+#include "../../../StuFW.h"
 
 #if IS_CORE
 
@@ -158,9 +152,6 @@ void Core_Mechanics::home(const bool homeX/*=false*/, const bool homeY/*=false*/
 
   if (printer.debugSimulation()) {
     LOOP_XYZ(axis) set_axis_is_at_home((AxisEnum)axis);
-    #if HAS_NEXTION_LCD && ENABLED(NEXTION_GFX)
-      mechanics.Nextion_gfx_clear();
-    #endif
     return;
   }
 
@@ -182,9 +173,6 @@ void Core_Mechanics::home(const bool homeX/*=false*/, const bool homeY/*=false*/
     bedlevel.set_bed_leveling_enabled(false);
   #endif
 
-  #if ENABLED(CNC_WORKSPACE_PLANES)
-    workspace_plane = PLANE_XY;
-  #endif
 
   // Always home with tool 0 active
   #if HOTENDS > 1
@@ -274,9 +262,6 @@ void Core_Mechanics::home(const bool homeX/*=false*/, const bool homeY/*=false*/
     feedrate_mm_s = old_feedrate_mm_s;
   }
 
-  #if HAS_NEXTION_LCD && ENABLED(NEXTION_GFX)
-    mechanics.Nextion_gfx_clear();
-  #endif
 
   #if HAS_LEVELING
     bedlevel.set_bed_leveling_enabled(leveling_was_active);
@@ -398,12 +383,6 @@ void Core_Mechanics::do_homing_move(const AxisEnum axis, const float distance, c
  */
 bool Core_Mechanics::prepare_move_to_destination_mech_specific() {
 
-  #if ENABLED(LASER) && ENABLED(LASER_FIRE_E)
-    if (current_position[E_AXIS] < destination[E_AXIS] && ((current_position[X_AXIS] != destination [X_AXIS]) || (current_position[Y_AXIS] != destination [Y_AXIS])))
-      laser.status = LASER_ON;
-    else
-      laser.status = LASER_OFF;
-  #endif
 
   #if HAS_MESH
     if (bedlevel.flag.leveling_active) {
@@ -576,17 +555,7 @@ void Core_Mechanics::report_current_position_detail() {
     const uint8_t clockwise     // Clockwise?
   ) {
 
-    #if ENABLED(CNC_WORKSPACE_PLANES)
-      AxisEnum p_axis, q_axis, l_axis;
-      switch (workspace_plane) {
-        default:
-        case PLANE_XY: p_axis = X_AXIS; q_axis = Y_AXIS; l_axis = Z_AXIS; break;
-        case PLANE_ZX: p_axis = Z_AXIS; q_axis = X_AXIS; l_axis = Y_AXIS; break;
-        case PLANE_YZ: p_axis = Y_AXIS; q_axis = Z_AXIS; l_axis = X_AXIS; break;
-      }
-    #else
-      constexpr AxisEnum p_axis = X_AXIS, q_axis = Y_AXIS, l_axis = Z_AXIS;
-    #endif
+    constexpr AxisEnum p_axis = X_AXIS, q_axis = Y_AXIS, l_axis = Z_AXIS;
 
     // Radius vector from center to current location
     float r_P = -offset[0], r_Q = -offset[1];
@@ -626,7 +595,7 @@ void Core_Mechanics::report_current_position_detail() {
      * vector rotations. This requires only two cos() and sin() computations to form the rotation
      * matrix for the duration of the entire arc. Error may accumulate from numerical round-off, since
      * all double numbers are single precision on the Arduino. (True double precision will not have
-     * round off issues for CNC applications.) Single precision error can accumulate to be greater than
+     * round off issues for machining applications.) Single precision error can accumulate to be greater than
      * tool precision in some cases. Therefore, arc path correction is implemented.
      *
      * Small angle approximation may be used to reduce computation overhead further. This approximation
@@ -634,7 +603,7 @@ void Core_Mechanics::report_current_position_detail() {
      * theta_per_segment would need to be greater than 0.1 rad and N_ARC_CORRECTION would need to be large
      * to cause an appreciable drift error. N_ARC_CORRECTION~=25 is more than small enough to correct for
      * numerical drift error. N_ARC_CORRECTION may be on the order a hundred(s) before error becomes an
-     * issue for CNC machines with the single precision Arduino calculations.
+     * issue for machining machines with the single precision Arduino calculations.
      *
      * This approximation also allows plan_arc to immediately insert a line segment into the planner
      * without the initial overhead of computing cos() or sin(). By the time the arc needs to be applied
@@ -852,14 +821,6 @@ void Core_Mechanics::report_current_position_detail() {
 
 #endif // DISABLED(DISABLE_M503)
 
-#if HAS_NEXTION_LCD && ENABLED(NEXTION_GFX)
-
-  void Core_Mechanics::Nextion_gfx_clear() {
-    gfx_clear(X_MAX_POS, Y_MAX_POS, Z_MAX_POS);
-    gfx_cursor_to(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS]);
-  }
-
-#endif
 
 /** Private Function */
 void Core_Mechanics::homeaxis(const AxisEnum axis) {

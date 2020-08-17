@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -474,7 +474,6 @@
 #define MSG_COOLER_DONE                     _UxGT("Raffreddamento finito.")
 
 // Extra
-#define MSG_LASER                           _UxGT("Laser Preset")
 #define MSG_CONFIG                          _UxGT("Configurazione")
 #define MSG_SAVED_POS                       _UxGT("Posizione Salvata")
 #define MSG_RESTORING_POS                   _UxGT("Ripristino posizione")
@@ -483,19 +482,6 @@
 #define MSG_ARE_YOU_SURE                    _UxGT("Sei sicuro?")
 #define MSG_YES                             _UxGT("Si")
 #define MSG_NO                              _UxGT("No")
-
-// Rfid module
-#define MSG_RFID_SPOOL                      _UxGT("Bobina su E")
-#define MSG_RFID_BRAND                      _UxGT("Marca: ")
-#define MSG_RFID_TYPE                       _UxGT("Tipo: ")
-#define MSG_RFID_COLOR                      _UxGT("Colore: ")
-#define MSG_RFID_SIZE                       _UxGT("Size: ")
-#define MSG_RFID_TEMP_HOTEND                _UxGT("Temperatura Hotend: ")
-#define MSG_RFID_TEMP_BED                   _UxGT("Temperatura Bed: ")
-#define MSG_RFID_TEMP_USER_HOTEND           _UxGT("Temperatura utente Hotend: ")
-#define MSG_RFID_TEMP_USER_BED              _UxGT("Temperatura utente Bed: ")
-#define MSG_RFID_DENSITY                    _UxGT("Densita': ")
-#define MSG_RFID_SPOOL_LENGHT               _UxGT("Lunghezza bobina: ")
 
 // Sound
 #define MSG_SOUND_MODE_ON                   _UxGT("Suono           [on]")
@@ -508,13 +494,4 @@
 #define MSG_EEPROM_CHANGED_ALLERT_3         _UxGT("Premere il bottone")
 #define MSG_EEPROM_CHANGED_ALLERT_4         _UxGT("per continuare...")
 
-// Nextion Allert
-#define MSG_NEXTION_CHANGED_ALLERT_1        _UxGT("ATTENTION...")
-#define MSG_NEXTION_CHANGED_ALLERT_2        _UxGT("NEXTION FW cambiato.")
-#define MSG_NEXTION_CHANGED_ALLERT_3        _UxGT("Aggiornare con nuovo FW")
-#define MSG_NEXTION_CHANGED_ALLERT_4        _UxGT("Premere il bottone")
-#define MSG_NEXTION_CHANGED_ALLERT_5        _UxGT("per continuare...")
 
-// Nextion M0 M1
-#define MSG_NEXTION_M0_M1_1                 _UxGT("Premi enter per")
-#define MSG_NEXTION_M0_M1_2                 _UxGT("riprendere la stampa")
