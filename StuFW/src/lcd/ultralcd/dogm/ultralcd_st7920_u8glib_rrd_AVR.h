@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -25,7 +25,7 @@
 
 #include "../../../../StuFW.h"
 
-#if ENABLED(U8GLIB_ST7920) && !defined(U8G_HAL_LINKS) && !defined(__SAM3X8E__)
+#if ENABLED(U8GLIB_ST7920) && !defined(U8G_HAL_LINKS)
 
 #define ST7920_CLK_PIN  LCD_PINS_D4
 #define ST7920_DAT_PIN  LCD_PINS_ENABLE
@@ -40,31 +40,10 @@
 
 #include <U8glib.h>
 
-// If you want you can define your own set of delays in Configuration.h
-//#define ST7920_DELAY_1 DELAY_NS(0)
-//#define ST7920_DELAY_2 DELAY_NS(0)
-//#define ST7920_DELAY_3 DELAY_NS(0)
-
 #if F_CPU >= 20000000
   #define CPU_ST7920_DELAY_1 DELAY_NS(0)
   #define CPU_ST7920_DELAY_2 DELAY_NS(0)
   #define CPU_ST7920_DELAY_3 DELAY_NS(50)
-#elif MB(3DRAG) || MB(K8200) || MB(K8400) || MB(SILVER_GATE)
-  #define CPU_ST7920_DELAY_1 DELAY_NS(0)
-  #define CPU_ST7920_DELAY_2 DELAY_NS(188)
-  #define CPU_ST7920_DELAY_3 DELAY_NS(0)
-#elif MB(MINIRAMBO) || MB(EINSY_RAMBO) || MB(EINSY_RETRO)
-  #define CPU_ST7920_DELAY_1 DELAY_NS(0)
-  #define CPU_ST7920_DELAY_2 DELAY_NS(250)
-  #define CPU_ST7920_DELAY_3 DELAY_NS(0)
-#elif MB(RAMBO)
-  #define CPU_ST7920_DELAY_1 DELAY_NS(0)
-  #define CPU_ST7920_DELAY_2 DELAY_NS(0)
-  #define CPU_ST7920_DELAY_3 DELAY_NS(0)
-#elif MB(BQ_ZUM_MEGA_3D)
-  #define CPU_ST7920_DELAY_1 DELAY_NS(0)
-  #define CPU_ST7920_DELAY_2 DELAY_NS(0)
-  #define CPU_ST7920_DELAY_3 DELAY_NS(189)
 #elif F_CPU == 16000000
   #define CPU_ST7920_DELAY_1 DELAY_NS(0)
   #define CPU_ST7920_DELAY_2 DELAY_NS(0)

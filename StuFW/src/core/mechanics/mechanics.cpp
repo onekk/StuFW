@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -137,13 +137,7 @@ void Mechanics::prepare_move_to_destination() {
   #endif
 
   if (!printer.debugSimulation()) { // Simulation Mode no movement
-    if (
-      #if UBL_DELTA
-        ubl.prepare_segmented_line_to(destination, feedrate_mm_s)
-      #else
-        mechanics.prepare_move_to_destination_mech_specific()
-      #endif
-    ) return;
+    if (mechanics.prepare_move_to_destination_mech_specific()) return;
   }
 
   set_current_to_destination();
@@ -453,112 +447,3 @@ bool Mechanics::axis_unhomed_error(const bool x/*=true*/, const bool y/*=true*/,
 
 #endif // BABYSTEPPING
 
-/** Protected Function */
-#if ENABLED(SENSORLESS_HOMING)
-
-  /**
-   * Start sensorless homing if the axis has it, accounting for Core Kinematics.
-   */
-  sensorless_t Mechanics::start_sensorless_homing_per_axis(const AxisEnum axis) {
-
-    sensorless_t stealth_states;
-
-    switch (axis) {
-      default: break;
-      #if X_HAS_SENSORLESS
-        case X_AXIS:
-          stealth_states.x = tmc.enable_stallguard(stepperX);
-          #if X2_HAS_SENSORLESS
-            stealth_states.x2 = tmc.enable_stallguard(stepperX2);
-          #elif CORE_IS_XY && Y_HAS_SENSORLESS
-            stealth_states.y = tmc.enable_stallguard(stepperY);
-          #elif CORE_IS_XZ && Z_HAS_SENSORLESS
-            stealth_states.z = tmc.enable_stallguard(stepperZ);
-          #endif
-          break;
-      #endif
-      #if Y_HAS_SENSORLESS
-        case Y_AXIS:
-          stealth_states.y = tmc.enable_stallguard(stepperY);
-          #if Y2_HAS_SENSORLESS
-            stealth_states.y2 = tmc.enable_stallguard(stepperY2);
-          #elif CORE_IS_XY && X_HAS_SENSORLESS
-            stealth_states.x = tmc.enable_stallguard(stepperX);
-          #elif CORE_IS_YZ && Z_HAS_SENSORLESS
-            stealth_states.z = tmc.enable_stallguard(stepperZ);
-          #endif
-          break;
-      #endif
-      #if Z_HAS_SENSORLESS
-        case Z_AXIS:
-          stealth_states.z = tmc.enable_stallguard(stepperZ);
-          #if Z2_HAS_SENSORLESS
-            stealth_states.z2 = tmc.enable_stallguard(stepperZ2);
-          #endif
-          #if Z3_HAS_SENSORLESS
-            stealth_states.z3 = tmc.enable_stallguard(stepperZ3);
-          #endif
-          #if CORE_IS_XZ && X_HAS_SENSORLESS
-            stealth_states.x = tmc.enable_stallguard(stepperX);
-          #elif CORE_IS_YZ && Y_HAS_SENSORLESS
-            stealth_states.z = tmc.enable_stallguard(stepperZ);
-          #endif
-          break;
-      #endif
-    }
-
-    return stealth_states;
-  }
-
-  /**
-   * Stop sensorless homing if the axis has it, accounting for Core Kinematics.
-   */
-  void Mechanics::stop_sensorless_homing_per_axis(const AxisEnum axis, sensorless_t enable_stealth) {
-
-    switch (axis) {
-      default: break;
-      #if X_HAS_SENSORLESS
-        case X_AXIS:
-          tmc.disable_stallguard(stepperX, enable_stealth.x);
-          #if X2_HAS_SENSORLESS
-            tmc.disable_stallguard(stepperX2, enable_stealth.x2);
-          #elif CORE_IS_XY && Y_HAS_SENSORLESS
-            tmc.disable_stallguard(stepperY, enable_stealth.y);
-          #elif CORE_IS_XZ && Z_HAS_SENSORLESS
-            tmc.disable_stallguard(stepperZ, enable_stealth.z);
-          #endif
-          break;
-      #endif
-      #if Y_HAS_SENSORLESS
-        case Y_AXIS:
-          tmc.disable_stallguard(stepperY, enable_stealth.y);
-          #if Y2_HAS_SENSORLESS
-            tmc.disable_stallguard(stepperY2, enable_stealth.y2);
-          #elif CORE_IS_XY && X_HAS_SENSORLESS
-            tmc.disable_stallguard(stepperX, enable_stealth.x);
-          #elif CORE_IS_YZ && Z_HAS_SENSORLESS
-            tmc.disable_stallguard(stepperZ, enable_stealth.z);
-          #endif
-          break;
-      #endif
-      #if Z_HAS_SENSORLESS
-        case Z_AXIS:
-          tmc.disable_stallguard(stepperZ, enable_stealth.z);
-          #if Z2_HAS_SENSORLESS
-            tmc.disable_stallguard(stepperZ2, enable_stealth.z2);
-          #endif
-          #if Z3_HAS_SENSORLESS
-            tmc.disable_stallguard(stepperZ3, enable_stealth.z3);
-          #endif
-          #if CORE_IS_XZ && X_HAS_SENSORLESS
-            tmc.disable_stallguard(stepperX, enable_stealth.x);
-          #elif CORE_IS_YZ && Y_HAS_SENSORLESS
-            tmc.disable_stallguard(stepperY, enable_stealth.y);
-          #endif
-          break;
-      #endif
-    }
-
-  }
-
-#endif // SENSORLESS_HOMING

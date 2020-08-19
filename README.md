@@ -2,7 +2,9 @@
 
 # StuFW 3D Printer Firmware for simple Atmel AVR boards
 
-## Version 0.0.1 revision 20200817
+## Version 0.0.5 revision 20200823
+
+Maybe it is not functional Display code is very complicated due to big variants of display type and something may be broken
 
 
 ## Why another fimrware?
@@ -22,7 +24,7 @@ It is an hard question, after many request on the forum for help in setting up s
 
 ### Features
 
-Forked from MK4Duo 4.3.8
+Forked from MK4Duo 4.3.8 revisione 19042019
 
 ## License
 

@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -363,7 +363,7 @@ void watch_temp_callback_bed();
 void watch_temp_callback_chamber();
 void watch_temp_callback_cooler();
 
-#define HAS_LINE_TO_Z (MECH(DELTA) || ENABLED(PROBE_MANUALLY) || ENABLED(MESH_BED_LEVELING) || ENABLED(LEVEL_BED_CORNERS))
+#define HAS_LINE_TO_Z (ENABLED(PROBE_MANUALLY) || ENABLED(MESH_BED_LEVELING) || ENABLED(LEVEL_BED_CORNERS))
 
 #if HAS_LINE_TO_Z
   void line_to_z(const float &z);

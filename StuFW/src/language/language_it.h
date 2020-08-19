@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -49,7 +49,6 @@
 #define MSG_AUTO_HOME_Y                     _UxGT("Home asse Y")
 #define MSG_AUTO_HOME_Z                     _UxGT("Home asse Z")
 #define MSG_AUTO_Z_ALIGN                    _UxGT("Allineam.automat. Z")
-#define MSG_TMC_Z_CALIBRATION               _UxGT("Calibra Z")
 #define MSG_LEVEL_BED_HOMING                _UxGT("Home assi XYZ")
 #define MSG_LEVEL_BED_WAITING               _UxGT("Premi per iniziare")
 #define MSG_LEVEL_BED_NEXT_POINT            _UxGT("Punto successivo")
@@ -451,14 +450,6 @@
   #define MSG_FILAMENT_CHANGE_RESUME_1      _UxGT("Ripresa...")
 #endif // LCD_HEIGHT < 4
 
-// TMC Driver
-#define MSG_TMC_DRIVERS                     _UxGT("Drivers TMC")
-#define MSG_TMC_CURRENT                     _UxGT("Corrente driver")
-#define MSG_TMC_MICROSTEP                   _UxGT("Driver microstep")
-#define MSG_TMC_HYBRID_THRS                 _UxGT("Soglia modo ibrido")
-#define MSG_TMC_HOMING_THRS                 _UxGT("Sensorless homing")
-#define MSG_TMC_STEPPING_MODE               _UxGT("Modo stepping")
-#define MSG_TMC_STEALTH_ENABLED             _UxGT("StealthChop abil.")
 
 // Heater
 #define MSG_HEATING                         _UxGT("Riscaldamento...")
@@ -474,7 +465,6 @@
 #define MSG_COOLER_DONE                     _UxGT("Raffreddamento finito.")
 
 // Extra
-#define MSG_LASER                           _UxGT("Laser Preset")
 #define MSG_CONFIG                          _UxGT("Configurazione")
 #define MSG_SAVED_POS                       _UxGT("Posizione Salvata")
 #define MSG_RESTORING_POS                   _UxGT("Ripristino posizione")
@@ -483,19 +473,6 @@
 #define MSG_ARE_YOU_SURE                    _UxGT("Sei sicuro?")
 #define MSG_YES                             _UxGT("Si")
 #define MSG_NO                              _UxGT("No")
-
-// Rfid module
-#define MSG_RFID_SPOOL                      _UxGT("Bobina su E")
-#define MSG_RFID_BRAND                      _UxGT("Marca: ")
-#define MSG_RFID_TYPE                       _UxGT("Tipo: ")
-#define MSG_RFID_COLOR                      _UxGT("Colore: ")
-#define MSG_RFID_SIZE                       _UxGT("Size: ")
-#define MSG_RFID_TEMP_HOTEND                _UxGT("Temperatura Hotend: ")
-#define MSG_RFID_TEMP_BED                   _UxGT("Temperatura Bed: ")
-#define MSG_RFID_TEMP_USER_HOTEND           _UxGT("Temperatura utente Hotend: ")
-#define MSG_RFID_TEMP_USER_BED              _UxGT("Temperatura utente Bed: ")
-#define MSG_RFID_DENSITY                    _UxGT("Densita': ")
-#define MSG_RFID_SPOOL_LENGHT               _UxGT("Lunghezza bobina: ")
 
 // Sound
 #define MSG_SOUND_MODE_ON                   _UxGT("Suono           [on]")
@@ -508,13 +485,4 @@
 #define MSG_EEPROM_CHANGED_ALLERT_3         _UxGT("Premere il bottone")
 #define MSG_EEPROM_CHANGED_ALLERT_4         _UxGT("per continuare...")
 
-// Nextion Allert
-#define MSG_NEXTION_CHANGED_ALLERT_1        _UxGT("ATTENTION...")
-#define MSG_NEXTION_CHANGED_ALLERT_2        _UxGT("NEXTION FW cambiato.")
-#define MSG_NEXTION_CHANGED_ALLERT_3        _UxGT("Aggiornare con nuovo FW")
-#define MSG_NEXTION_CHANGED_ALLERT_4        _UxGT("Premere il bottone")
-#define MSG_NEXTION_CHANGED_ALLERT_5        _UxGT("per continuare...")
 
-// Nextion M0 M1
-#define MSG_NEXTION_M0_M1_1                 _UxGT("Premi enter per")
-#define MSG_NEXTION_M0_M1_2                 _UxGT("riprendere la stampa")

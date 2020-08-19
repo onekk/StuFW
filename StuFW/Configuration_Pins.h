@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -211,18 +211,6 @@
   #define E5_ENC_PIN   NoPin
 #endif
 
-#if ENABLED(LASER)
-  #define LASER_PWR_PIN                   ORIG_LASER_PWR_PIN
-  #define LASER_PWM_PIN                   ORIG_LASER_PWM_PIN
-  #if ENABLED(LASER_PERIPHERALS)
-    #define LASER_PERIPHERALS_PIN         NoPin
-    #define LASER_PERIPHERALS_STATUS_PIN  NoPin
-  #endif
-#endif
-
-#if ENABLED(CNCROUTER)
-  #define CNCROUTER_PIN NoPin
-#endif
 
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   #define FIL_RUNOUT_0_PIN NoPin
@@ -285,11 +273,6 @@
   #define DHT_DATA_PIN NoPin
 #endif
 
-#if HAVE_DRV(TMC2130) && ENABLED(SOFT_SPI_TMC2130)
-  #define SOFT_MOSI_PIN 51
-  #define SOFT_MISO_PIN 50
-  #define SOFT_SCK_PIN  52
-#endif
 
 //============================================================================
 

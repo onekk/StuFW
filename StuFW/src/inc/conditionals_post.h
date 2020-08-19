@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -27,24 +27,6 @@
  */
 
 /**
- * SAM3X8E
- */
-#if ENABLED(ARDUINO_ARCH_SAM)
-  #if ENABLED(M100_FREE_MEMORY_WATCHER)
-    #undef M100_FREE_MEMORY_WATCHER
-  #endif
-  #if DISABLED(EXTENDED_CAPABILITIES_REPORT)
-    #define EXTENDED_CAPABILITIES_REPORT
-  #endif
-  #if DISABLED(ENDSTOP_INTERRUPTS_FEATURE)
-    #define ENDSTOP_INTERRUPTS_FEATURE
-  #endif
-  #if DISABLED(DEBUG_FEATURE)
-    #define DEBUG_FEATURE
-  #endif
-#endif
-
-/**
  * Stored Position
  */
 #if DISABLED(NUM_POSITON_SLOTS)
@@ -53,98 +35,19 @@
   #define NUM_POSITON_SLOTS 2
 #endif
 
-/**
- * DELTA
- */
-#if MECH(DELTA)
 
-  // DELTA must have same valour for 3 axis Home Feedrate
-  #define HOMING_FEEDRATE_X HOMING_FEEDRATE_XYZ
-  #define HOMING_FEEDRATE_Y HOMING_FEEDRATE_XYZ
-  #define HOMING_FEEDRATE_Z HOMING_FEEDRATE_XYZ
-
-  // DELTA must have same valour for 3 axis endstop hits
-  #define X_HOME_BUMP_MM XYZ_HOME_BUMP_MM
-  #define Y_HOME_BUMP_MM XYZ_HOME_BUMP_MM
-  #define Z_HOME_BUMP_MM XYZ_HOME_BUMP_MM
-  #define HOMING_BUMP_DIVISOR {XYZ_BUMP_DIVISOR, XYZ_BUMP_DIVISOR, XYZ_BUMP_DIVISOR}
-
-  // Effective horizontal distance bridged by diagonal push rods.
-  #define DELTA_RADIUS (DELTA_SMOOTH_ROD_OFFSET - DELTA_EFFECTOR_OFFSET - DELTA_CARRIAGE_OFFSET)
-
-  #if DISABLED(Z_PROBE_SPEED_FAST)
-    #define Z_PROBE_SPEED_FAST  HOMING_FEEDRATE_XYZ
-  #endif
-  #if DISABLED(Z_PROBE_SPEED_SLOW)
-    #define Z_PROBE_SPEED_SLOW  (Z_PROBE_SPEED_FAST / 2)
-  #endif
-
-  // Set the rectangle in which to probe
-  #define DELTA_PROBEABLE_RADIUS     (DELTA_PRINTABLE_RADIUS - MAX(ABS(X_PROBE_OFFSET_FROM_NOZZLE), ABS(Y_PROBE_OFFSET_FROM_NOZZLE)))
-  #define LEFT_PROBE_BED_POSITION   -(mechanics.data.probe_radius)
-  #define RIGHT_PROBE_BED_POSITION   (mechanics.data.probe_radius)
-  #define FRONT_PROBE_BED_POSITION  -(mechanics.data.probe_radius)
-  #define BACK_PROBE_BED_POSITION    (mechanics.data.probe_radius)
-
-  #define X_MIN_POS -(mechanics.data.print_radius)
-  #define X_MAX_POS  (mechanics.data.print_radius)
-  #define Y_MIN_POS -(mechanics.data.print_radius)
-  #define Y_MAX_POS  (mechanics.data.print_radius)
-  #define Z_MAX_POS  (mechanics.data.height)
-  #define Z_MIN_POS 0
-  #define E_MIN_POS 0
-
+#if ((X_MIN_POS) <= 0)
+  #define X_MIN_POS_ZERO 0
+#else
   #define X_MIN_POS_ZERO (X_MIN_POS)
-  #define Y_MIN_POS_ZERO (Y_MIN_POS)
-
-  #define X_BED_SIZE ((DELTA_PRINTABLE_RADIUS) * 2)
-  #define Y_BED_SIZE ((DELTA_PRINTABLE_RADIUS) * 2)
-
-  #define UBL_PROBEABLE_RADIUS   (DELTA_PRINTABLE_RADIUS)
-  #define MESH_MIN_X        -(UBL_PROBEABLE_RADIUS)
-  #define MESH_MAX_X         (UBL_PROBEABLE_RADIUS)
-  #define MESH_MIN_Y        -(UBL_PROBEABLE_RADIUS)
-  #define MESH_MAX_Y         (UBL_PROBEABLE_RADIUS)
-
-  #define PROBE_PT_1_X 0
-  #define PROBE_PT_1_Y 0
-  #define PROBE_PT_2_X 0
-  #define PROBE_PT_2_Y 0
-  #define PROBE_PT_3_X 0
-  #define PROBE_PT_3_Y 0
-
-  #define HAS_DELTA_AUTO_CALIBRATION  (ENABLED(DELTA_AUTO_CALIBRATION_1) || ENABLED(DELTA_AUTO_CALIBRATION_2))
-
-  // DELTA should ignore Z_SAFE_HOMING, SLOWDOWN, WORKSPACE_OFFSETS and LEVEL_BED_CORNERS
-  #undef Z_SAFE_HOMING
-  #undef SLOWDOWN
-  #undef WORKSPACE_OFFSETS
-  #undef LEVEL_BED_CORNERS
-
-  // DOGM SPI DELAY
-  #if DISABLED(DOGM_SPI_DELAY_US)
-    #define DOGM_SPI_DELAY_US 50
-  #endif
-
-#else // !MECH(DELTA)
-
-  #if ((X_MIN_POS) <= 0)
-    #define X_MIN_POS_ZERO 0
-  #else
-    #define X_MIN_POS_ZERO (X_MIN_POS)
-  #endif
-  #if ((Y_MIN_POS) <= 0)
-    #define Y_MIN_POS_ZERO 0
-  #else
-    #define Y_MIN_POS_ZERO (Y_MIN_POS)
-  #endif
-
-#endif // !MECH(DELTA)
-
-// Require 0,0 bed center for Delta and SCARA
-#if IS_KINEMATIC
-  #define BED_CENTER_AT_0_0
 #endif
+
+#if ((Y_MIN_POS) <= 0)
+  #define Y_MIN_POS_ZERO 0
+#else
+  #define Y_MIN_POS_ZERO (Y_MIN_POS)
+#endif
+
 
 /**
  * Axis lengths and center
@@ -201,47 +104,23 @@
   #endif
 #endif
 
-/**
- * SCARA cannot use SLOWDOWN and requires QUICKHOME
- */
-#if IS_SCARA
-  #undef SLOWDOWN
-  #define QUICK_HOME
-#endif
-
  /**
  * Set the home position based on settings or manual overrides
  */
 #if ENABLED(MANUAL_X_HOME_POS)
   #define X_HOME_POS MANUAL_X_HOME_POS
 #elif ENABLED(BED_CENTER_AT_0_0)
-  #if MECH(DELTA)
-    #define X_HOME_POS 0
-  #else
-    #define X_HOME_POS ((X_MAX_LENGTH) * (X_HOME_DIR) * 0.5)
-  #endif
+  #define X_HOME_POS ((X_MAX_LENGTH) * (X_HOME_DIR) * 0.5)
 #else
-  #if MECH(DELTA)
-    #define X_HOME_POS (X_MIN_POS + (X_MAX_LENGTH) * 0.5)
-  #else
-    #define X_HOME_POS (X_HOME_DIR < 0 ? X_MIN_POS : X_MAX_POS)
-  #endif
+  #define X_HOME_POS (X_HOME_DIR < 0 ? X_MIN_POS : X_MAX_POS)
 #endif
 
 #if ENABLED(MANUAL_Y_HOME_POS)
   #define Y_HOME_POS MANUAL_Y_HOME_POS
 #elif ENABLED(BED_CENTER_AT_0_0)
-  #if MECH(DELTA)
-    #define Y_HOME_POS 0
-  #else
-    #define Y_HOME_POS ((Y_MAX_LENGTH) * (Y_HOME_DIR) * 0.5)
-  #endif
+  #define Y_HOME_POS ((Y_MAX_LENGTH) * (Y_HOME_DIR) * 0.5)
 #else
-  #if MECH(DELTA)
-    #define Y_HOME_POS (Y_MIN_POS + (Y_MAX_LENGTH) * 0.5)
-  #else
-    #define Y_HOME_POS (Y_HOME_DIR < 0 ? Y_MIN_POS : Y_MAX_POS)
-  #endif
+  #define Y_HOME_POS (Y_HOME_DIR < 0 ? Y_MIN_POS : Y_MAX_POS)
 #endif
 
 #if ENABLED(MANUAL_Z_HOME_POS)
@@ -286,17 +165,6 @@
   #define DEFAULT_KEEPALIVE_INTERVAL 2
 #endif
 
-// MS1 MS2 Stepper Driver Microstepping mode table
-#define MICROSTEP1 LOW,LOW
-#define MICROSTEP2 HIGH,LOW
-#define MICROSTEP4 LOW,HIGH
-#define MICROSTEP8 HIGH,HIGH
-#if MB(ALLIGATOR_R2) || MB(ALLIGATOR_R3)
-  #define MICROSTEP16 LOW,LOW
-  #define MICROSTEP32 HIGH,HIGH
-#else
-  #define MICROSTEP16 HIGH,HIGH
-#endif
 
 /**
  * SPI_SPEED
@@ -368,73 +236,59 @@
 #define HAS_EXTRUDERS       (EXTRUDERS > 0)
 
 // Steppers
-#define HAS_X_ENABLE        (PIN_EXISTS(X_ENABLE) || (AXIS_HAS_TMC(X) && ENABLED(TMC_SOFTWARE_DRIVER_ENABLE)))
+#define HAS_X_ENABLE        (PIN_EXISTS(X_ENABLE))
 #define HAS_X_DIR           (PIN_EXISTS(X_DIR))
 #define HAS_X_STEP          (PIN_EXISTS(X_STEP))
-#define HAS_X_MICROSTEPS    (PIN_EXISTS(X_MS1))
 
-#define HAS_X2_ENABLE       (PIN_EXISTS(X2_ENABLE) || (AXIS_HAS_TMC(X2) && ENABLED(TMC_SOFTWARE_DRIVER_ENABLE)))
+#define HAS_X2_ENABLE       (PIN_EXISTS(X2_ENABLE))
 #define HAS_X2_DIR          (PIN_EXISTS(X2_DIR))
 #define HAS_X2_STEP         (PIN_EXISTS(X2_STEP))
 
-#define HAS_Y_ENABLE        (PIN_EXISTS(Y_ENABLE) || (AXIS_HAS_TMC(Y) && ENABLED(TMC_SOFTWARE_DRIVER_ENABLE)))
+#define HAS_Y_ENABLE        (PIN_EXISTS(Y_ENABLE))
 #define HAS_Y_DIR           (PIN_EXISTS(Y_DIR))
 #define HAS_Y_STEP          (PIN_EXISTS(Y_STEP))
-#define HAS_Y_MICROSTEPS    (PIN_EXISTS(Y_MS1))
 
-#define HAS_Y2_ENABLE       (PIN_EXISTS(Y2_ENABLE) || (AXIS_HAS_TMC(Y2) && ENABLED(TMC_SOFTWARE_DRIVER_ENABLE)))
+#define HAS_Y2_ENABLE       (PIN_EXISTS(Y2_ENABLE))
 #define HAS_Y2_DIR          (PIN_EXISTS(Y2_DIR))
 #define HAS_Y2_STEP         (PIN_EXISTS(Y2_STEP))
 
-#define HAS_Z_ENABLE        (PIN_EXISTS(Z_ENABLE) || (AXIS_HAS_TMC(Z) && ENABLED(TMC_SOFTWARE_DRIVER_ENABLE)))
+#define HAS_Z_ENABLE        (PIN_EXISTS(Z_ENABLE))
 #define HAS_Z_DIR           (PIN_EXISTS(Z_DIR))
 #define HAS_Z_STEP          (PIN_EXISTS(Z_STEP))
-#define HAS_Z_MICROSTEPS    (PIN_EXISTS(Z_MS1))
 
-#define HAS_Z2_ENABLE       (PIN_EXISTS(Z2_ENABLE) || (AXIS_HAS_TMC(Z2) && ENABLED(TMC_SOFTWARE_DRIVER_ENABLE)))
+#define HAS_Z2_ENABLE       (PIN_EXISTS(Z2_ENABLE))
 #define HAS_Z2_DIR          (PIN_EXISTS(Z2_DIR))
 #define HAS_Z2_STEP         (PIN_EXISTS(Z2_STEP))
 
-#define HAS_Z3_ENABLE       (PIN_EXISTS(Z3_ENABLE) || (AXIS_HAS_TMC(Z3) && ENABLED(TMC_SOFTWARE_DRIVER_ENABLE)))
+#define HAS_Z3_ENABLE       (PIN_EXISTS(Z3_ENABLE))
 #define HAS_Z3_DIR          (PIN_EXISTS(Z3_DIR))
 #define HAS_Z3_STEP         (PIN_EXISTS(Z3_STEP))
 
 // Extruder steppers and solenoids
-#define HAS_E0_ENABLE       (PIN_EXISTS(E0_ENABLE) || (AXIS_HAS_TMC(E0) && ENABLED(TMC_SOFTWARE_DRIVER_ENABLE)))
+#define HAS_E0_ENABLE       (PIN_EXISTS(E0_ENABLE))
 #define HAS_E0_DIR          (PIN_EXISTS(E0_DIR))
 #define HAS_E0_STEP         (PIN_EXISTS(E0_STEP))
-#define HAS_E0_MICROSTEPS   (PIN_EXISTS(E0_MS1))
-#define HAS_SOLENOID_0      (PIN_EXISTS(SOL0))
 
-#define HAS_E1_ENABLE       (PIN_EXISTS(E1_ENABLE) || (AXIS_HAS_TMC(E1) && ENABLED(TMC_SOFTWARE_DRIVER_ENABLE)))
+#define HAS_E1_ENABLE       (PIN_EXISTS(E1_ENABLE))
 #define HAS_E1_DIR          (PIN_EXISTS(E1_DIR))
 #define HAS_E1_STEP         (PIN_EXISTS(E1_STEP))
-#define HAS_E1_MICROSTEPS   (PIN_EXISTS(E1_MS1))
-#define HAS_SOLENOID_1      (PIN_EXISTS(SOL1))
 
-#define HAS_E2_ENABLE       (PIN_EXISTS(E2_ENABLE) || (AXIS_HAS_TMC(E2) && ENABLED(TMC_SOFTWARE_DRIVER_ENABLE)))
+#define HAS_E2_ENABLE       (PIN_EXISTS(E2_ENABLE))
 #define HAS_E2_DIR          (PIN_EXISTS(E2_DIR))
 #define HAS_E2_STEP         (PIN_EXISTS(E2_STEP))
-#define HAS_E2_MICROSTEPS   (PIN_EXISTS(E2_MS1))
-#define HAS_SOLENOID_2      (PIN_EXISTS(SOL2))
 
-#define HAS_E3_ENABLE       (PIN_EXISTS(E3_ENABLE) || (AXIS_HAS_TMC(E3) && ENABLED(TMC_SOFTWARE_DRIVER_ENABLE)))
+#define HAS_E3_ENABLE       (PIN_EXISTS(E3_ENABLE))
 #define HAS_E3_DIR          (PIN_EXISTS(E3_DIR))
 #define HAS_E3_STEP         (PIN_EXISTS(E3_STEP))
-#define HAS_E3_MICROSTEPS   (PIN_EXISTS(E3_MS1))
-#define HAS_SOLENOID_3      (PIN_EXISTS(SOL3))
 
-#define HAS_E4_ENABLE       (PIN_EXISTS(E4_ENABLE) || (AXIS_HAS_TMC(E4) && ENABLED(TMC_SOFTWARE_DRIVER_ENABLE)))
+#define HAS_E4_ENABLE       (PIN_EXISTS(E4_ENABLE))
 #define HAS_E4_DIR          (PIN_EXISTS(E4_DIR))
 #define HAS_E4_STEP         (PIN_EXISTS(E4_STEP))
-#define HAS_E4_MICROSTEPS   (PIN_EXISTS(E4_MS1))
-#define HAS_SOLENOID_4      (PIN_EXISTS(SOL4))
 
-#define HAS_E5_ENABLE       (PIN_EXISTS(E5_ENABLE) || (AXIS_HAS_TMC(E5) && ENABLED(TMC_SOFTWARE_DRIVER_ENABLE)))
+#define HAS_E5_ENABLE       (PIN_EXISTS(E5_ENABLE))
 #define HAS_E5_DIR          (PIN_EXISTS(E5_DIR))
 #define HAS_E5_STEP         (PIN_EXISTS(E5_STEP))
-#define HAS_E5_MICROSTEPS   (PIN_EXISTS(E5_MS1))
-#define HAS_SOLENOID_5      (PIN_EXISTS(SOL5))
+
 
 // Extruder Encoder
 #define HAS_E0_ENC          (PIN_EXISTS(E0_ENC))
@@ -444,26 +298,6 @@
 #define HAS_E4_ENC          (PIN_EXISTS(E4_ENC))
 #define HAS_E5_ENC          (PIN_EXISTS(E5_ENC))
 
-#define HAS_SENSORLESS      (TMC_HAS_STALLGUARD && (ENABLED(SENSORLESS_HOMING) || ENABLED(Z_PROBE_SENSORLESS)))
-
-// Disable Z axis sensorless homing if a probe is used to home the Z axis
-#if HAS_SENSORLESS
-  #if HOMING_Z_WITH_PROBE
-    #undef Z_STALL_SENSITIVITY
-    #define Z_STALL_SENSITIVITY 0
-  #endif
-  #define X_HAS_SENSORLESS  (AXIS_HAS_STALLGUARD(X) && ENABLED(X_STALL_SENSITIVITY))
-  #define Y_HAS_SENSORLESS  (AXIS_HAS_STALLGUARD(Y) && ENABLED(Y_STALL_SENSITIVITY))
-  #define Z_HAS_SENSORLESS  (AXIS_HAS_STALLGUARD(Z) && ENABLED(Z_STALL_SENSITIVITY))
-  #define X2_HAS_SENSORLESS (AXIS_HAS_STALLGUARD(X2) && ENABLED(X_STALL_SENSITIVITY))
-  #define Y2_HAS_SENSORLESS (AXIS_HAS_STALLGUARD(Y2) && ENABLED(Y_STALL_SENSITIVITY))
-  #define Z2_HAS_SENSORLESS (AXIS_HAS_STALLGUARD(Z2) && ENABLED(Z_STALL_SENSITIVITY))
-  #define Z3_HAS_SENSORLESS (AXIS_HAS_STALLGUARD(Z3) && ENABLED(Z_STALL_SENSITIVITY))
-#else
-  #define X_STALL_SENSITIVITY 0
-  #define Y_STALL_SENSITIVITY 0
-  #define Z_STALL_SENSITIVITY 0
-#endif
 
 // Endstops and bed probe
 #define HAS_X_MIN           (PIN_EXISTS(X_MIN))
@@ -562,31 +396,6 @@
 #define HAS_BUZZER          (PIN_EXISTS(BEEPER) || ENABLED(LCD_USE_I2C_BUZZER))
 #define HAS_CASE_LIGHT      (ENABLED(CASE_LIGHT) && (PIN_EXISTS(CASE_LIGHT) || ENABLED(CASE_LIGHT_USE_NEOPIXEL)))
 #define HAS_RESUME_CONTINUE (HAS_LCD || ENABLED(EMERGENCY_PARSER))
-
-// Digital control
-#define HAS_MICROSTEPS      (HAS_X_MICROSTEPS     \
-                            || HAS_Y_MICROSTEPS   \
-                            || HAS_Z_MICROSTEPS   \
-                            || HAS_E0_MICROSTEPS  \
-                            || HAS_E1_MICROSTEPS  \
-                            || HAS_E2_MICROSTEPS  \
-                            || HAS_E3_MICROSTEPS  \
-                            || HAS_E4_MICROSTEPS  \
-                            || HAS_E5_MICROSTEPS)
-#define HAS_STEPPER_RESET   (PIN_EXISTS(STEPPER_RESET))
-#define HAS_DIGIPOTSS       (PIN_EXISTS(DIGIPOTSS))
-#define HAS_MOTOR_CURRENT_PWM_XY  (PIN_EXISTS(MOTOR_CURRENT_PWM_XY))
-#define HAS_MOTOR_CURRENT_PWM     (PIN_EXISTS(MOTOR_CURRENT_PWM_XY) || PIN_EXISTS(MOTOR_CURRENT_PWM_Z) || PIN_EXISTS(MOTOR_CURRENT_PWM_E))
-
-// Laser support
-#define HAS_LASER_POWER     (PIN_EXISTS(LASER_PWR))
-#define HAS_LASER_PWM       (PIN_EXISTS(LASER_PWM))
-
-// CNC
-#define HAS_CNCROUTER       (PIN_EXISTS(CNCROUTER))
-
-// Multi Mode
-#define HAS_MULTI_MODE      (ENABLED(LASER) || ENABLED(CNCROUTER) || ENABLED(MILLING) || ENABLED(PICK_AND_PLACE) || ENABLED(SOLDER) || ENABLED(PLOTTER))
 
 // MK Multi tool system
 #define HAS_MKMULTI_TOOLS   (ENABLED(MKSE6) || ENABLED(MKR4) || ENABLED(MKR6) || ENABLED(MKR12) || ENABLED(DONDOLO_SINGLE_MOTOR))
@@ -772,7 +581,6 @@
 /**
  * Set granular options based on the specific type of leveling
  */
-#define UBL_DELTA               (ENABLED(AUTO_BED_LEVELING_UBL) && MECH(DELTA))
 #define ABL_PLANAR              (ENABLED(AUTO_BED_LEVELING_LINEAR) || ENABLED(AUTO_BED_LEVELING_3POINT))
 #define ABL_GRID                (ENABLED(AUTO_BED_LEVELING_LINEAR) || ENABLED(AUTO_BED_LEVELING_BILINEAR))
 #define OLD_ABL                 (ABL_PLANAR || ABL_GRID)
@@ -795,26 +603,12 @@
 
 /**
  * Bed Probing rectangular bounds
- * These can be further constrained in code for Delta and SCARA
- */
-#if MECH(DELTA)
-  #define MIN_PROBE_X -(mechanics.data.print_radius)
-  #define MAX_PROBE_X  (mechanics.data.print_radius)
-  #define MIN_PROBE_Y -(mechanics.data.print_radius)
-  #define MAX_PROBE_Y  (mechanics.data.print_radius)
-#elif IS_SCARA
-  #define SCARA_PRINTABLE_RADIUS (SCARA_LINKAGE_1 + SCARA_LINKAGE_2)
-  #define MIN_PROBE_X (X_CENTER - (SCARA_PRINTABLE_RADIUS) + (MIN_PROBE_EDGE))
-  #define MAX_PROBE_X (Y_CENTER - (SCARA_PRINTABLE_RADIUS) + (MIN_PROBE_EDGE))
-  #define MIN_PROBE_Y (X_CENTER + (SCARA_PRINTABLE_RADIUS) - (MIN_PROBE_EDGE))
-  #define MAX_PROBE_Y (Y_CENTER + (SCARA_PRINTABLE_RADIUS) - (MIN_PROBE_EDGE))
-#else
-  // Boundaries for Cartesian probing based on bed limits
-  #define MIN_PROBE_X (MAX(X_MIN_BED + (MIN_PROBE_EDGE), X_MIN_POS + probe.data.offset[X_AXIS]))
-  #define MIN_PROBE_Y (MAX(Y_MIN_BED + (MIN_PROBE_EDGE), Y_MIN_POS + probe.data.offset[Y_AXIS]))
-  #define MAX_PROBE_X (MIN(X_MAX_BED - (MIN_PROBE_EDGE), X_MAX_POS + probe.data.offset[X_AXIS]))
-  #define MAX_PROBE_Y (MIN(Y_MAX_BED - (MIN_PROBE_EDGE), Y_MAX_POS + probe.data.offset[Y_AXIS]))
-#endif
+  */
+// Boundaries for Cartesian probing based on bed limits
+#define MIN_PROBE_X (MAX(X_MIN_BED + (MIN_PROBE_EDGE), X_MIN_POS + probe.data.offset[X_AXIS]))
+#define MIN_PROBE_Y (MAX(Y_MIN_BED + (MIN_PROBE_EDGE), Y_MIN_POS + probe.data.offset[Y_AXIS]))
+#define MAX_PROBE_X (MIN(X_MAX_BED - (MIN_PROBE_EDGE), X_MAX_POS + probe.data.offset[X_AXIS]))
+#define MAX_PROBE_Y (MIN(Y_MAX_BED - (MIN_PROBE_EDGE), Y_MAX_POS + probe.data.offset[Y_AXIS]))
 
 /**
  * Set GRID MAX POINTS
@@ -1048,13 +842,6 @@
 #endif
 #define QUIET_PROBING       (HAS_BED_PROBE && (ENABLED(PROBING_HEATERS_OFF) || ENABLED(PROBING_FANS_OFF)))
 
-#if HAS_CNCROUTER
-  #if ENABLED(INVERTED_CNCROUTER_PIN)
-    #define WRITE_CNCROUTER(v) WRITE(CNCROUTER_PIN, !v)
-  #else
-    #define WRITE_CNCROUTER(v) WRITE(CNCROUTER_PIN, v)
-  #endif
-#endif
 
 /**
  * Multiextruder with relè system

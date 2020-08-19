@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -41,7 +41,162 @@
  * along with Grbl. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "stepper_indirection.h"
+
+void restore_stepper_drivers();  // Called by PSU_ON
+void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
+
+#define X_ENABLE_INIT()           SET_OUTPUT(X_ENABLE_PIN)
+#define X_ENABLE_WRITE(STATE)     WRITE(X_ENABLE_PIN,STATE)
+#define X_ENABLE_READ()           READ(X_ENABLE_PIN)
+#define X_DIR_INIT()              SET_OUTPUT(X_DIR_PIN)
+#define X_DIR_WRITE(STATE)        WRITE(X_DIR_PIN,STATE)
+#define X_DIR_READ()              READ(X_DIR_PIN)
+#define X_STEP_INIT()             SET_OUTPUT(X_STEP_PIN)
+#define X_STEP_WRITE(STATE)       WRITE(X_STEP_PIN,STATE)
+#define X_STEP_READ()             READ(X_STEP_PIN)
+
+
+#define Y_ENABLE_INIT()           SET_OUTPUT(Y_ENABLE_PIN)
+#define Y_ENABLE_WRITE(STATE)     WRITE(Y_ENABLE_PIN,STATE)
+#define Y_ENABLE_READ()           READ(Y_ENABLE_PIN)
+#define Y_DIR_INIT()              SET_OUTPUT(Y_DIR_PIN)
+#define Y_DIR_WRITE(STATE)        WRITE(Y_DIR_PIN,STATE)
+#define Y_DIR_READ()              READ(Y_DIR_PIN)
+#define Y_STEP_INIT()             SET_OUTPUT(Y_STEP_PIN)
+#define Y_STEP_WRITE(STATE)       WRITE(Y_STEP_PIN,STATE)
+#define Y_STEP_READ()             READ(Y_STEP_PIN)
+
+
+#define Z_ENABLE_INIT()           SET_OUTPUT(Z_ENABLE_PIN)
+#define Z_ENABLE_WRITE(STATE)     WRITE(Z_ENABLE_PIN,STATE)
+#define Z_ENABLE_READ()           READ(Z_ENABLE_PIN)
+#define Z_DIR_INIT()              SET_OUTPUT(Z_DIR_PIN)
+#define Z_DIR_WRITE(STATE)        WRITE(Z_DIR_PIN,STATE)
+#define Z_DIR_READ()              READ(Z_DIR_PIN)
+#define Z_STEP_INIT()             SET_OUTPUT(Z_STEP_PIN)
+#define Z_STEP_WRITE(STATE)       WRITE(Z_STEP_PIN,STATE)
+#define Z_STEP_READ()             READ(Z_STEP_PIN)
+
+
+#define X2_ENABLE_INIT()           SET_OUTPUT(X2_ENABLE_PIN)
+#define X2_ENABLE_WRITE(STATE)     WRITE(X2_ENABLE_PIN,STATE)
+#define X2_ENABLE_READ()           READ(X2_ENABLE_PIN)
+#define X2_DIR_INIT()              SET_OUTPUT(X2_DIR_PIN)
+#define X2_DIR_WRITE(STATE)        WRITE(X2_DIR_PIN,STATE)
+#define X2_DIR_READ()              READ(X2_DIR_PIN)
+#define X2_STEP_INIT()             SET_OUTPUT(X2_STEP_PIN)
+#define X2_STEP_WRITE(STATE)       WRITE(X2_STEP_PIN,STATE)
+#define X2_STEP_READ()             READ(X2_STEP_PIN)
+
+
+#define Y2_ENABLE_INIT()           SET_OUTPUT(Y2_ENABLE_PIN)
+#define Y2_ENABLE_WRITE(STATE)     WRITE(Y2_ENABLE_PIN,STATE)
+#define Y2_ENABLE_READ()           READ(Y2_ENABLE_PIN)
+#define Y2_DIR_INIT()              SET_OUTPUT(Y2_DIR_PIN)
+#define Y2_DIR_WRITE(STATE)        WRITE(Y2_DIR_PIN,STATE)
+#define Y2_DIR_READ()              READ(Y2_DIR_PIN)
+#define Y2_STEP_INIT()             SET_OUTPUT(Y2_STEP_PIN)
+#define Y2_STEP_WRITE(STATE)       WRITE(Y2_STEP_PIN,STATE)
+#define Y2_STEP_READ()             READ(Y2_STEP_PIN)
+
+
+#define Z2_ENABLE_INIT()           SET_OUTPUT(Z2_ENABLE_PIN)
+#define Z2_ENABLE_WRITE(STATE)     WRITE(Z2_ENABLE_PIN,STATE)
+#define Z2_ENABLE_READ()           READ(Z2_ENABLE_PIN)
+#define Z2_DIR_INIT()              SET_OUTPUT(Z2_DIR_PIN)
+#define Z2_DIR_WRITE(STATE)        WRITE(Z2_DIR_PIN,STATE)
+#define Z2_DIR_READ()              READ(Z2_DIR_PIN)
+#define Z2_STEP_INIT()             SET_OUTPUT(Z2_STEP_PIN)
+#define Z2_STEP_WRITE(STATE)       WRITE(Z2_STEP_PIN,STATE)
+#define Z2_STEP_READ()             READ(Z2_STEP_PIN)
+
+
+#define E0_ENABLE_INIT()           SET_OUTPUT(E0_ENABLE_PIN)
+#define E0_ENABLE_WRITE(STATE)     WRITE(E0_ENABLE_PIN,STATE)
+#define E0_ENABLE_READ()           READ(E0_ENABLE_PIN)
+#define E0_DIR_INIT()              SET_OUTPUT(E0_DIR_PIN)
+#define E0_DIR_WRITE(STATE)        WRITE(E0_DIR_PIN,STATE)
+#define E0_DIR_READ()              READ(E0_DIR_PIN)
+#define E0_STEP_INIT()             SET_OUTPUT(E0_STEP_PIN)
+#define E0_STEP_WRITE(STATE)       WRITE(E0_STEP_PIN,STATE)
+#define E0_STEP_READ()             READ(E0_STEP_PIN)
+
+
+
+#define E1_ENABLE_INIT()           SET_OUTPUT(E1_ENABLE_PIN)
+#define E1_ENABLE_WRITE(STATE)     WRITE(E1_ENABLE_PIN,STATE)
+#define E1_ENABLE_READ()           READ(E1_ENABLE_PIN)
+#define E1_DIR_INIT()              SET_OUTPUT(E1_DIR_PIN)
+#define E1_DIR_WRITE(STATE)        WRITE(E1_DIR_PIN,STATE)
+#define E1_DIR_READ()              READ(E1_DIR_PIN)
+#define E1_STEP_INIT()             SET_OUTPUT(E1_STEP_PIN)
+#define E1_STEP_WRITE(STATE)       WRITE(E1_STEP_PIN,STATE)
+#define E1_STEP_READ()             READ(E1_STEP_PIN)
+
+
+#define E2_ENABLE_INIT()           SET_OUTPUT(E2_ENABLE_PIN)
+#define E2_ENABLE_WRITE(STATE)     WRITE(E2_ENABLE_PIN,STATE)
+#define E2_ENABLE_READ()           READ(E2_ENABLE_PIN)
+#define E2_DIR_INIT()              SET_OUTPUT(E2_DIR_PIN)
+#define E2_DIR_WRITE(STATE)        WRITE(E2_DIR_PIN,STATE)
+#define E2_DIR_READ()              READ(E2_DIR_PIN)
+#define E2_STEP_INIT()             SET_OUTPUT(E2_STEP_PIN)
+#define E2_STEP_WRITE(STATE)       WRITE(E2_STEP_PIN,STATE)
+#define E2_STEP_READ()             READ(E2_STEP_PIN)
+
+
+#define E3_ENABLE_INIT()           SET_OUTPUT(E3_ENABLE_PIN)
+#define E3_ENABLE_WRITE(STATE)     WRITE(E3_ENABLE_PIN,STATE)
+#define E3_ENABLE_READ()           READ(E3_ENABLE_PIN)
+#define E3_DIR_INIT()              SET_OUTPUT(E3_DIR_PIN)
+#define E3_DIR_WRITE(STATE)        WRITE(E3_DIR_PIN,STATE)
+#define E3_DIR_READ()              READ(E3_DIR_PIN)
+#define E3_STEP_INIT()             SET_OUTPUT(E3_STEP_PIN)
+#define E3_STEP_WRITE(STATE)       WRITE(E3_STEP_PIN,STATE)
+#define E3_STEP_READ()             READ(E3_STEP_PIN)
+
+
+#define E4_ENABLE_INIT()           SET_OUTPUT(E4_ENABLE_PIN)
+#define E4_ENABLE_WRITE(STATE)     WRITE(E4_ENABLE_PIN,STATE)
+#define E4_ENABLE_READ()           READ(E4_ENABLE_PIN)
+#define E4_DIR_INIT()              SET_OUTPUT(E4_DIR_PIN)
+#define E4_DIR_WRITE(STATE)        WRITE(E4_DIR_PIN,STATE)
+#define E4_DIR_READ()              READ(E4_DIR_PIN)
+#define E4_STEP_INIT()             SET_OUTPUT(E4_STEP_PIN)
+#define E4_STEP_WRITE(STATE)       WRITE(E4_STEP_PIN,STATE)
+#define E4_STEP_READ()             READ(E4_STEP_PIN)
+
+
+#define E5_ENABLE_INIT()           SET_OUTPUT(E5_ENABLE_PIN)
+#define E5_ENABLE_WRITE(STATE)     WRITE(E5_ENABLE_PIN,STATE)
+#define E5_ENABLE_READ()           READ(E5_ENABLE_PIN)
+#define E5_DIR_INIT()              SET_OUTPUT(E5_DIR_PIN)
+#define E5_DIR_WRITE(STATE)        WRITE(E5_DIR_PIN,STATE)
+#define E5_DIR_READ()              READ(E5_DIR_PIN)
+#define E5_STEP_INIT()             SET_OUTPUT(E5_STEP_PIN)
+#define E5_STEP_WRITE(STATE)       WRITE(E5_STEP_PIN,STATE)
+#define E5_STEP_READ()             READ(E5_STEP_PIN)
+
+/**
+ * Extruder Step for the single E axis
+ */
+#if DRIVER_EXTRUDERS > 5
+  #define E_STEP_WRITE(E,V)     do{ switch (E) { case 0: E0_STEP_WRITE(V); break; case 1: E1_STEP_WRITE(V); break; case 2: E2_STEP_WRITE(V); break; case 3: E3_STEP_WRITE(V); break; case 4: E4_STEP_WRITE(V); break; case 5: E5_STEP_WRITE(V); } }while(0)
+#elif DRIVER_EXTRUDERS > 4
+  #define E_STEP_WRITE(E,V)     do{ switch (E) { case 0: E0_STEP_WRITE(V); break; case 1: E1_STEP_WRITE(V); break; case 2: E2_STEP_WRITE(V); break; case 3: E3_STEP_WRITE(V); break; case 4: E4_STEP_WRITE(V); } }while(0)
+#elif DRIVER_EXTRUDERS > 3
+  #define E_STEP_WRITE(E,V)     do{ switch (E) { case 0: E0_STEP_WRITE(V); break; case 1: E1_STEP_WRITE(V); break; case 2: E2_STEP_WRITE(V); break; case 3: E3_STEP_WRITE(V); } }while(0)
+#elif DRIVER_EXTRUDERS > 2
+  #define E_STEP_WRITE(E,V)     do{ switch (E) { case 0: E0_STEP_WRITE(V); break; case 1: E1_STEP_WRITE(V); break; case 2: E2_STEP_WRITE(V); } }while(0)
+#elif DRIVER_EXTRUDERS > 1
+  #if ENABLED(DUAL_X_CARRIAGE)
+    #define E_STEP_WRITE(E,V)   do{ if (mechanics.extruder_duplication_enabled) { E0_STEP_WRITE(V); E1_STEP_WRITE(V); } else if ((E) == 0) { E0_STEP_WRITE(V); } else { E1_STEP_WRITE(V); } }while(0)
+  #else
+    #define E_STEP_WRITE(E,V)   do{ if (E == 0) { E0_STEP_WRITE(V); } else { E1_STEP_WRITE(V); } }while(0)
+  #endif
+#elif DRIVER_EXTRUDERS > 0
+  #define E_STEP_WRITE(E,V)   E0_STEP_WRITE(V)
+#endif // DRIVER_EXTRUDERS
 
 class Stepper {
 
@@ -146,19 +301,6 @@ class Stepper {
      */
     static int8_t count_direction[NUM_AXIS];
 
-    #if PIN_EXISTS(MOTOR_CURRENT_PWM_XY)
-      #ifndef PWM_MOTOR_CURRENT
-        #define PWM_MOTOR_CURRENT DEFAULT_PWM_MOTOR_CURRENT
-      #endif
-      static constexpr int motor_current_setting[3] = PWM_MOTOR_CURRENT;
-    #endif
-
-    #if ENABLED(LASER)
-      static int32_t delta_error_laser;
-      #if ENABLED(LASER_RASTER)
-        static int counter_raster;
-      #endif
-    #endif
 
   public: /** Public Function */
 
@@ -284,19 +426,6 @@ class Stepper {
      */
     static int32_t triggered_position(const AxisEnum axis);
 
-    #if HAS_DIGIPOTSS
-      static void digitalPotWrite(int address, int value);
-    #endif
-
-    #if HAS_DIGIPOTSS || HAS_MOTOR_CURRENT_PWM
-      static void digipot_current(uint8_t driver, int current);
-    #endif
-
-    #if HAS_MICROSTEPS
-      static void microstep_ms(uint8_t driver, int8_t ms1, int8_t ms2);
-      static void microstep_mode(uint8_t driver, uint8_t stepping);
-      static void microstep_readings();
-    #endif
 
     #if HAS_MULTI_ENDSTOP
       FORCE_INLINE static void set_separate_multi_axis(const bool state) { separate_multi_axis = state; }
@@ -330,10 +459,6 @@ class Stepper {
     }
     FORCE_INLINE static bool isStepDir(const AxisEnum axis) { return TEST(direction_flag._word, axis); }
 
-    #if ENABLED(LASER)
-      static bool laser_status();
-      FORCE_INLINE static float laser_intensity() { return current_block->laser_intensity; }
-    #endif
 
   private: /** Private Function */
 
@@ -404,28 +529,8 @@ class Stepper {
       static void babystep(const AxisEnum axis, const bool direction); // perform a short step with a single stepper motor, outside of any convention
     #endif
 
-    #if HAS_DIGIPOTSS || HAS_MOTOR_CURRENT_PWM
-      static void digipot_init();
-    #endif
-
-    #if HAS_MICROSTEPS
-      static void microstep_init();
-    #endif
-
     #if HAS_EXT_ENCODER
       static void test_extruder_encoder();
-    #endif
-
-    #if HAS_STEPPER_RESET
-      /**
-       * Stepper Reset (RigidBoard, et.al.)
-       */
-      FORCE_INLINE static void disableStepperDrivers() {
-        OUT_WRITE(STEPPER_RESET_PIN, LOW);  // drive it down to hold in reset motor driver chips
-      }
-      FORCE_INLINE static void enableStepperDrivers() {
-        SET_INPUT(STEPPER_RESET_PIN);       // set to input, which allows it to be pulled high by pullups
-      }
     #endif
 
 };

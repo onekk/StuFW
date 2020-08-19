@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -187,11 +187,6 @@
 
         planner.synchronize();
 
-        #if ENABLED(EXT_SOLENOID)
-          disable_all_solenoids();
-          enable_solenoid_on_active_extruder();
-        #endif
-
         mechanics.feedrate_mm_s = old_feedrate_mm_s;
 
       #else // HOTENDS <= 1
@@ -230,66 +225,8 @@
     SERIAL_EOL();
   }
 
-  #if ENABLED(EXT_SOLENOID)
 
-    void Tools::enable_solenoid(const uint8_t e) {
-      switch(e) {
-        case 0:
-          OUT_WRITE(SOL0_PIN, HIGH);
-          break;
-          #if HAS_SOLENOID_1 && EXTRUDERS > 1
-            case 1:
-              OUT_WRITE(SOL1_PIN, HIGH);
-              break;
-          #endif
-          #if HAS_SOLENOID_2 && EXTRUDERS > 2
-            case 2:
-              OUT_WRITE(SOL2_PIN, HIGH);
-              break;
-          #endif
-          #if HAS_SOLENOID_3 && EXTRUDERS > 3
-            case 3:
-              OUT_WRITE(SOL3_PIN, HIGH);
-              break;
-          #endif
-          #if HAS_SOLENOID_4 && EXTRUDERS > 4
-            case 4:
-              OUT_WRITE(SOL4_PIN, HIGH);
-              break;
-          #endif
-          #if HAS_SOLENOID_5 && EXTRUDERS > 5
-            case 5:
-              OUT_WRITE(SOL5_PIN, HIGH);
-              break;
-          #endif
-        default:
-          SERIAL_LM(ER, MSG_INVALID_SOLENOID);
-          break;
-      }
-    }
 
-    void Tools::enable_solenoid_on_active_extruder() { enable_solenoid(active_extruder); }
-
-    void Tools::disable_all_solenoids() {
-      OUT_WRITE(SOL0_PIN, LOW);
-      #if HAS_SOLENOID_1 && EXTRUDERS > 1
-        OUT_WRITE(SOL1_PIN, LOW);
-      #endif
-      #if HAS_SOLENOID_2 && EXTRUDERS > 2
-        OUT_WRITE(SOL2_PIN, LOW);
-      #endif
-      #if HAS_SOLENOID_3 && EXTRUDERS > 3
-        OUT_WRITE(SOL3_PIN, LOW);
-      #endif
-      #if HAS_SOLENOID_4 && EXTRUDERS > 4
-        OUT_WRITE(SOL4_PIN, LOW);
-      #endif
-      #if HAS_SOLENOID_5 && EXTRUDERS > 5
-        OUT_WRITE(SOL5_PIN, LOW);
-      #endif
-    }
-
-  #endif
 
   void Tools::invalid_extruder_error(const uint8_t e) {
     SERIAL_SMV(ER, "T", (int)e);

@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -28,7 +28,6 @@
 
 #if HAS_LCD_MENU
 
-void menu_tmc();
 
 #if ENABLED(WORKSPACE_OFFSETS)
   //
@@ -278,11 +277,9 @@ void menu_advanced_temperature() {
 #if DISABLED(SLIM_LCD_MENUS)
 
   void _reset_acceleration_rates() {
-    #if MECH(DELTA)
-      mechanics.data.max_acceleration_mm_per_s2[Y_AXIS] = mechanics.data.max_acceleration_mm_per_s2[Z_AXIS] = mechanics.data.max_acceleration_mm_per_s2[X_AXIS];
-    #endif
     planner.reset_acceleration_rates();
   }
+
   #if EXTRUDERS > 1
     void _reset_e_acceleration_rate(const uint8_t e) { if (e == tools.active_extruder) _reset_acceleration_rates(); }
     void _reset_e0_acceleration_rate() { _reset_e_acceleration_rate(0); }
@@ -302,11 +299,9 @@ void menu_advanced_temperature() {
   #endif // EXTRUDERS > 1
 
   void _mechanics_refresh_positioning() {
-    #if MECH(DELTA)
-      mechanics.data.axis_steps_per_mm[Y_AXIS] = mechanics.data.axis_steps_per_mm[Z_AXIS] = mechanics.data.axis_steps_per_mm[X_AXIS];
-    #endif
     planner.refresh_positioning();
   }
+
   #if EXTRUDERS > 1
     void _mechanics_refresh_e_positioning(const uint8_t e) {
       if (e == tools.active_extruder)
@@ -330,11 +325,6 @@ void menu_advanced_temperature() {
     #endif // EXTRUDERS > 2
   #endif // EXTRUDERS > 1
 
-  #if MECH(DELTA)
-    void _mechanics_set_feedrate() {
-      mechanics.data.max_feedrate_mm_s[Y_AXIS] = mechanics.data.max_feedrate_mm_s[Z_AXIS] = mechanics.data.max_feedrate_mm_s[X_AXIS];
-    }
-  #endif
 
   // M203 / M205 Velocity options
   void menu_advanced_velocity() {
@@ -342,13 +332,9 @@ void menu_advanced_temperature() {
     MENU_BACK(MSG_ADVANCED_SETTINGS);
 
     // M203 Max Feedrate
-    #if MECH(DELTA)
-      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float3, MSG_VMAX, &mechanics.data.max_feedrate_mm_s[X_AXIS], 1, 999, _mechanics_set_feedrate);
-    #else
-      MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_VMAX MSG_X, &mechanics.data.max_feedrate_mm_s[X_AXIS], 1, 999);
-      MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_VMAX MSG_Y, &mechanics.data.max_feedrate_mm_s[Y_AXIS], 1, 999);
-      MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_VMAX MSG_Z, &mechanics.data.max_feedrate_mm_s[Z_AXIS], 1, 999);
-    #endif
+    MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_VMAX MSG_X, &mechanics.data.max_feedrate_mm_s[X_AXIS], 1, 999);
+    MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_VMAX MSG_Y, &mechanics.data.max_feedrate_mm_s[Y_AXIS], 1, 999);
+    MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_VMAX MSG_Z, &mechanics.data.max_feedrate_mm_s[Z_AXIS], 1, 999);
 
     #if EXTRUDERS > 1
       MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_VMAX MSG_E, &mechanics.data.max_feedrate_mm_s[E_AXIS + tools.active_extruder], 1, 999);
@@ -412,13 +398,9 @@ void menu_advanced_temperature() {
     MENU_MULTIPLIER_ITEM_EDIT(float5, MSG_A_TRAVEL, &mechanics.data.travel_acceleration, 100, 99000);
 
     // M201 settings
-    #if MECH(DELTA)
-      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX, &mechanics.data.max_acceleration_mm_per_s2[X_AXIS], 100, 99000, _reset_acceleration_rates);
-    #else
-      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_X, &mechanics.data.max_acceleration_mm_per_s2[X_AXIS], 100, 99000, _reset_acceleration_rates);
-      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_Y, &mechanics.data.max_acceleration_mm_per_s2[Y_AXIS], 100, 99000, _reset_acceleration_rates);
-      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_Z, &mechanics.data.max_acceleration_mm_per_s2[Z_AXIS], 10, 99000, _reset_acceleration_rates);
-    #endif
+    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_X, &mechanics.data.max_acceleration_mm_per_s2[X_AXIS], 100, 99000, _reset_acceleration_rates);
+    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_Y, &mechanics.data.max_acceleration_mm_per_s2[Y_AXIS], 100, 99000, _reset_acceleration_rates);
+    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_Z, &mechanics.data.max_acceleration_mm_per_s2[Z_AXIS], 10, 99000, _reset_acceleration_rates);
 
     #if EXTRUDERS > 1
       MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_E, &mechanics.data.max_acceleration_mm_per_s2[E_AXIS + tools.active_extruder], 100, 99000, _reset_acceleration_rates);
@@ -463,13 +445,9 @@ void menu_advanced_temperature() {
     #endif
 
     #if HAS_CLASSIC_JERK
-      #if MECH(DELTA)
-        MENU_ITEM_EDIT_CALLBACK(float3, MSG_JERK, &mechanics.data.max_jerk[X_AXIS], 1, 990, _mechanics_set_jerk);
-      #else
-        MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_VA_JERK, &mechanics.data.max_jerk[X_AXIS], 1, 990);
-        MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_VB_JERK, &mechanics.data.max_jerk[Y_AXIS], 1, 990);
-        MENU_MULTIPLIER_ITEM_EDIT(float52sign, MSG_VC_JERK, &mechanics.data.max_jerk[Z_AXIS], 0.1, 990);
-      #endif
+      MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_VA_JERK, &mechanics.data.max_jerk[X_AXIS], 1, 990);
+      MENU_MULTIPLIER_ITEM_EDIT(float3, MSG_VB_JERK, &mechanics.data.max_jerk[Y_AXIS], 1, 990);
+      MENU_MULTIPLIER_ITEM_EDIT(float52sign, MSG_VC_JERK, &mechanics.data.max_jerk[Z_AXIS], 0.1, 990);
 
       #if DISABLED(JUNCTION_DEVIATION) || DISABLED(LIN_ADVANCE)
         #if EXTRUDERS > 1
@@ -502,13 +480,9 @@ void menu_advanced_temperature() {
     START_MENU();
     MENU_BACK(MSG_ADVANCED_SETTINGS);
 
-    #if MECH(DELTA)
-      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_STEPS_PER_MM, &mechanics.data.axis_steps_per_mm[X_AXIS], 5, 9999, _mechanics_refresh_positioning);
-    #else
-      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_ASTEPS, &mechanics.data.axis_steps_per_mm[X_AXIS], 5, 9999, _mechanics_refresh_positioning);
-      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_BSTEPS, &mechanics.data.axis_steps_per_mm[Y_AXIS], 5, 9999, _mechanics_refresh_positioning);
-      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_CSTEPS, &mechanics.data.axis_steps_per_mm[Z_AXIS], 5, 9999, _mechanics_refresh_positioning);
-    #endif
+     MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_ASTEPS, &mechanics.data.axis_steps_per_mm[X_AXIS], 5, 9999, _mechanics_refresh_positioning);
+    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_BSTEPS, &mechanics.data.axis_steps_per_mm[Y_AXIS], 5, 9999, _mechanics_refresh_positioning);
+    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_CSTEPS, &mechanics.data.axis_steps_per_mm[Z_AXIS], 5, 9999, _mechanics_refresh_positioning);
 
     #if EXTRUDERS > 1
       MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float62, MSG_ESTEPS, &mechanics.data.axis_steps_per_mm[E_AXIS + tools.active_extruder], 5, 9999, _mechanics_refresh_positioning);
@@ -590,9 +564,6 @@ void menu_advanced_settings() {
 
   #endif // !SLIM_LCD_MENUS
 
-  #if HAS_TRINAMIC
-    MENU_ITEM(submenu, MSG_TMC_DRIVERS, menu_tmc);
-  #endif
 
   if (printer.mode == PRINTER_MODE_FFF) {
     MENU_ITEM(submenu, MSG_TEMPERATURE, menu_advanced_temperature);

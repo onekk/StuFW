@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -40,17 +40,12 @@
   + (HAS_Z_SERVO_PROBE && DISABLED(BLTOUCH))  \
   + ENABLED(BLTOUCH)                          \
   + ENABLED(Z_PROBE_ALLEN_KEY)                \
-  + ENABLED(Z_PROBE_SLED)                     \
-  + ENABLED(Z_PROBE_SENSORLESS)
-  #error "DEPENDENCY ERROR: Please enable only one probe: PROBE_MANUALLY, Z_PROBE_FIX_MOUNTED, Z Servo, BLTOUCH, Z_PROBE_ALLEN_KEY, Z_PROBE_SLED, or Z_PROBE_SENSORLESS."
+  + ENABLED(Z_PROBE_SLED)
+  #error "DEPENDENCY ERROR: Please enable only one probe: PROBE_MANUALLY, Z_PROBE_FIX_MOUNTED, Z Servo, BLTOUCH, Z_PROBE_ALLEN_KEY, Z_PROBE_SLED."
 #endif
 
 #if HAS_BED_PROBE
 
-  // Z_PROBE_SLED is incompatible with DELTA
-  #if ENABLED(Z_PROBE_SLED) && MECH(DELTA)
-    #error "DEPENDENCY ERROR: You cannot use Z_PROBE_SLED with DELTA."
-  #endif
 
   // NUM_SERVOS is required for a Z servo probe
   #if HAS_Z_SERVO_PROBE
@@ -62,17 +57,10 @@
   #endif
 
   // Require pin options and pins to be defined
-  #if ENABLED(Z_PROBE_SENSORLESS)
-    #if MECH(DELTA) && (!AXIS_HAS_STALLGUARD(X) || !AXIS_HAS_STALLGUARD(Y) || !AXIS_HAS_STALLGUARD(Z))
-      #error "Z_PROBE_SENSORLESS requires TMC2130 drivers on X, Y, and Z."
-    #elif !AXIS_HAS_STALLGUARD(Z)
-      #error "Z_PROBE_SENSORLESS requires a TMC2130 driver on Z."
-    #endif
-  #else
-    #if DISABLED(PROBE_MANUALLY) && !PROBE_PIN_CONFIGURED
-      #error "DEPENDENCY ERROR: A probe needs a pin! Use Z_MIN_PIN or Z_PROBE_PIN."
-    #endif
+  #if DISABLED(PROBE_MANUALLY) && !PROBE_PIN_CONFIGURED
+    #error "DEPENDENCY ERROR: A probe needs a pin! Use Z_MIN_PIN or Z_PROBE_PIN."
   #endif
+
 
   // Make sure Z raise values are set
   #if DISABLED(Z_PROBE_DEPLOY_HEIGHT)
@@ -90,10 +78,6 @@
   // Require some kind of probe for bed leveling and probe testing
   #if OLD_ABL
     #error "DEPENDENCY ERROR: Auto Bed Leveling requires a probe! Define a PROBE_MANUALLY, Z Servo, BLTOUCH, Z_PROBE_ALLEN_KEY, Z_PROBE_SLED, or Z_PROBE_FIX_MOUNTED."
-  #elif ENABLED(DELTA_AUTO_CALIBRATION_1)
-    #error "DEPENDENCY ERROR: DELTA_AUTO_CALIBRATION_1 requires a probe! Define a Z PROBE_MANUALLY, Servo, BLTOUCH, Z_PROBE_ALLEN_KEY, Z_PROBE_SLED, or Z_PROBE_FIX_MOUNTED."
-  #elif ENABLED(DELTA_AUTO_CALIBRATION_2)
-    #error "DEPENDENCY ERROR: DELTA_AUTO_CALIBRATION_2 requires a probe! Define a Z PROBE_MANUALLY, Servo, BLTOUCH, Z_PROBE_ALLEN_KEY, Z_PROBE_SLED, or Z_PROBE_FIX_MOUNTED."
   #endif
 
 #endif
@@ -109,13 +93,11 @@
 // Check auto bed leveling sub-options, especially probe points
 #if ABL_GRID
 
-  #if DISABLED(DELTA_PROBEABLE_RADIUS)
-    // Be sure points are in the right order
-    #if LEFT_PROBE_BED_POSITION > RIGHT_PROBE_BED_POSITION
-      #error "DEPENDENCY ERROR: LEFT_PROBE_BED_POSITION must be less than RIGHT_PROBE_BED_POSITION."
-    #elif FRONT_PROBE_BED_POSITION > BACK_PROBE_BED_POSITION
-      #error "DEPENDENCY ERROR: FRONT_PROBE_BED_POSITION must be less than BACK_PROBE_BED_POSITION."
-    #endif
+  // Be sure points are in the right order
+  #if LEFT_PROBE_BED_POSITION > RIGHT_PROBE_BED_POSITION
+    #error "DEPENDENCY ERROR: LEFT_PROBE_BED_POSITION must be less than RIGHT_PROBE_BED_POSITION."
+  #elif FRONT_PROBE_BED_POSITION > BACK_PROBE_BED_POSITION
+    #error "DEPENDENCY ERROR: FRONT_PROBE_BED_POSITION must be less than BACK_PROBE_BED_POSITION."
   #endif
 #endif
 

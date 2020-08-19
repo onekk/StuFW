@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -92,12 +92,6 @@
             if (!filament_size[i]) filament_size[i] = DEFAULT_NOMINAL_FILAMENT_DIA;
         }
 
-      #endif
-
-      #if ENABLED(EXT_SOLENOID)
-        static void enable_solenoid(const uint8_t e);
-        static void enable_solenoid_on_active_extruder();
-        static void disable_all_solenoids();
       #endif
 
     private: /** Private Function */

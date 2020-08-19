@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -169,14 +169,7 @@ bool Probe::set_deployed(const bool deploy) {
       }
       else if (!mechanics.position_is_reachable(nx, ny)) return NAN;
 
-      const float nz = 
-        #if MECH(DELTA)
-          // Move below clip height or xy move will be aborted by do_blocking_move_to
-          MIN(mechanics.current_position[Z_AXIS], mechanics.delta_clip_start_height)
-        #else
-          mechanics.current_position[Z_AXIS]
-        #endif
-      ;
+      const float nz = mechanics.current_position[Z_AXIS];
 
       const float old_feedrate_mm_s = mechanics.feedrate_mm_s;
       mechanics.feedrate_mm_s = XY_PROBE_FEEDRATE_MM_S;
@@ -410,8 +403,6 @@ bool Probe::specific_action(const bool deploy) {
 
   #if ENABLED(Z_PROBE_SLED)
     dock_sled(!deploy);
-  #elif ENABLED(BLTOUCH) && MECH(DELTA)
-    if (bltouch.set_deployed(deploy)) return true;
   #elif HAS_Z_SERVO_PROBE && DISABLED(BLTOUCH)
     MOVE_SERVO(Z_PROBE_SERVO_NR, servo[Z_PROBE_SERVO_NR].angle[(deploy ? 0 : 1)]);
   #elif ENABLED(Z_PROBE_ALLEN_KEY)
@@ -436,21 +427,10 @@ bool Probe::move_to_z(const float z, const float fr_mm_s) {
   #endif
 
   // Deploy BLTouch at the start of any probe
-  #if ENABLED(BLTOUCH) && NOMECH(DELTA)
+  #if ENABLED(BLTOUCH)
      if (bltouch.set_deployed(true)) return true;
   #endif
 
-  // Disable stealthChop if used. Enable diag1 pin on driver.
-  #if ENABLED(Z_PROBE_SENSORLESS)
-    sensorless_t stealth_states;
-    #if MECH(DELTA)
-      stealth_states.x = tmc.enable_stallguard(stepperX);
-      stealth_states.y = tmc.enable_stallguard(stepperY);
-      stealth_states.z = tmc.enable_stallguard(stepperZ);
-    #else
-      stealth_states.z = tmc.enable_stallguard(stepperZ);
-    #endif
-  #endif
 
   #if QUIET_PROBING
     probing_pause(true);
@@ -458,66 +438,34 @@ bool Probe::move_to_z(const float z, const float fr_mm_s) {
 
   endstops.setEnabled(true);
 
-  #if MECH(DELTA)
-    const float z_start = mechanics.current_position[Z_AXIS];
-    const int32_t steps_start[ABC] = {
-      stepper.position(A_AXIS),
-      stepper.position(B_AXIS),
-      stepper.position(C_AXIS)
-    };
-  #endif
 
   // Move down until probe triggered
   mechanics.do_blocking_move_to_z(z, fr_mm_s);
 
   // Check to see if the probe was triggered
   const bool probe_triggered =
-    #if MECH(DELTA) && ENABLED(Z_PROBE_SENSORLESS)
-      endstops.trigger_state() & (_BV(X_MIN) | _BV(Y_MIN) | _BV(Z_MIN))
-    #else
-      TEST(endstops.trigger_state(),
+    TEST(endstops.trigger_state(),
         #if HAS_Z_PROBE_PIN
           Z_PROBE
         #else
           Z_MIN
         #endif
-      )
-    #endif
-  ;
+     );
 
   #if QUIET_PROBING
     probing_pause(false);
   #endif
 
   // Retract BLTouch immediately after a probe if it was triggered
-  #if ENABLED(BLTOUCH) && NOMECH(DELTA)
+  #if ENABLED(BLTOUCH)
     if (probe_triggered && bltouch.set_deployed(false)) return true;
-  #endif
-
-  // Re-enable stealthChop if used. Disable diag1 pin on driver.
-  #if ENABLED(Z_PROBE_SENSORLESS)
-    #if MECH(DELTA)
-      tmc.disable_stallguard(stepperX, stealth_states.x);
-      tmc.disable_stallguard(stepperY, stealth_states.y);
-      tmc.disable_stallguard(stepperZ, stealth_states.z);
-    #else
-      tmc.disable_stallguard(stepperZ, stealth_states.z);
-    #endif
   #endif
 
   // Clear endstop flags
   endstops.hit_on_purpose();
 
   // Get Z where the steppers were interrupted
-  #if MECH(DELTA)
-    float z_dist = 0.0;
-    LOOP_ABC(i)
-      z_dist += ABS(steps_start[i] - stepper.position((AxisEnum)i)) / mechanics.data.axis_steps_per_mm[i];
-
-    mechanics.current_position[Z_AXIS] = z_start - (z_dist / ABC);
-  #else
-    mechanics.set_current_from_steppers_for_axis(Z_AXIS);
-  #endif
+  mechanics.set_current_from_steppers_for_axis(Z_AXIS);
 
   // Tell the planner where we actually are
   mechanics.sync_plan_position();

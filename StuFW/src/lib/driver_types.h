@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -25,19 +25,7 @@
 #define A4988               0x001
 #define A5984               0x002
 #define DRV8825             0x003
-#define LV8729              0x004
-#define L6470               0x105
-#define TB6560              0x006
-#define TB6600              0x007
-#define TMC2100             0x008
-#define TMC2130             2130
-#define TMC2130_STANDALONE  0x009
-#define TMC2208             2208
-#define TMC2208_STANDALONE  0x00A
-#define TMC26X              0x10B
-#define TMC26X_STANDALONE   0x00B
-#define TMC2660             0x10C
-#define TMC2660_STANDALONE  0x00C
+
 
 // Type
 #define AXIS_DRV_TYPE(A,T)  (A##_DRIVER_TYPE == T)
@@ -62,11 +50,3 @@
         || E0_HAS_DRV(TYPE) || E1_HAS_DRV(TYPE) || E2_HAS_DRV(TYPE)   \
         || E3_HAS_DRV(TYPE) || E4_HAS_DRV(TYPE) || E5_HAS_DRV(TYPE))
 
-#define HAS_TRINAMIC              (HAVE_DRV(TMC2130)      || HAVE_DRV(TMC2208)      || HAVE_DRV(TMC2660)    || HAVE_DRV(TMC5130))
-#define AXIS_HAS_TMC(A)           (A##_HAS_DRV(TMC2130)   || A##_HAS_DRV(TMC2208)   || A##_HAS_DRV(TMC2660) || A##_HAS_DRV(TMC5130))
-#define TMC_HAS_SPI               (HAVE_DRV(TMC2130)      || HAVE_DRV(TMC5130)      || HAVE_DRV(TMC2660))
-#define TMC_HAS_STALLGUARD        (HAVE_DRV(TMC2130)      || HAVE_DRV(TMC5130)      || HAVE_DRV(TMC2660))
-#define TMC_HAS_STEALTHCHOP       (HAVE_DRV(TMC2130)      || HAVE_DRV(TMC5130)      || HAVE_DRV(TMC2208))
-#define AXIS_HAS_SPI(ST)          (ST##_HAS_DRV(TMC2130)  || ST##_HAS_DRV(TMC5130)  || ST##_HAS_DRV(TMC2660))
-#define AXIS_HAS_STALLGUARD(ST)   (ST##_HAS_DRV(TMC2130)  || ST##_HAS_DRV(TMC5130)  || ST##_HAS_DRV(TMC2660))
-#define AXIS_HAS_STEALTHCHOP(ST)  (ST##_HAS_DRV(TMC2130)  || ST##_HAS_DRV(TMC5130)  || ST##_HAS_DRV(TMC2208))

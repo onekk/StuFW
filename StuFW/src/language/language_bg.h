@@ -1,7 +1,7 @@
 ﻿/**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -37,7 +37,6 @@
 #define MSG_AUTOSTART                       _UxGT("Автостарт")
 #define MSG_DISABLE_STEPPERS                _UxGT("Изкл. двигатели")
 #define MSG_AUTO_HOME                       _UxGT("Паркиране")
-#define MSG_TMC_Z_CALIBRATION               _UxGT("Калибровка Z")
 #define MSG_SET_HOME_OFFSETS                _UxGT("Задай Начало")
 #define MSG_SET_ORIGIN                      _UxGT("Изходна точка")
 #define MSG_PREHEAT_1                       _UxGT("Подгряване " PREHEAT_1_LABEL)

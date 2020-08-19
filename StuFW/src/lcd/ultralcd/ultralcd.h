@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -58,7 +58,7 @@
       float lcd_mesh_edit();
     #endif
 
-    #if ENABLED(PROBE_MANUALLY) || MECH(DELTA)
+    #if ENABLED(PROBE_MANUALLY)
       void _man_probe_pt(const float &rx, const float &ry);
     #endif
 

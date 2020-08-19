@@ -1,9 +1,9 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,11 +20,6 @@
  *
  */
 
-/**
- * printer.cpp
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
- */
 
 #include "../../../StuFW.h"
 
@@ -57,32 +52,7 @@ watch_t Printer::max_inactivity_watch,
 InterruptEventEnum Printer::interruptEvent = INTERRUPT_EVENT_NONE;
 
 // Printer mode
-PrinterModeEnum Printer::mode =
-  #if ENABLED(PLOTTER)
-    PRINTER_MODE_PLOTTER;
-  #elif ENABLED(SOLDER)
-    PRINTER_MODE_SOLDER;
-  #elif ENABLED(PICK_AND_PLACE)
-    PRINTER_MODE_PICKER;
-  #elif ENABLED(CNCROUTER)
-    PRINTER_MODE_CNC;
-  #elif ENABLED(LASER)
-    PRINTER_MODE_LASER;
-  #else
-    PRINTER_MODE_FFF;
-  #endif
-
-#if ENABLED(RFID_MODULE)
-  uint32_t  Printer::Spool_ID[EXTRUDERS] = ARRAY_BY_EXTRUDERS(0);
-  bool      Printer::RFID_ON = false,
-            Printer::Spool_must_read[EXTRUDERS]  = ARRAY_BY_EXTRUDERS(false),
-            Printer::Spool_must_write[EXTRUDERS] = ARRAY_BY_EXTRUDERS(false);
-#endif
-
-#if ENABLED(BARICUDA)
-  int Printer::baricuda_valve_pressure  = 0,
-      Printer::baricuda_e_to_p_pressure = 0;
-#endif
+PrinterModeEnum Printer::mode = PRINTER_MODE_FFF;
 
 #if ENABLED(IDLE_OOZING_PREVENT)
   millis_t  Printer::axis_last_activity   = 0;
@@ -98,7 +68,7 @@ PrinterModeEnum Printer::mode =
 /** Public Function */
 
 /**
- * MK4duo entry-point: Set up before the program loop
+ * StuFW entry-point: Set up before the program loop
  *  - Set up Hardware Board
  *  - Set up the kill pin, filament runout, power hold
  *  - Start the serial port
@@ -106,12 +76,10 @@ PrinterModeEnum Printer::mode =
  *  - Get EEPROM or default settings
  *  - Initialize managers for:
  *    • temperature
- *    • CNCROUTER
  *    • planner
  *    • watchdog
  *    • stepper
  *    • photo pin
- *    • laserbeam, laser and laser_raster
  *    • servos
  *    • LCD controller
  *    • Digipot I2C
@@ -132,14 +100,6 @@ void Printer::setup() {
     powerManager.init();
   #endif
 
-  #if MB(ALLIGATOR_R2) || MB(ALLIGATOR_R3)
-    HAL::spiBegin();
-  #endif
-
-  #if HAS_STEPPER_RESET
-    stepper.disableStepperDrivers();
-  #endif
-
   // Init Serial for HOST
   Com::setBaudrate();
 
@@ -147,13 +107,6 @@ void Printer::setup() {
   SERIAL_L(START);
   SERIAL_STR(ECHO);
 
-  #if HAS_TRINAMIC
-    tmc.init();
-  #endif
-
-  #if MECH(MUVE3D) && ENABLED(PROJECTOR_PORT) && ENABLED(PROJECTOR_BAUDRATE)
-    DLPSerial.begin(PROJECTOR_BAUDRATE);
-  #endif
 
   // Check startup - does nothing if bootloader sets MCUSR to 0
   HAL::showStartReason();
@@ -203,14 +156,6 @@ void Printer::setup() {
   // Initialize stepper. This enables interrupts!
   stepper.init();
 
-  #if MB(ALLIGATOR_R2) || MB(ALLIGATOR_R3)
-    externaldac.begin();
-    externaldac.set_driver_current();
-  #endif
-
-  #if ENABLED(CNCROUTER)
-    cnc.init();
-  #endif
 
   // Initialize all Servo
   #if HAS_SERVOS
@@ -225,20 +170,9 @@ void Printer::setup() {
     endstops.setSoftEndstop(true);
   #endif
 
-  #if HAS_STEPPER_RESET
-    stepper.enableStepperDrivers();
-  #endif
-
-  #if ENABLED(DIGIPOT_I2C)
-    digipot_i2c_init();
-  #endif
 
   #if HAS_COLOR_LEDS
     leds.setup();
-  #endif
-
-  #if ENABLED(LASER)
-    laser.init();
   #endif
 
   #if ENABLED(FLOWMETER_SENSOR)
@@ -246,16 +180,6 @@ void Printer::setup() {
       flowmeter.flow_firstread = false;
     #endif
     flowmeter.flow_init();
-  #endif
-
-  #if ENABLED(PCF8574_EXPANSION_IO)
-    pcf8574.begin();
-  #endif
-
-  #if ENABLED(RFID_MODULE)
-    RFID_ON = rfid522.init();
-    if (RFID_ON)
-      SERIAL_EM("RFID CONNECT");
   #endif
 
   lcdui.init();
@@ -277,9 +201,6 @@ void Printer::setup() {
   // All Initialized set Running to true.
   setRunning(true);
 
-  #if ENABLED(DELTA_HOME_ON_POWER)
-    mechanics.home();
-  #endif
 
   zero_fan_speed();
 
@@ -294,14 +215,10 @@ void Printer::setup() {
   // Init Watchdog
   watchdog.init();
 
-  #if HAS_TRINAMIC && !PS_DEFAULT_OFF
-    tmc.test_connection(true, true, true, true);
-  #endif
-
 }
 
 /**
- * The main MK4duo program loop
+ * The main StuFW program loop
  *
  *  - Save or log commands to SD
  *  - Process available commands (if not saving)
@@ -488,16 +405,6 @@ void Printer::minikill() {
     flowmeter.flow_firstread = false;
   #endif
 
-  #if ENABLED(LASER)
-    laser.init();
-    #if ENABLED(LASER_PERIPHERALS)
-      laser.peripherals_off();
-    #endif
-  #endif
-
-  #if ENABLED(CNCROUTER)
-    cnc.disable_router();
-  #endif
 
   #if HAS_POWER_SWITCH
     powerManager.power_off();
@@ -529,17 +436,6 @@ void Printer::Stop() {
     }
   #endif
 
-  #if ENABLED(LASER)
-    if (laser.diagnostics) SERIAL_EM("Laser set to off, Stop() called");
-    laser.extinguish();
-    #if ENABLED(LASER_PERIPHERALS)
-      laser.peripherals_off();
-    #endif
-  #endif
-
-  #if ENABLED(CNCROUTER)
-     cnc.disable_router();
-  #endif
 
   if (isRunning()) {
     setRunning(false);
@@ -555,7 +451,6 @@ void Printer::Stop() {
  *  - Keep the command buffer full
  *  - Host Keepalive
  *  - Check Flow meter sensor
- *  - Cnc manage
  *  - Check for Filament Runout
  *  - Check for maximum inactive time between commands
  *  - Check for maximum inactive time between stepper commands
@@ -565,7 +460,6 @@ void Printer::Stop() {
  *  - Check if cooling fan needs to be switched on
  *  - Check if an idle but hot extruder needs filament extruded (EXTRUDER_RUNOUT_PREVENT)
  *  - Check oozing prevent
- *  - Read o Write Rfid
  */
 void Printer::idle(const bool ignore_stepper_queue/*=false*/) {
 
@@ -592,9 +486,6 @@ void Printer::idle(const bool ignore_stepper_queue/*=false*/) {
     dhtsensor.spin();
   #endif
 
-  #if ENABLED(CNCROUTER)
-    cnc.manage();
-  #endif
 
   #if ENABLED(FILAMENT_RUNOUT_SENSOR)
     filamentrunout.spin();
@@ -641,16 +532,6 @@ void Printer::idle(const bool ignore_stepper_queue/*=false*/) {
           ubl.lcd_map_control = false;
           lcdui.defer_status_screen(false);
         }
-      #endif
-      #if ENABLED(LASER)
-        if (laser.time / 60000 > 0) {
-          laser.lifetime += laser.time / 60000; // convert to minutes
-          laser.time = 0;
-        }
-        laser.extinguish();
-        #if ENABLED(LASER_PERIPHERALS)
-          laser.peripherals_off();
-        #endif
       #endif
     }
   }
@@ -793,47 +674,9 @@ void Printer::idle(const bool ignore_stepper_queue/*=false*/) {
     }
   #endif
 
-  #if ENABLED(RFID_MODULE)
-    for (int8_t e = 0; e < EXTRUDERS; e++) {
-      if (Spool_must_read[e]) {
-        if (rfid522.getID(e)) {
-          Spool_ID[e] = rfid522.RfidDataID[e].Spool_ID;
-          HAL::delayMilliseconds(200);
-          if (rfid522.readBlock(e)) {
-            Spool_must_read[e] = false;
-            tools.density_percentage[e] = rfid522.RfidData[e].data.density;
-            tools.filament_size[e] = rfid522.RfidData[e].data.size;
-            #if ENABLED(VOLUMETRIC_EXTRUSION)
-              tools.calculate_volumetric_multipliers();
-            #endif
-            tools.refresh_e_factor(e);
-            rfid522.printInfo(e);
-          }
-        }
-      }
-
-      if (Spool_must_write[e]) {
-        if (rfid522.getID(e)) {
-          if (Spool_ID[e] == rfid522.RfidDataID[e].Spool_ID) {
-            HAL::delayMilliseconds(200);
-            if (rfid522.writeBlock(e)) {
-              Spool_must_write[e] = false;
-              SERIAL_SMV(INFO, "Spool on E", e);
-              SERIAL_EM(" writed!");
-              rfid522.printInfo(e);
-            }
-          }
-        }
-      }
-    }
-  #endif
 
   #if ENABLED(TEMP_STAT_LEDS)
     handle_status_leds();
-  #endif
-
-  #if ENABLED(MONITOR_DRIVER_STATUS)
-    tmc.monitor_driver();
   #endif
 
   // Reset the watchdog

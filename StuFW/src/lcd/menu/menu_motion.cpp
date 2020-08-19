@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -30,6 +30,7 @@
 
 extern millis_t manual_move_start_time;
 extern int8_t manual_move_axis;
+
 #if ENABLED(MANUAL_E_MOVES_RELATIVE)
   float manual_move_e_origin = 0;
 #endif
@@ -66,7 +67,7 @@ static void _lcd_move_xyz(PGM_P name, AxisEnum axis) {
           max = mechanics.current_position[axis] + 1000;
 
     // Limit to software endstops, if enabled
-    #if HAS_SOFTWARE_ENDSTOPS && !MECH(DELTA)
+    #if HAS_SOFTWARE_ENDSTOPS
 
       if (endstops.flag.SoftEndstop) switch (axis) {
         case X_AXIS:
@@ -95,43 +96,22 @@ static void _lcd_move_xyz(PGM_P name, AxisEnum axis) {
         default: break;
       }
 
-    #elif MECH(DELTA)
-
-      // Delta limits XY based on the current offset from center
-      // This assumes the center is 0,0
-      if (axis != Z_AXIS) {
-        max = SQRT(sq((float)(mechanics.data.print_radius)) - sq(mechanics.current_position[Y_AXIS - axis]));
-        min = -max;
-      }
-
     #endif
 
     // Get the new position
     const float diff = float((int32_t)lcdui.encoderPosition) * move_menu_scale;
-    #if IS_KINEMATIC
-      manual_move_offset += diff;
-      if ((int32_t)lcdui.encoderPosition < 0)
-        NOLESS(manual_move_offset, min - mechanics.current_position[axis]);
-      else
-        NOMORE(manual_move_offset, max - mechanics.current_position[axis]);
-    #else
-      mechanics.current_position[axis] += diff;
-      if ((int32_t)lcdui.encoderPosition < 0)
-        NOLESS(mechanics.current_position[axis], min);
-      else
-        NOMORE(mechanics.current_position[axis], max);
-    #endif
+    mechanics.current_position[axis] += diff;
+    if ((int32_t)lcdui.encoderPosition < 0)
+      NOLESS(mechanics.current_position[axis], min);
+    else
+      NOMORE(mechanics.current_position[axis], max);
 
     manual_move_to_current(axis);
     lcdui.refresh(LCDVIEW_REDRAW_NOW);
   }
   lcdui.encoderPosition = 0;
   if (lcdui.should_draw()) {
-    const float pos = mechanics.native_to_logical(lcdui.processing_manual_move ? mechanics.destination[axis] : mechanics.current_position[axis]
-      #if IS_KINEMATIC
-        + manual_move_offset
-      #endif
-    , axis);
+    const float pos = mechanics.native_to_logical(lcdui.processing_manual_move ? mechanics.destination[axis] : mechanics.current_position[axis], axis);
     draw_edit_screen(name, move_menu_scale >= 0.1f ? ftostr41sign(pos) : ftostr43sign(pos));
   }
 }
@@ -299,12 +279,6 @@ void lcd_move_get_z_amount()            { _menu_move_distance(Z_AXIS, lcd_move_z
  *
  */
 
-#if MECH(DELTA)
-  void lcd_lower_z_to_clip_height() {
-    line_to_z(mechanics.delta_clip_start_height);
-    lcdui.synchronize();
-  }
-#endif
 
 void menu_move() {
   START_MENU();
@@ -321,19 +295,12 @@ void menu_move() {
     constexpr bool do_move_xyz = true;
   #endif
   if (do_move_xyz) {
-    #if MECH(DELTA)
-      const bool do_move_xy = mechanics.current_position[Z_AXIS] <= mechanics.delta_clip_start_height;
-    #else
-      constexpr bool do_move_xy = true;
-    #endif
+    constexpr bool do_move_xy = true;
+
     if (do_move_xy) {
       MENU_ITEM(submenu, MSG_MOVE_X, lcd_move_get_x_amount);
       MENU_ITEM(submenu, MSG_MOVE_Y, lcd_move_get_y_amount);
     }
-    #if MECH(DELTA)
-      else
-        MENU_ITEM(function, MSG_FREE_XY, lcd_lower_z_to_clip_height);
-    #endif
 
     MENU_ITEM(submenu, MSG_MOVE_Z, lcd_move_get_z_amount);
   }
@@ -385,31 +352,12 @@ void menu_motion() {
   //
   // Move Axis
   //
-  #if ENABLED(DELTA)
-    if (mechanics.isHomedAll())
-  #endif
-      MENU_ITEM(submenu, MSG_MOVE_AXIS, menu_move);
+  MENU_ITEM(submenu, MSG_MOVE_AXIS, menu_move);
 
   //
   // Auto Home
   //
-  if (printer.mode == PRINTER_MODE_LASER)
-    MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28 X Y F2000"));
-  else {
-    MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28"));
-    #if NOMECH(DELTA)
-      MENU_ITEM(gcode, MSG_AUTO_HOME_X, PSTR("G28 X"));
-      MENU_ITEM(gcode, MSG_AUTO_HOME_Y, PSTR("G28 Y"));
-      MENU_ITEM(gcode, MSG_AUTO_HOME_Z, PSTR("G28 Z"));
-    #endif
-  }
-
-  //
-  // TMC Z Calibration
-  //
-  #if ENABLED(TMC_Z_CALIBRATION)
-    MENU_ITEM(gcode, MSG_TMC_Z_CALIBRATION, PSTR("G28\nM915"));
-  #endif
+  MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28"));
 
   //
   // Level Bed

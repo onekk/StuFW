@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -33,9 +33,6 @@
 #include "ultralcd_dogm.h"
 #include "../lcdprint.h"
 
-#if ENABLED(LASER)
-  #include "../../../feature/laser/laserbitmaps.h"
-#endif
 
 FORCE_INLINE void _draw_centered_temp(const int16_t temp, const uint8_t tx, const uint8_t ty) {
   const char *str = i16tostr3(temp);
@@ -322,30 +319,6 @@ void LcdUI::draw_status_screen() {
       );
   #endif
 
-  #if ENABLED(LASER)
-
-    if (printer.mode == PRINTER_MODE_LASER) {
-      #if ENABLED(LASER_PERIPHERALS)
-        if (laser.peripherals_ok()) {
-          u8g.drawBitmapP(29, 4, LASERENABLE_BYTEWIDTH, LASERENABLE_HEIGHT, laserenable_bmp);
-        }
-      #endif
-
-      lcd_moveto(3, 6);
-      if (stepper.laser_status()) {
-        u8g.drawBitmapP(10, 10, ICON_BYTEWIDTH, ICON_HEIGHT, laseron_bmp);
-        lcd_moveto(5, 7);
-        lcd_put_u8str(i8tostr3(stepper.laser_intensity()));
-        lcd_put_u8str_P(PSTR("%"));
-      }
-      else {
-        u8g.drawBitmapP(10, 10, ICON_BYTEWIDTH, ICON_HEIGHT, laseroff_bmp);
-        lcd_moveto(5, 7);
-        lcd_put_u8str_P(PSTR("---%"));
-      }
-    }
-
-  #endif
 
   #if HAS_SD_SUPPORT
     //

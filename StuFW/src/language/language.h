@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -62,14 +62,6 @@
   #define MACHINE_TYPE                      "CoreYZ"
 #elif MECH(COREZY)
   #define MACHINE_TYPE                      "CoreZY"
-#elif MECH(DELTA)
-  #define MACHINE_TYPE                      "Delta"
-#elif MECH(MORGAN_SCARA)
-  #define MACHINE_TYPE                      "Morgan Scara"
-#elif MECH(MAKERARM_SCARA)
-  #define MACHINE_TYPE                      "MakerArm Scara"
-#elif MECH(MUVE3D)
-  #define MACHINE_TYPE                      "Muve3D"
 #endif  
 
 #if HAS_GRAPHICAL_LCD
@@ -147,7 +139,7 @@
 #define MSG_INVALID_HEATER                  "Invalid heater"
 #define MSG_INVALID_SOLENOID                "Invalid solenoid"
 #define MSG_ERR_NO_THERMISTORS              "No thermistors - no temperature"
-#define MSG_M115_REPORT                     "FIRMWARE_NAME:MK4duo " SHORT_BUILD_VERSION " FIRMWARE_URL:" FIRMWARE_URL " PROTOCOL_VERSION:" PROTOCOL_VERSION " MACHINE_TYPE:" MACHINE_TYPE " EXTRUDER_COUNT:" STRINGIFY(EXTRUDERS) " UUID:" MACHINE_UUID "\n"
+#define MSG_M115_REPORT                     "FIRMWARE_NAME:StuFW " SHORT_BUILD_VERSION " FIRMWARE_URL:" FIRMWARE_URL " PROTOCOL_VERSION:" PROTOCOL_VERSION " MACHINE_TYPE:" MACHINE_TYPE " EXTRUDER_COUNT:" STRINGIFY(EXTRUDERS) " UUID:" MACHINE_UUID "\n"
 #define MSG_COUNT_X                         " Count X:"
 #define MSG_COUNT_A                         " Count A:"
 #define MSG_COUNT_ALPHA                     " Count Alpha:"

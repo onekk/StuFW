@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -75,21 +75,16 @@
     const float X_probe_location = parser.linearval('X', X_current + probe.data.offset[X_AXIS]),
                 Y_probe_location = parser.linearval('Y', Y_current + probe.data.offset[Y_AXIS]);
 
-    #if NOMECH(DELTA)
-      if (!WITHIN(X_probe_location, MIN_PROBE_X, MAX_PROBE_X)) {
-        out_of_range_error(PSTR("X"));
-        return;
-      }
-      if (!WITHIN(Y_probe_location, MIN_PROBE_Y, MAX_PROBE_Y)) {
-        out_of_range_error(PSTR("Y"));
-        return;
-      }
-    #else
-      if (!mechanics.position_is_reachable_by_probe(X_probe_location, Y_probe_location)) {
-        SERIAL_LM(ER, "? (X,Y) location outside of probeable radius.");
-        return;
-      }
-    #endif
+    if (!WITHIN(X_probe_location, MIN_PROBE_X, MAX_PROBE_X)) {
+      out_of_range_error(PSTR("X"));
+      return;
+    }
+
+    if (!WITHIN(Y_probe_location, MIN_PROBE_Y, MAX_PROBE_Y)) {
+      out_of_range_error(PSTR("Y"));
+      return;
+    }
+
 
     bool seen_L = parser.seen('L');
     uint8_t n_legs = seen_L ? parser.value_byte() : 0;
@@ -99,14 +94,6 @@
     }
     if (n_legs == 1) n_legs = 2;
 
-    bool schizoid_flag = parser.seen('S');
-    if (schizoid_flag && !seen_L) n_legs = 7;
-
-    /**
-     * Now get everything to the specified probe point So we can safely do a
-     * probe to get us close to the bed.  If the Z-Axis is far from the bed,
-     * we don't want to use that as a starting point for each probe.
-     */
     if (verbose_level > 2)
       SERIAL_EM("Positioning the probe...");
 
@@ -131,62 +118,18 @@
       for (uint8_t n = 0; n < n_samples; n++) {
         if (n_legs) {
           const int dir = (random(0, 10) > 5.0) ? -1 : 1;  // clockwise or counter clockwise
-          float angle = random(0, 360);
-          const float radius = random(
-            #if MECH(DELTA)
-              (int)(0.1250000000 * mechanics.data.probe_radius),
-              (int)(0.3333333333 * mechanics.data.probe_radius)
-            #else
-              5, (int)(0.125 * MIN(X_MAX_LENGTH, Y_MAX_LENGTH))
-            #endif
-          );
 
           if (verbose_level > 3) {
-            SERIAL_MV("Starting radius: ", radius);
-            SERIAL_MV("   angle: ", angle);
             SERIAL_MSG(" Direction: ");
             if (dir > 0) SERIAL_MSG("Counter-");
             SERIAL_EM("Clockwise");
           }
 
           for (uint8_t l = 0; l < n_legs - 1; l++) {
-            double delta_angle;
 
-            if (schizoid_flag)
-              // The points of a 5 point star are 72 degrees apart.  We need to
-              // skip a point and go to the next one on the star.
-              delta_angle = dir * 2.0 * 72.0;
+            X_current = constrain(X_current, X_MIN_POS, X_MAX_POS);
+            Y_current = constrain(Y_current, Y_MIN_POS, Y_MAX_POS);
 
-            else
-              // If we do this line, we are just trying to move further
-              // around the circle.
-              delta_angle = dir * (float) random(25, 45);
-
-            angle += delta_angle;
-
-            while (angle > 360.0)   // We probably do not need to keep the angle between 0 and 2*PI, but the
-              angle -= 360.0;       // Arduino documentation says the trig functions should not be given values
-            while (angle < 0.0)     // outside of this range.   It looks like they behave correctly with
-              angle += 360.0;       // numbers outside of the range, but just to be safe we clamp them.
-
-            X_current = X_probe_location - probe.data.offset[X_AXIS] + cos(RADIANS(angle)) * radius;
-            Y_current = Y_probe_location - probe.data.offset[Y_AXIS] + sin(RADIANS(angle)) * radius;
-
-            #if MECH(DELTA)
-              // If we have gone out too far, we can do a simple fix and scale the numbers
-              // back in closer to the origin.
-              while (!mechanics.position_is_reachable_by_probe(X_current, Y_current)) {
-                X_current *= 0.8;
-                Y_current *= 0.8;
-                if (verbose_level > 3) {
-                  SERIAL_MV("Pulling point towards center:", X_current);
-                  SERIAL_EMV(", ", Y_current);
-                }
-              }
-            #else
-              X_current = constrain(X_current, X_MIN_POS, X_MAX_POS);
-              Y_current = constrain(Y_current, Y_MIN_POS, Y_MAX_POS);
-            #endif
             if (verbose_level > 3) {
               SERIAL_MSG("Going to:");
               SERIAL_MV(" x: ", X_current);

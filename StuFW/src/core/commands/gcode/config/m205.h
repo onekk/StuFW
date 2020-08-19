@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -71,16 +71,9 @@ inline void gcode_M205(void) {
   #endif
 
   #if HAS_CLASSIC_JERK
-    #if MECH(DELTA)
-      if (parser.seen('X') || parser.seen('Y') || parser.seen('Z')) {
-        const float value = parser.value_linear_units();
-        LOOP_XYZ(axis) mechanics.data.max_jerk[axis] = value;
-      }
-    #else
-      if (parser.seen('X')) mechanics.data.max_jerk[X_AXIS] = parser.value_linear_units();
-      if (parser.seen('Y')) mechanics.data.max_jerk[Y_AXIS] = parser.value_linear_units();
-      if (parser.seen('Z')) mechanics.data.max_jerk[Z_AXIS] = parser.value_linear_units();
-    #endif
+    if (parser.seen('X')) mechanics.data.max_jerk[X_AXIS] = parser.value_linear_units();
+    if (parser.seen('Y')) mechanics.data.max_jerk[Y_AXIS] = parser.value_linear_units();
+    if (parser.seen('Z')) mechanics.data.max_jerk[Z_AXIS] = parser.value_linear_units();
     #if DISABLED(JUNCTION_DEVIATION) || DISABLED(LIN_ADVANCE)
       if (parser.seen('E')) mechanics.data.max_jerk[E_AXIS] = parser.value_linear_units();
     #endif

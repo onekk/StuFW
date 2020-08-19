@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -37,8 +37,6 @@
    *      X   Probe X position (default=current probe position)
    *      Y   Probe Y position (default=current probe position)
    *      E   Engage the probe for each probe (default 1)
-   *      Z   <bool> with a non-zero value will apply the result to current data.height (ONLY DELTA)
-   *      P   <bool> with a non-zero value will apply the result to current probe offset[Z_AXIS] (ONLY DELTA)
    */
   inline void gcode_G30(void) {
 
@@ -65,18 +63,6 @@
       SERIAL_MV(MSG_BED_LEVELING_X, FIXFLOAT(xpos), 3);
       SERIAL_MV(MSG_BED_LEVELING_Y, FIXFLOAT(ypos), 3);
     }
-
-    #if MECH(DELTA)
-      if (parser.boolval('Z')) {
-        mechanics.data.height -= measured_z;
-        mechanics.recalc_delta_settings();
-        SERIAL_MV("  New delta height:", mechanics.data.height, 3);
-      }
-      else if (parser.boolval('P')) {
-        probe.data.offset[Z_AXIS] -= measured_z;
-        SERIAL_MV("  New Z probe offset:", probe.data.offset[Z_AXIS], 3);
-      }
-    #endif
 
     SERIAL_EOL();
 

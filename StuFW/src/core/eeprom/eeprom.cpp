@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -252,13 +252,6 @@ typedef struct EepromDataStruct {
   SoundModeEnum     sound_mode;
 
   //
-  // External DAC
-  //
-  #if MB(ALLIGATOR_R2) || MB(ALLIGATOR_R3)
-    uint16_t        motor_current[3 + DRIVER_EXTRUDERS];
-  #endif
-
-  //
   // Linear Advance
   //
   #if ENABLED(LIN_ADVANCE)
@@ -278,17 +271,6 @@ typedef struct EepromDataStruct {
   //
   #if ENABLED(ADVANCED_PAUSE_FEATURE)
     advanced_pause_data_t advanced_pause_data[EXTRUDERS];
-  #endif
-
-  //
-  // Trinamic
-  //
-  #if HAS_TRINAMIC
-    uint16_t  tmc_stepper_current[TMC_AXIS],
-              tmc_stepper_microstep[TMC_AXIS];
-    uint32_t  tmc_hybrid_threshold[TMC_AXIS];
-    int16_t   tmc_sgt[XYZ];
-    bool      tmc_stealth_enabled[TMC_AXIS];
   #endif
 
 } eepromData;
@@ -316,9 +298,6 @@ void EEPROM::post_process() {
 
   // Make sure delta kinematics are updated before refreshing the
   // planner position so the stepper counts will be set correctly.
-  #if MECH(DELTA)
-    mechanics.recalc_delta_settings();
-  #endif
 
   #if HEATER_COUNT > 0
     LOOP_HEATER() {
@@ -663,12 +642,6 @@ void EEPROM::post_process() {
     //
     EEPROM_WRITE(sound.mode);
 
-    //
-    // Alligator board
-    //
-    #if MB(ALLIGATOR_R2) || MB(ALLIGATOR_R3)
-      EEPROM_WRITE(externaldac.motor_current);
-    #endif
 
     //
     // Linear Advance
@@ -691,60 +664,6 @@ void EEPROM::post_process() {
     #if ENABLED(ADVANCED_PAUSE_FEATURE)
       EEPROM_WRITE(advancedpause.data);
     #endif
-
-    //
-    // Save TMC2130 or TMC2208 Configuration, and placeholder values
-    //
-    #if HAS_TRINAMIC
-
-      uint16_t  tmc_stepper_current[TMC_AXIS]   = { X_CURRENT, Y_CURRENT, Z_CURRENT, X_CURRENT, Y_CURRENT, Z_CURRENT, Z_CURRENT,
-                                                    E0_CURRENT, E1_CURRENT, E2_CURRENT, E3_CURRENT, E4_CURRENT, E5_CURRENT },
-                tmc_stepper_microstep[TMC_AXIS] = { X_MICROSTEPS, Y_MICROSTEPS, Z_MICROSTEPS, X_MICROSTEPS, Y_MICROSTEPS, Z_MICROSTEPS, Z_MICROSTEPS,
-                                                    E0_MICROSTEPS, E1_MICROSTEPS, E2_MICROSTEPS, E3_MICROSTEPS, E4_MICROSTEPS, E5_MICROSTEPS };
-      uint32_t  tmc_hybrid_threshold[TMC_AXIS]  = { X_HYBRID_THRESHOLD, Y_HYBRID_THRESHOLD, Z_HYBRID_THRESHOLD,
-                                                    X_HYBRID_THRESHOLD, Y_HYBRID_THRESHOLD, Z_HYBRID_THRESHOLD, Z_HYBRID_THRESHOLD,
-                                                    E0_HYBRID_THRESHOLD, E1_HYBRID_THRESHOLD, E2_HYBRID_THRESHOLD,
-                                                    E3_HYBRID_THRESHOLD, E4_HYBRID_THRESHOLD, E5_HYBRID_THRESHOLD };
-      bool      tmc_stealth_enabled[TMC_AXIS]   = { X_STEALTHCHOP, Y_STEALTHCHOP, Z_STEALTHCHOP, X_STEALTHCHOP, Y_STEALTHCHOP, Z_STEALTHCHOP, Z_STEALTHCHOP,
-                                                    E0_STEALTHCHOP, E1_STEALTHCHOP, E2_STEALTHCHOP, E3_STEALTHCHOP, E4_STEALTHCHOP, E5_STEALTHCHOP };
-
-      LOOP_TMC() {
-        MKTMC* st = tmc.driver_by_index(t);
-        if (st) {
-          tmc_stepper_current[t]    = st->getMilliamps();
-          tmc_stepper_microstep[t]  = st->microsteps();
-          #if ENABLED(HYBRID_THRESHOLD)
-            tmc_hybrid_threshold[t] = st->hybrid_thrs;
-          #endif
-          #if TMC_HAS_STEALTHCHOP
-            tmc_stealth_enabled[t]  = st->stealthChop_enabled;
-          #endif
-        }
-      }
-
-      EEPROM_WRITE(tmc_stepper_current);
-      EEPROM_WRITE(tmc_stepper_microstep);
-      EEPROM_WRITE(tmc_hybrid_threshold);
-      EEPROM_WRITE(tmc_stealth_enabled);
-
-      //
-      // TMC2130 StallGuard threshold
-      //
-      int16_t tmc_sgt[XYZ] = { 0, 0, 0 };
-      #if HAS_SENSORLESS
-        #if X_HAS_SENSORLESS
-          tmc_sgt[X_AXIS] = stepperX->sgt();
-        #endif
-        #if Y_HAS_SENSORLESS
-          tmc_sgt[Y_AXIS] = stepperY->sgt();
-        #endif
-        #if Z_HAS_SENSORLESS
-          tmc_sgt[Z_AXIS] = stepperZ->sgt();
-        #endif
-      #endif
-      EEPROM_WRITE(tmc_sgt);
-
-    #endif // HAS_TRINAMIC
 
     //
     // Validate CRC and Data Size
@@ -1051,13 +970,6 @@ void EEPROM::post_process() {
       EEPROM_READ(sound.mode);
 
       //
-      // Alligator board
-      //
-      #if MB(ALLIGATOR_R2) || MB(ALLIGATOR_R3)
-        EEPROM_READ(externaldac.motor_current);
-      #endif
-
-      //
       // Linear Advance
       //
       #if ENABLED(LIN_ADVANCE)
@@ -1081,80 +993,6 @@ void EEPROM::post_process() {
 
       if (!validating) reset_stepper_drivers();
 
-      //
-      // TMC2130 or TMC2208 Stepper Current
-      //
-      #if HAS_TRINAMIC
-
-        uint16_t  tmc_stepper_current[TMC_AXIS],
-                  tmc_stepper_microstep[TMC_AXIS];
-        uint32_t  tmc_hybrid_threshold[TMC_AXIS];
-        bool      tmc_stealth_enabled[TMC_AXIS];
-
-        EEPROM_READ(tmc_stepper_current);
-        EEPROM_READ(tmc_stepper_microstep);
-        EEPROM_READ(tmc_hybrid_threshold);
-        EEPROM_READ(tmc_stealth_enabled);
-
-        if (!validating) {
-          LOOP_TMC() {
-            MKTMC* st = tmc.driver_by_index(t);
-            if (st) {
-              st->rms_current(tmc_stepper_current[t]);
-              st->microsteps(tmc_stepper_microstep[t]);
-              #if ENABLED(HYBRID_THRESHOLD)
-                st->hybrid_thrs = tmc_hybrid_threshold[t];
-                st->refresh_hybrid_thrs(mechanics.data.axis_steps_per_mm[st->id]);
-              #endif
-              #if TMC_HAS_STEALTHCHOP
-                st->stealthChop_enabled = tmc_stealth_enabled[t];
-                st->refresh_stepping_mode();
-              #endif
-            }
-          }
-        }
-
-        /*
-         * TMC2130 Sensorless homing threshold.
-         * X and X2 use the same value
-         * Y and Y2 use the same value
-         * Z, Z2 and Z3 use the same value
-         */
-        int16_t tmc_sgt[XYZ];
-        EEPROM_READ(tmc_sgt);
-        #if HAS_SENSORLESS
-          if (!validating) {
-            #if ENABLED(X_STALL_SENSITIVITY)
-              #if AXIS_HAS_STALLGUARD(X)
-                stepperX->sgt(tmc_sgt[X_AXIS]);
-              #endif
-              #if AXIS_HAS_STALLGUARD(X2)
-                stepperX2->sgt(tmc_sgt[X_AXIS]);
-              #endif
-            #endif
-            #if ENABLED(Y_STALL_SENSITIVITY)
-              #if AXIS_HAS_STALLGUARD(Y)
-                stepperY->sgt(tmc_sgt[Y_AXIS]);
-              #endif
-              #if AXIS_HAS_STALLGUARD(Y2)
-                stepperY2->sgt(tmc_sgt[Y_AXIS]);
-              #endif
-            #endif
-            #if ENABLED(Z_STALL_SENSITIVITY)
-              #if AXIS_HAS_STALLGUARD(Z)
-                stepperZ->sgt(tmc_sgt[Z_AXIS]);
-              #endif
-              #if AXIS_HAS_STALLGUARD(Z2)
-                stepperZ2->sgt(tmc_sgt[Z_AXIS]);
-              #endif
-              #if AXIS_HAS_STALLGUARD(Z3)
-                stepperZ3->sgt(tmc_sgt[Z_AXIS]);
-              #endif
-            #endif
-          }
-        #endif
-
-      #endif // HAS_TRINAMIC
 
       eeprom_error = size_error(eeprom_index - (EEPROM_OFFSET));
       if (eeprom_error) {
@@ -1367,11 +1205,6 @@ void EEPROM::reset() {
     LOOP_HOTEND() tools.hotend_offset[i][h] = tmp7[i][h];
   }
 
-  #if MB(ALLIGATOR_R2) || MB(ALLIGATOR_R3)
-    constexpr uint16_t tmp8[] = { X_CURRENT, Y_CURRENT, Z_CURRENT, E0_CURRENT, E1_CURRENT, E2_CURRENT, E3_CURRENT };
-    for (uint8_t i = 0; i < 3 + DRIVER_EXTRUDERS; i++)
-      externaldac.motor_current[i] = tmp8[i < COUNT(tmp8) ? i : COUNT(tmp8) - 1];
-  #endif
 
   // Call Mechanic Factory parameters
   mechanics.factory_parameters();
@@ -1816,13 +1649,6 @@ void EEPROM::reset() {
     printer.IDLE_OOZING_enabled = true;
   #endif
 
-  #if HAS_TRINAMIC
-    tmc.current_init_to_defaults();
-    tmc.microstep_init_to_defaults();
-    #if ENABLED(HYBRID_THRESHOLD)
-      tmc.hybrid_threshold_init_to_defaults();
-    #endif
-  #endif
 
   reset_stepper_drivers();
 
@@ -2126,50 +1952,6 @@ void EEPROM::reset() {
     SERIAL_MV(" P", stepper.minimum_pulse);
     SERIAL_MV(" R", stepper.maximum_rate);
     SERIAL_EOL();
-
-    /**
-     * Alligator current drivers M906
-     */
-    #if MB(ALLIGATOR_R2) || MB(ALLIGATOR_R3)
-
-      SERIAL_LM(CFG, "Stepper driver current (mA)");
-      SERIAL_SM(CFG, "  M906");
-      SERIAL_MV(" X", externaldac.motor_current[X_AXIS]);
-      SERIAL_MV(" Y", externaldac.motor_current[Y_AXIS]);
-      SERIAL_MV(" Z", externaldac.motor_current[Z_AXIS]);
-      #if EXTRUDERS == 1
-        SERIAL_MV(" T0 E", externaldac.motor_current[E_AXIS]);
-      #endif
-      SERIAL_EOL();
-      #if DRIVER_EXTRUDERS > 1
-        for (uint8_t i = 0; i < DRIVER_EXTRUDERS; i++) {
-          SERIAL_SM(CFG, "  M906");
-          SERIAL_MV(" T", int(i));
-          SERIAL_MV(" E", externaldac.motor_current[E_AXIS + i]);
-          SERIAL_EOL();
-        }
-      #endif
-
-    #endif // ALLIGATOR_R2 || ALLIGATOR_R3
-
-    #if HAS_TRINAMIC
-
-      // TMC2130 or TMC2208 stepper driver current
-      tmc.print_M906();
-
-      // TMC2130 or TMC2208 stepper driver microsteps
-      tmc.print_M350();
-
-      // TMC2130 or TMC2208 Hybrid Threshold
-      tmc.print_M913();
-
-      // TMC2130 StallGuard threshold
-      tmc.print_M914();
-
-      // TMC stepping mode
-      tmc.print_M940();
-
-    #endif // HAS_TRINAMIC
 
     /**
      * Linear Advance

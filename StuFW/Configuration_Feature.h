@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -35,8 +35,6 @@
  * - Volumetric extrusion
  * - Filament Diameter
  * - Single nozzle
- * - BariCUDA paste extruder
- * - Solenoid extruder
  * - Color Mixing Extruder
  * - Multiextruder old MKR4
  * - Multiextruder MKR6
@@ -77,7 +75,6 @@
  * - Door open sensor
  * - Power check sensor
  * ADDON FEATURES:
- * - PCF8574 Expansion IO
  * - EEPROM
  * - SDCARD
  * - LCD Language
@@ -86,14 +83,11 @@
  * - LCD Options
  * - Canon RC-1 Remote
  * - Camera trigger
- * - RFID card reader
  * - BLINKM
  * - RGB LED
  * - PCA 9632 PWM LED
  * - Adafruit Neopixel LED driver
  * - Printer Event LEDs
- * - Laser beam
- * - CNC Router
  * - Case Light
  * ADVANCED MOTION FEATURES:
  * - Double / Quad Stepping
@@ -143,21 +137,8 @@
  *  - A4988                                                                 *
  *  - A5984                                                                 *
  *  - DRV8825                                                               *
- *  - LV8729                                                                *
- *  - L6470                                                                 *
  *  - TB6560                                                                *
  *  - TB6600                                                                *
- *  - TMC2100                                                               *
- *  - TMC2130                                                               *
- *  - TMC2130_STANDALONE                                                    *
- *  - TMC2208                                                               *
- *  - TMC2208_STANDALONE                                                    *
- *  - TMC26X                                                                *
- *  - TMC26X_STANDALONE                                                     *
- *  - TMC2660                                                               *
- *  - TMC2660_STANDALONE                                                    *
- *  - TMC5130                                                               *
- *  - TMC5130_STANDALONE                                                    *
  *                                                                          *
  * See Configuration_Motor_Driver.h for configuration Motor Driver          *
  *                                                                          *
@@ -285,31 +266,6 @@
  *                                                                     *
  ***********************************************************************/
 //#define SINGLENOZZLE
-/***********************************************************************/
-
-
-/***********************************************************************
- *********************** BariCUDA paste extruder ***********************
- ***********************************************************************
- *                                                                     *
- * Support for the BariCUDA paste extruder.                            *
- *                                                                     *
- ***********************************************************************/
-//#define BARICUDA
-/***********************************************************************/
-
-
-/***********************************************************************
- ************************** Solenoid extruder **************************
- ***********************************************************************
- *                                                                     *
- * Activate a solenoid on the active extruder with M380.               *
- * Disable all with M381.                                              *
- * Define SOL0_PIN, SOL1_PIN, etc., for each extruder that             *
- * has a solenoid.                                                     *
- *                                                                     *
- ***********************************************************************/
-//#define EXT_SOLENOID
 /***********************************************************************/
 
 
@@ -1139,20 +1095,7 @@
 //============================= ADDON FEATURES ==============================
 //===========================================================================
 
-/*****************************************************************************************
- ************************************** PCF8574 ******************************************
- *****************************************************************************************
- *                                                                                       *
- * Add PCF8574 expansion IO for add 8 new pins                                           *
- * The new pins are 120 - 121 - 122 - 123 - 124 - 125 - 126 - 127                        *
- * Select the address of your board                                                      *
- *                                                                                       *
- *****************************************************************************************/
-//#define PCF8574_EXPANSION_IO
-#define PCF8574_ADDRESS 0x39
-/*****************************************************************************************/
 
- 
 /************************************************************************************************************************
  ***************************************************** EEPROM ***********************************************************
  ************************************************************************************************************************
@@ -1356,120 +1299,6 @@
 // Note: Usually sold with a white PCB.
 //
 //#define REPRAP_DISCOUNT_SMART_CONTROLLER
-
-//
-// ULTIMAKER Controller.
-//
-//#define ULTIMAKERCONTROLLER
-
-//
-// Ultipanel as seen on Thingiverse.
-//
-//#define ULTIPANEL
-
-//
-// PanelOne from T3P3 (via RAMPS 1.4 AUX2/AUX3)
-// http://reprap.org/wiki/PanelOne
-//
-//#define PANEL_ONE
-
-//
-// GADGETS3D G3D LCD/SD Controller
-// http://reprap.org/wiki/RAMPS_1.3/1.4_GADGETS3D_Shield_with_Panel
-//
-// Note: Usually sold with a blue PCB.
-//
-//#define G3D_PANEL
-
-//
-// RigidBot Panel V1.0
-// http://www.inventapart.com/
-//
-//#define RIGIDBOT_PANEL
-
-//
-// Makeboard 3D Printer Parts 3D Printer Mini Display 1602 Mini Controller
-// https://www.aliexpress.com/item/Micromake-Makeboard-3D-Printer-Parts-3D-Printer-Mini-Display-1602-Mini-Controller-Compatible-with-Ramps-1/32765887917.html
-//
-//#define MAKEBOARD_MINI_2_LINE_DISPLAY_1602
-
-//
-// ANET and Tronxy 20x4 Controller
-//
-//#define ZONESTAR_LCD            // Requires ADC_KEYPAD_PIN to be assigned to an analog pin.
-                                  // This LCD is known to be susceptible to electrical interference
-                                  // which scrambles the display.  Pressing any button clears it up.
-                                  // This is a LCD2004 display with 5 analog buttons.
-
-//
-// Generic 16x2, 16x4, 20x2, or 20x4 character-based LCD.
-//
-//#define ULTRA_LCD
-/*****************************************************************************************/
-
-
-/*****************************************************************************************
- ****************************** LCD / Controller Selection *******************************
- ***************************** (I2C and Shift-Register LCDs) *****************************
- *****************************************************************************************/
-//
-// CONTROLLER TYPE: I2C
-//
-// Note: These controllers require the installation of Arduino's LiquidCrystal_I2C
-// library. For more info: https://github.com/kiyoshigawa/LiquidCrystal_I2C
-//
-
-//
-// Elefu RA Board Control Panel
-// http://www.elefu.com/index.php?route=product/product&product_id=53
-//
-//#define RA_CONTROL_PANEL
-
-//
-// Sainsmart (YwRobot) LCD Displays
-//
-// These require F.Malpartida's LiquidCrystal_I2C library
-// https://bitbucket.org/fmalpartida/new-liquidcrystal/wiki/Home
-//
-//#define LCD_SAINSMART_I2C_1602
-//#define LCD_SAINSMART_I2C_2004
-
-//
-// Generic LCM1602 LCD adapter
-//
-//#define LCM1602
-
-//
-// PANELOLU2 LCD with status LEDs,
-// separate encoder and click inputs.
-//
-// Note: This controller requires Arduino's LiquidTWI2 library v1.2.3 or later.
-// For more info: https://github.com/lincomatic/LiquidTWI2
-//
-// Note: The PANELOLU2 encoder click input can either be directly connected to
-// a pin (if BTN_ENC defined to != -1) or read through I2C (when BTN_ENC == -1).
-//
-//#define LCD_I2C_PANELOLU2
-
-//
-// Panucatt VIKI LCD with status LEDs,
-// integrated click & L/R/U/D buttons, separate encoder inputs.
-//
-//#define LCD_I2C_VIKI
-
-// Original RADDS Display from Willy
-// http://max3dshop.org/index.php/default/elektronik/radds-lcd-sd-display-with-reset-and-back-buttom.html
-//#define RADDS_DISPLAY
-
-//
-// CONTROLLER TYPE: Shift register panels
-//
-
-//
-// 2 wire Non-latching LCD SR from https://goo.gl/aJJ4sH
-// LCD configuration: http://reprap.org/wiki/SAV_3D_LCD
-//
-//#define SAV_3DLCD
 /*****************************************************************************************/
 
 
@@ -1483,156 +1312,19 @@
 // IMPORTANT: The U8glib library is required for Graphical Display!
 //            https://github.com/olikraus/U8glib_Arduino
 //
-
 //
 // RepRapDiscount FULL GRAPHIC Smart Controller
 // http://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
 //
 //#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
 
-//
-// ReprapWorld Graphical LCD
-// https://reprapworld.com/?products_details&products_id/1218
-//
-//#define REPRAPWORLD_GRAPHICAL_LCD
+// If you want you can define your own set of delays
+// useful to debug some displays
+// 
 
-//
-// Activate one of these if you have a Panucatt Devices
-// Viki 2.0 or mini Viki with Graphic LCD
-// http://panucatt.com
-//
-//#define VIKI2
-//#define miniVIKI
-
-//
-// MakerLab Mini Panel with graphic
-// controller and SD support - http://reprap.org/wiki/Mini_panel
-//
-//#define MINIPANEL
-
-//
-// MaKr3d Makr-Panel with graphic controller and SD support.
-// http://reprap.org/wiki/MaKr3d_MaKrPanel
-//
-//#define MAKRPANEL
-
-//
-// Adafruit ST7565 Full Graphic Controller.
-// https://github.com/eboston/Adafruit-ST7565-Full-Graphic-Controller/
-//
-//#define ELB_FULL_GRAPHIC_CONTROLLER
-
-//
-// BQ LCD Smart Controller shipped by
-// default with the BQ Hephestos 2 and Witbox 2.
-//
-//#define BQ_LCD_SMART_CONTROLLER
-
-//
-// WANHAO D6 SSD1309 OLED full graphics
-//
-//#define WANHAO_D6_OLED
-
-//
-// Cartesio UI
-// http://mauk.cc/webshop/cartesio-shop/electronics/user-interface
-//
-//#define CARTESIO_UI
-
-//
-// LCD for Melzi Card with Graphical LCD
-//
-//#define LCD_FOR_MELZI
-
-//
-// SSD1306 OLED full graphics generic display
-//
-//#define U8GLIB_SSD1306
-
-//
-// SAV OLEd LCD module support using either SSD1306 or SH1106 based LCD modules
-//
-//#define SAV_3DGLCD
-//#define U8GLIB_SSD1306
-//#define U8GLIB_SH1106
-
-//
-// Original Ulticontroller from Ultimaker 2 printer with SSD1309 I2C display and encoder
-// https://github.com/Ultimaker/Ultimaker2/tree/master/1249_Ulticontroller_Board_(x1)
-//
-//#define ULTI_CONTROLLER
-
-//
-// TinyBoy2 128x64 OLED / Encoder Panel
-//
-//#define OLED_PANEL_TINYBOY2
-
-//
-// MKS MINI12864 with graphic controller and SD support
-// http://reprap.org/wiki/MKS_MINI_12864
-//
-//#define MKS_MINI_12864
-
-//
-// Factory display for Creality CR-10
-// https://www.aliexpress.com/item/Universal-LCD-12864-3D-Printer-Display-Screen-With-Encoder-For-CR-10-CR-7-Model/32833148327.html
-//
-// This is RAMPS-compatible using a single 10-pin connector.
-// (For CR-10 owners who want to replace the Melzi Creality board but retain the display)
-//
-//#define CR10_STOCKDISPLAY
-
-//
-// ANET and Tronxy Graphical Controller
-//
-//#define ANET_FULL_GRAPHICS_LCD  // Anet 128x64 full graphics lcd with rotary encoder as used on Anet A6
-                                  // A clone of the RepRapDiscount full graphics display but with
-                                  // different pins/wiring (see pins_ANET_10.h).
-
-//
-// MKS OLED 1.3" 128 × 64 FULL GRAPHICS CONTROLLER
-// http://reprap.org/wiki/MKS_12864OLED
-//
-// Tiny, but very sharp OLED display
-//
-//#define MKS_12864OLED          // Uses the SH1106 controller (default)
-//#define MKS_12864OLED_SSD1306  // Uses the SSD1306 controller
-
-//
-// AZSMZ 12864 LCD with SD
-// https://www.aliexpress.com/store/product/3D-printer-smart-controller-SMART-RAMPS-OR-RAMPS-1-4-LCD-12864-LCD-control-panel-green/2179173_32213636460.html
-//
-//#define AZSMZ_12864
-
-//
-// Silvergate GLCD controller
-// http://github.com/android444/Silvergate
-//
-//#define SILVER_GATE_GLCD_CONTROLLER
-/*****************************************************************************************/
-
-
-/*****************************************************************************************
- ****************************** LCD / Controller Selection *******************************
- ******************************      Other Controllers     *******************************
- *****************************************************************************************/
-//
-// Nextion 4.3" - 5" Enanched - 7" Enanched HMI panel
-//
-//#define NEXTION
-
-// Define Serial it use
-#define NEXTION_SERIAL 1
-
-// Define max message lenght
-#define NEXTION_MAX_MESSAGE_LENGTH 30
-
-// For GFX preview visualization enable NEXTION GFX
-//#define NEXTION_GFX
-
-// Define name firmware file for Nextion on SD
-#define NEXTION_FIRMWARE_FILE "mk4duo.tft"
-/*****************************************************************************************/
+//#define ST7920_DELAY_1 DELAY_NS(0)
+//#define ST7920_DELAY_2 DELAY_NS(0)
+//#define ST7920_DELAY_3 DELAY_NS(63)
 
 
 /*****************************************************************************************
@@ -1773,9 +1465,6 @@
 //#define LCD_FEEDBACK_FREQUENCY_DURATION_MS 2
 //#define LCD_FEEDBACK_FREQUENCY_HZ 5000
 
-// Display Voltage Logic Selector on Alligator Board
-//#define UI_VOLTAGE_LEVEL 0 // 3.3 V
-#define UI_VOLTAGE_LEVEL 1   // 5 V
 
 // Include a page of printer information in the LCD Main Menu
 #define LCD_INFO_MENU
@@ -1845,24 +1534,6 @@
 /**************************************************************************/
 
 
-/**************************************************************************
- *********************** RIFD module card reader **************************
- **************************************************************************
- *                                                                        *
- * Support RFID module card reader with UART interface.                   *
- * This module mount chip MFRC522 designed to communicate with            *
- * ISO/IEC 14443 A/MIFARE cards and transponders without additional       *
- * active circuitry                                                       *
- *                                                                        *
- * New command for this system is:                                        *
- * M522 T<extruder> R<read> or W<write>                                   *
- *                                                                        *
- * Define if you used and Serial used.                                    *
- *                                                                        *
- **************************************************************************/
-//#define RFID_MODULE
-
-#define RFID_SERIAL 1
 /**************************************************************************/
 
 
@@ -1952,30 +1623,6 @@
  ********************************************************************************/
 //#define PRINTER_EVENT_LEDS
 /********************************************************************************/
-
-
-/**************************************************************************
- ********************************* Laser **********************************
- **************************************************************************
- *                                                                        *
- * Support for laser beam                                                 *
- * Check also Configuration_Laser.h                                       *
- *                                                                        *
- **************************************************************************/
-//#define LASER
-/**************************************************************************/
-
-
-/**************************************************************************
- ******************************* CNC Router *******************************
- **************************************************************************
- *                                                                        *
- * Support for CNC Router                                                 *
- * Check also Configuration_CNCRouter.h                                   *
- *                                                                        *
- **************************************************************************/
-//#define CNCROUTER
-/**************************************************************************/
 
 
 /**************************************************************************
@@ -2124,7 +1771,6 @@
  *                                                                     *
  * [1, 2, 4, 8, 16, 32, 64, 128]                                       *
  *                                                                     *
- * Alligator Board support 16 or 32 only value                         *
  *                                                                     *
  ***********************************************************************/
 #define X_MICROSTEPS  16
@@ -2156,31 +1802,6 @@
 #define E3_CURRENT  800
 #define E4_CURRENT  800
 #define E5_CURRENT  800
-
-// Motor Current setting (Only functional when motor driver current
-// ref pins are connected to a digital trimpot on supported boards)
-// Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
-#define DIGIPOT_MOTOR_CURRENT {135, 135, 135, 135, 135}
-
-// Motor Current for XY, Z, E in mA
-#define PWM_MOTOR_CURRENT {1200, 1000, 1000}
-/***********************************************************************/
-
-
-/***********************************************************************
- **************************** I2C DIGIPOT ******************************
- ***********************************************************************
- *                                                                     *
- * I2C based DIGIPOT like on the Azteeg X3 Pro                         *
- *                                                                     *
- ***********************************************************************/
-//#define DIGIPOT_I2C
-// Number of channels available for I2C digipot, For Azteeg X3 Pro we have 8
-#define DIGIPOT_I2C_NUM_CHANNELS 8
-// actual motor currents in Amps, need as many here as DIGIPOT_I2C_NUM_CHANNELS
-#define DIGIPOT_I2C_MOTOR_CURRENTS {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}
-/***********************************************************************/
-
 
 //===========================================================================
 //============================= ADVANCED FEATURES ===========================
@@ -2266,7 +1887,6 @@
 #define MM_PER_ARC_SEGMENT 1    // Length of each arc segment
 #define N_ARC_CORRECTION  25    // Number of intertpolated segments between corrections
 //#define ARC_P_CIRCLES         // Enable the 'P' parameter to specify complete circles
-//#define CNC_WORKSPACE_PLANES  // Allow G2/G3 to operate in XY, ZX, or YZ planes
 
 // Moves with fewer segments than this will be ignored and joined with the next movement
 #define MIN_STEPS_PER_SEGMENT 6

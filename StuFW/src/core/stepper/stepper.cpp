@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -182,25 +182,10 @@ volatile int32_t  Stepper::count_position[NUM_AXIS]   = { 0 };
 
 int8_t  Stepper::count_direction[NUM_AXIS]  = { 1, 1, 1, 1 };
 
-#if ENABLED(LASER)
-  int32_t Stepper::delta_error_laser = 0;
-  #if ENABLED(LASER_RASTER)
-    int Stepper::counter_raster = 0;
-  #endif // LASER_RASTER
-#endif // LASER
 
 /** Public Function */
 void Stepper::init() {
 
-  // Init Digipot Motor Current
-  #if HAS_DIGIPOTSS || HAS_MOTOR_CURRENT_PWM
-    digipot_init();
-  #endif
-
-  // Init Microstepping Pins
-  #if HAS_MICROSTEPS
-    microstep_init();
-  #endif
 
   // Init Dir Pins
   #if HAS_X_DIR
@@ -655,19 +640,15 @@ void Stepper::report_positions() {
   // Reenable Stepper ISR
   if (isr_enabled) ENABLE_STEPPER_INTERRUPT();
 
-  #if CORE_IS_XY || CORE_IS_XZ || IS_SCARA
+  #if CORE_IS_XY || CORE_IS_XZ
     SERIAL_MSG(MSG_COUNT_A);
-  #elif MECH(DELTA)
-    SERIAL_MSG(MSG_COUNT_ALPHA);
   #else
     SERIAL_MSG(MSG_COUNT_X);
   #endif
   SERIAL_VAL(xpos);
 
-  #if CORE_IS_XY || CORE_IS_YZ || IS_SCARA
+  #if CORE_IS_XY || CORE_IS_YZ
     SERIAL_MSG(" B:");
-  #elif MECH(DELTA)
-    SERIAL_MSG(" Beta:");
   #else
     SERIAL_MSG(" Y:");
   #endif
@@ -675,8 +656,6 @@ void Stepper::report_positions() {
 
   #if CORE_IS_XZ || CORE_IS_YZ
     SERIAL_MSG(" C:");
-  #elif MECH(DELTA)
-    SERIAL_MSG(" Teta:");
   #else
     SERIAL_MSG(" Z:");
   #endif
@@ -1051,214 +1030,6 @@ int32_t Stepper::triggered_position(const AxisEnum axis) {
   return v;
 }
 
-/**
- * Software-controlled Stepper Motor Current
- */
-#if HAS_DIGIPOTSS
-
-  void Stepper::digitalPotWrite(int address, int value) {
-    WRITE(DIGIPOTSS_PIN, LOW);  // take the SS pin low to select the chip
-    SPI.transfer(address);      //  send in the address and value via SPI:
-    SPI.transfer(value);
-    WRITE(DIGIPOTSS_PIN, HIGH); // take the SS pin high to de-select the chip:
-    //HAL::delayMilliseconds(10);
-  }
-
-#endif
-
-#if HAS_DIGIPOTSS || HAS_MOTOR_CURRENT_PWM
-
-  void Stepper::digipot_current(uint8_t driver, int current) {
-    #if HAS_DIGIPOTSS
-      const uint8_t digipot_ch[] = DIGIPOT_CHANNELS;
-      digitalPotWrite(digipot_ch[driver], current);
-    #elif HAS_MOTOR_CURRENT_PWM
-      #define _WRITE_CURRENT_PWM(P) analogWrite(P, 255L * current / (MOTOR_CURRENT_PWM_RANGE))
-      switch (driver) {
-        #if PIN_EXISTS(MOTOR_CURRENT_PWM_XY)
-          case 0: _WRITE_CURRENT_PWM(MOTOR_CURRENT_PWM_XY_PIN); break;
-        #endif
-        #if PIN_EXISTS(MOTOR_CURRENT_PWM_Z)
-          case 1: _WRITE_CURRENT_PWM(MOTOR_CURRENT_PWM_Z_PIN); break;
-        #endif
-        #if PIN_EXISTS(MOTOR_CURRENT_PWM_E)
-          case 2: _WRITE_CURRENT_PWM(MOTOR_CURRENT_PWM_E_PIN); break;
-        #endif
-      }
-    #endif
-  }
-
-#endif
-
-#if HAS_MICROSTEPS
-
-  /**
-   * Software-controlled Microstepping
-   */
-  void Stepper::microstep_ms(uint8_t driver, int8_t ms1, int8_t ms2) {
-    if (ms1 >= 0) switch (driver) {
-      #if HAS_X_MICROSTEPS
-        case 0: WRITE(X_MS1_PIN, ms1); break;
-      #endif
-      #if HAS_Y_MICROSTEPS
-        case 1: WRITE(Y_MS1_PIN, ms1); break;
-      #endif
-      #if HAS_Z_MICROSTEPS
-        case 2: WRITE(Z_MS1_PIN, ms1); break;
-      #endif
-      #if HAS_E0_MICROSTEPS
-        case 3: WRITE(E0_MS1_PIN, ms1); break;
-      #endif
-      #if HAS_E1_MICROSTEPS
-        case 4: WRITE(E1_MS1_PIN, ms1); break;
-      #endif
-      #if HAS_E2_MICROSTEPS
-        case 5: WRITE(E2_MS1_PIN, ms1); break;
-      #endif
-      #if HAS_E3_MICROSTEPS
-        case 6: WRITE(E3_MS1_PIN, ms1); break;
-      #endif
-      #if HAS_E4_MICROSTEPS
-        case 7: WRITE(E4_MS1_PIN, ms1); break;
-      #endif
-      #if HAS_E5_MICROSTEPS
-        case 8: WRITE(E5_MS1_PIN, ms1); break;
-      #endif
-    }
-    #if !MB(ALLIGATOR_R2) && !MB(ALLIGATOR_R3)
-      if (ms2 >= 0) switch (driver) {
-        #if HAS_X_MICROSTEPS
-          case 0: WRITE(X_MS2_PIN, ms2); break;
-        #endif
-        #if HAS_Y_MICROSTEPS
-          case 1: WRITE(Y_MS2_PIN, ms2); break;
-        #endif
-        #if HAS_Z_MICROSTEPS
-          case 2: WRITE(Z_MS2_PIN, ms2); break;
-        #endif
-        #if HAS_E0_MICROSTEPS
-          case 3: WRITE(E0_MS2_PIN, ms2); break;
-        #endif
-        #if HAS_E1_MICROSTEPS
-          case 4: WRITE(E1_MS2_PIN, ms2); break;
-        #endif
-        #if HAS_E2_MICROSTEPS
-          case 5: WRITE(E2_MS2_PIN, ms2); break;
-        #endif
-        #if HAS_E3_MICROSTEPS
-          case 6: WRITE(E3_MS2_PIN, ms2); break;
-        #endif
-        #if HAS_E4_MICROSTEPS
-          case 7: WRITE(E4_MS2_PIN, ms2); break;
-        #endif
-        #if HAS_E5_MICROSTEPS
-          case 8: WRITE(E5_MS2_PIN, ms2); break;
-        #endif
-      }
-    #else
-      UNUSED(ms2);
-    #endif
-  }
-
-  void Stepper::microstep_mode(uint8_t driver, uint8_t stepping_mode) {
-    switch (stepping_mode) {
-      case 1: microstep_ms(driver,  MICROSTEP1); break;
-      case 2: microstep_ms(driver,  MICROSTEP2); break;
-      case 4: microstep_ms(driver,  MICROSTEP4); break;
-      case 8: microstep_ms(driver,  MICROSTEP8); break;
-      case 16: microstep_ms(driver, MICROSTEP16); break;
-      #if MB(ALLIGATOR_R2) || MB(ALLIGATOR_R3)
-        case 32: microstep_ms(driver, MICROSTEP32); break;
-      #endif
-    }
-  }
-
-  void Stepper::microstep_readings() {
-    SERIAL_MSG(MSG_MICROSTEP_MS1_MS2);
-    #if HAS_X_MICROSTEPS
-      SERIAL_MSG(MSG_MICROSTEP_X);
-      SERIAL_VAL(READ(X_MS1_PIN));
-      #if PIN_EXISTS(X_MS2)
-        SERIAL_EV(READ(X_MS2_PIN));
-      #else
-        SERIAL_EOL();
-      #endif
-    #endif
-    #if HAS_Y_MICROSTEPS
-      SERIAL_MSG(MSG_MICROSTEP_Y);
-      SERIAL_VAL(READ(Y_MS1_PIN));
-      #if PIN_EXISTS(Y_MS2)
-        SERIAL_EV(READ(Y_MS2_PIN));
-      #else
-        SERIAL_EOL();
-      #endif
-    #endif
-    #if HAS_Z_MICROSTEPS
-      SERIAL_MSG(MSG_MICROSTEP_Z);
-      SERIAL_VAL(READ(Z_MS1_PIN));
-      #if PIN_EXISTS(Z_MS2)
-        SERIAL_EV(READ(Z_MS2_PIN));
-      #else
-        SERIAL_EOL();
-      #endif
-    #endif
-    #if HAS_E0_MICROSTEPS
-      SERIAL_MSG(MSG_MICROSTEP_E0);
-      SERIAL_VAL(READ(E0_MS1_PIN));
-      #if PIN_EXISTS(E0_MS2)
-        SERIAL_EV(READ(E0_MS2_PIN));
-      #else
-        SERIAL_EOL();
-      #endif
-    #endif
-    #if HAS_E1_MICROSTEPS
-      SERIAL_MSG(MSG_MICROSTEP_E1);
-      SERIAL_VAL(READ(E1_MS1_PIN));
-      #if PIN_EXISTS(E1_MS2)
-        SERIAL_EV(READ(E1_MS2_PIN));
-      #else
-        SERIAL_EOL();
-      #endif
-    #endif
-    #if HAS_E2_MICROSTEPS
-      SERIAL_MSG(MSG_MICROSTEP_E2);
-      SERIAL_VAL(READ(E2_MS1_PIN));
-      #if PIN_EXISTS(E2_MS2)
-        SERIAL_EV(READ(E2_MS2_PIN));
-      #else
-        SERIAL_EOL();
-      #endif
-    #endif
-    #if HAS_E3_MICROSTEPS
-      SERIAL_MSG(MSG_MICROSTEP_E3);
-      SERIAL_VAL(READ(E3_MS1_PIN));
-      #if PIN_EXISTS(E3_MS2)
-        SERIAL_EV(READ(E3_MS2_PIN));
-      #else
-        SERIAL_EOL();
-      #endif
-    #endif
-    #if HAS_E4_MICROSTEPS
-      SERIAL_MSG(MSG_MICROSTEP_E4);
-      SERIAL_VAL(READ(E4_MS1_PIN));
-      #if PIN_EXISTS(E4_MS2)
-        SERIAL_EV(READ(E4_MS2_PIN));
-      #else
-        SERIAL_EOL();
-      #endif
-    #endif
-    #if HAS_E5_MICROSTEPS
-      SERIAL_MSG(MSG_MICROSTEP_E5);
-      SERIAL_VAL(READ(E5_MS1_PIN));
-      #if PIN_EXISTS(E5_MS2)
-        SERIAL_EV(READ(E5_MS2_PIN));
-      #else
-        SERIAL_EOL();
-      #endif
-    #endif
-  }
-
-#endif // HAS_MICROSTEPS
 
 /**
  * Set the current position in steps
@@ -1273,19 +1044,15 @@ void Stepper::set_position(const int32_t &a, const int32_t &b, const int32_t &c,
 void Stepper::set_position(const AxisEnum a, const int32_t &v) {
   planner.synchronize();
 
-  #if ENABLED(__AVR__)
-    // Protect the access to the variable. Only required for AVR.
-    // Disable stepper ISR
-    const bool isr_enabled = STEPPER_ISR_ENABLED();
-    if (isr_enabled) DISABLE_STEPPER_INTERRUPT();
-  #endif
+  // Protect the access to the variable.
+  // Disable stepper ISR
+  const bool isr_enabled = STEPPER_ISR_ENABLED();
+  if (isr_enabled) DISABLE_STEPPER_INTERRUPT();
 
   count_position[a] = v;
 
-  #if ENABLED(__AVR__)
-    // Reenable Stepper ISR
-    if (isr_enabled) ENABLE_STEPPER_INTERRUPT();
-  #endif
+  // Reenable Stepper ISR
+  if (isr_enabled) ENABLE_STEPPER_INTERRUPT();
 }
 
 /** Private Function */
@@ -1343,25 +1110,6 @@ void Stepper::pulse_phase_step() {
     // Stop an active pulse
     pulse_tick_stop();
 
-    #if ENABLED(LASER)
-      delta_error_laser += current_block->steps_l;
-      if (delta_error_laser >= 0) {
-        if (current_block->laser_mode == PULSED && current_block->laser_status == LASER_ON) // Pulsed Firing Mode
-          laser.fire(current_block->laser_intensity);
-        #if ENABLED(LASER_RASTER)
-          if (current_block->laser_mode == RASTER && current_block->laser_status == LASER_ON) { // Raster Firing Mode
-            // For some reason, when comparing raster power to ppm line burns the rasters were around 2% more powerful
-            // going from darkened paper to burning through paper.
-            laser.fire(current_block->laser_raster_data[counter_raster]);
-            counter_raster++;
-          }
-        #endif // LASER_RASTER
-
-        delta_error_laser -= current_block->step_event_count;
-      }
-      if (current_block->laser_duration != 0 && (laser.last_firing + current_block->laser_duration < micros()))
-        laser.extinguish();
-    #endif // LASER
 
     // Decrement the count of pending pulses to do
     --events_to_do;
@@ -1393,9 +1141,6 @@ uint32_t Stepper::block_phase_step() {
       current_block = NULL;
       planner.discard_current_block();
 
-      #if ENABLED(LASER)
-        laser.extinguish();
-      #endif
     }
     // Are we in data.acceleration phase
     else if (step_events_completed <= accelerate_until) {
@@ -1609,10 +1354,6 @@ uint32_t Stepper::block_phase_step() {
       // Initialize Bresenham delta errors to 1/2
       delta_error[X_AXIS] = delta_error[Y_AXIS] = delta_error[Z_AXIS] = delta_error[E_AXIS] = -int32_t(step_event_count);
 
-      #if ENABLED(LASER)
-        delta_error_laser = delta_error[X_AXIS];
-        laser.dur = current_block->laser_duration;
-      #endif
 
       // Calculate Bresenham dividends
       advance_dividend[X_AXIS] = current_block->steps[X_AXIS] << 1;
@@ -1697,23 +1438,11 @@ uint32_t Stepper::block_phase_step() {
         bezier_2nd_half = false;
       #endif
 
-      #if ENABLED(LASER) && ENABLED(LASER_RASTER)
-         if (current_block->laser_mode == RASTER) counter_raster = 0;
-      #endif
-
       // Calculate the initial timer interval
       interval = HAL_calc_timer_interval(current_block->initial_rate, &steps_per_isr, oversampling_factor);
     }
   }
 
-  // Continuous firing of the laser during a move happens here, PPM and raster happen further down
-  #if ENABLED(LASER)
-    if (current_block->laser_mode == CONTINUOUS && current_block->laser_status == LASER_ON)
-      laser.fire(current_block->laser_intensity);
-
-    if (current_block->laser_status == LASER_OFF)
-      laser.extinguish();
-  #endif
 
   #if ENABLED(BABYSTEPPING)
     LOOP_XYZ(axis) {
@@ -3045,11 +2774,7 @@ void Stepper::_set_position(const int32_t &a, const int32_t &b, const int32_t &c
 
 #if ENABLED(BABYSTEPPING)
 
-  #if MECH(DELTA)
-    #define CYCLES_EATEN_BABYSTEP (2 * 15)
-  #else
-    #define CYCLES_EATEN_BABYSTEP 0
-  #endif
+  #define CYCLES_EATEN_BABYSTEP 0
   #define EXTRA_CYCLES_BABYSTEP (HAL_min_pulse_tick - (CYCLES_EATEN_BABYSTEP))
 
   #if EXTRA_CYCLES_BABYSTEP > 20
@@ -3061,9 +2786,6 @@ void Stepper::_set_position(const int32_t &a, const int32_t &b, const int32_t &c
       #define _PULSE_WAIT DELAY_NS(EXTRA_CYCLES_BABYSTEP * NS_PER_CYCLE)
     #elif HAL_min_pulse_tick > 0
       #define _PULSE_WAIT NOOP
-    #elif MECH(DELTA)
-      #define _PULSE_WAIT DELAY_US(2);
-    #else
       #define _PULSE_WAIT DELAY_US(4);
     #endif
   #endif
@@ -3124,46 +2846,9 @@ void Stepper::_set_position(const int32_t &a, const int32_t &b, const int32_t &c
         #elif CORE_IS_YZ
           BABYSTEP_AXIS(Y, BABYSTEP_INVERT_Z, direction);
           BABYSTEP_AXIS(Z, BABYSTEP_INVERT_Z, direction^(CORESIGN(1)<0));
-        #elif NOMECH(DELTA)
+        #else
           BABYSTEP_AXIS(Z, BABYSTEP_INVERT_Z, direction);
-        #else // DELTA
-
-          const bool z_direction = direction ^ BABYSTEP_INVERT_Z;
-
-          enable_X();
-          enable_Y();
-          enable_Z();
-
-          const uint8_t old_x_dir_pin = X_DIR_READ(),
-                        old_y_dir_pin = Y_DIR_READ(),
-                        old_z_dir_pin = Z_DIR_READ();
-
-          set_X_dir(isStepDir(X_AXIS) ^ z_direction);
-          set_Y_dir(isStepDir(Y_AXIS) ^ z_direction);
-          set_Z_dir(isStepDir(Z_AXIS) ^ z_direction);
-
-          if (direction_delay >= 50)
-            HAL::delayNanoseconds(direction_delay);
-
-          _SAVE_START;
-
-          start_X_step();
-          start_Y_step();
-          start_Z_step();
-
-          _PULSE_WAIT;
-
-          stop_X_step();
-          stop_Y_step();
-          stop_Z_step();
-
-          // Restore direction bits
-          set_X_dir(old_x_dir_pin);
-          set_Y_dir(old_y_dir_pin);
-          set_Z_dir(old_z_dir_pin);
-
         #endif
-
       } break;
 
       default: break;
@@ -3174,109 +2859,6 @@ void Stepper::_set_position(const int32_t &a, const int32_t &b, const int32_t &c
 
 #endif //BABYSTEPPING
 
-#if HAS_DIGIPOTSS || HAS_MOTOR_CURRENT_PWM
-
-  void Stepper::digipot_init() {
-    #if HAS_DIGIPOTSS
-      static const uint8_t digipot_motor_current[] = DIGIPOT_MOTOR_CURRENT;
-
-      SPI.begin();
-      SET_OUTPUT(DIGIPOTSS_PIN);
-
-      for (uint8_t i = 0; i < COUNT(digipot_motor_current); i++) {
-        //digitalPotWrite(digipot_ch[i], digipot_motor_current[i]);
-        digipot_current(i, digipot_motor_current[i]);
-      }
-
-    #elif HAS_MOTOR_CURRENT_PWM
-
-      #if PIN_EXISTS(MOTOR_CURRENT_PWM_XY)
-        SET_OUTPUT(MOTOR_CURRENT_PWM_XY_PIN);
-        digipot_current(0, motor_current_setting[0]);
-      #endif
-      #if PIN_EXISTS(MOTOR_CURRENT_PWM_Z)
-        SET_OUTPUT(MOTOR_CURRENT_PWM_Z_PIN);
-        digipot_current(1, motor_current_setting[1]);
-      #endif
-      #if PIN_EXISTS(MOTOR_CURRENT_PWM_E)
-        SET_OUTPUT(MOTOR_CURRENT_PWM_E_PIN);
-        digipot_current(2, motor_current_setting[2]);
-      #endif
-      //Set timer5 to 31khz so the PWM of the motor power is as constant as possible. (removes a buzzing noise)
-      TCCR5B = (TCCR5B & ~(_BV(CS50) | _BV(CS51) | _BV(CS52))) | _BV(CS50);
-    #endif
-  }
-  
-#endif
-
-#if HAS_MICROSTEPS
-
-  void Stepper::microstep_init() {
-
-    #if HAS_X_MICROSTEPS
-      SET_OUTPUT(X_MS1_PIN);
-    #endif
-    #if HAS_Y_MICROSTEPS
-      SET_OUTPUT(Y_MS1_PIN);
-    #endif
-    #if HAS_Z_MICROSTEPS
-      SET_OUTPUT(Z_MS1_PIN);
-    #endif
-    #if HAS_E0_MICROSTEPS
-      SET_OUTPUT(E0_MS1_PIN);
-    #endif
-    #if HAS_E1_MICROSTEPS
-      SET_OUTPUT(E1_MS1_PIN);
-    #endif
-    #if HAS_E2_MICROSTEPS
-      SET_OUTPUT(E2_MS1_PIN);
-    #endif
-    #if HAS_E3_MICROSTEPS
-      SET_OUTPUT(E3_MS1_PIN);
-    #endif
-    #if HAS_E4_MICROSTEPS
-      SET_OUTPUT(E4_MS1_PIN);
-    #endif
-    #if HAS_E5_MICROSTEPS
-      SET_OUTPUT(E5_MS1_PIN);
-    #endif
-
-    #if !MB(ALLIGATOR_R2) && !MB(ALLIGATOR_R3)
-      #if HAS_X_MICROSTEPS
-        SET_OUTPUT(X_MS2_PIN);
-      #endif
-      #if HAS_Y_MICROSTEPS
-        SET_OUTPUT(Y_MS2_PIN);
-      #endif
-      #if HAS_Z_MICROSTEPS
-        SET_OUTPUT(Z_MS2_PIN);
-      #endif
-      #if HAS_E0_MICROSTEPS
-        SET_OUTPUT(E0_MS2_PIN);
-      #endif
-      #if HAS_E1_MICROSTEPS
-        SET_OUTPUT(E1_MS2_PIN);
-      #endif
-      #if HAS_E2_MICROSTEPS
-        SET_OUTPUT(E2_MS2_PIN);
-      #endif
-      #if HAS_E3_MICROSTEPS
-        SET_OUTPUT(E3_MS2_PIN);
-      #endif
-      #if HAS_E4_MICROSTEPS
-        SET_OUTPUT(E4_MS2_PIN);
-      #endif
-      #if HAS_E5_MICROSTEPS
-        SET_OUTPUT(E5_MS2_PIN);
-      #endif
-    #endif
-
-    static const uint8_t microstep_modes[] = { X_MICROSTEPS, Y_MICROSTEPS, Z_MICROSTEPS, E0_MICROSTEPS };
-    for (uint16_t i = 0; i < COUNT(microstep_modes); i++)
-      microstep_mode(i, microstep_modes[i]);
-  }
-
-#endif
 
 #if HAS_EXT_ENCODER
 
@@ -3302,6 +2884,7 @@ void Stepper::_set_position(const int32_t &a, const int32_t &b, const int32_t &c
 
 #endif
 
-#if ENABLED(LASER)
-  bool Stepper::laser_status() { return current_block->laser_status == LASER_ON; }
-#endif
+void reset_stepper_drivers() {
+  stepper.set_directions();
+}
+

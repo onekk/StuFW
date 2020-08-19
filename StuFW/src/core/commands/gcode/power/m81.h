@@ -1,9 +1,9 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
- * mcode
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
 #define CODE_M81
@@ -43,17 +37,6 @@ inline void gcode_M81(void) {
       fans[f].paused_Speed = 0;
       fans[f].setIdle(false);
     }
-  #endif
-
-  #if ENABLED(LASER)
-    laser.extinguish();
-    #if ENABLED(LASER_PERIPHERALS)
-      laser.peripherals_off();
-    #endif
-  #endif
-
-  #if ENABLED(CNCROUTER)
-    cnc.disable_router();
   #endif
 
   printer.safe_delay(1000); // Wait 1 second before switching off

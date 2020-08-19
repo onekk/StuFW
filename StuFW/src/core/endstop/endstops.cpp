@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -32,12 +32,8 @@ Endstops endstops;
 // public:
 flagendstop_t Endstops::flag;
 
-#if MECH(DELTA)
-  float Endstops::soft_endstop_radius_2 = 0.0;
-#else
-  float Endstops::soft_endstop_min[XYZ] = { X_MIN_POS, Y_MIN_POS, Z_MIN_POS },
+float Endstops::soft_endstop_min[XYZ] = { X_MIN_POS, Y_MIN_POS, Z_MIN_POS },
         Endstops::soft_endstop_max[XYZ] = { X_MAX_POS, Y_MAX_POS, Z_MAX_POS };
-#endif
 
 #if ENABLED(X_TWO_ENDSTOPS)
   float Endstops::x2_endstop_adj = 0.0;
@@ -159,45 +155,22 @@ void Endstops::factory_parameters() {
     z2_endstop_adj = 0.0f;
   #endif
   
-  #if MB(ALLIGATOR_R2) || MB(ALLIGATOR_R3)
-
-    setLogic(X_MIN, !X_MIN_ENDSTOP_LOGIC);
-    setLogic(Y_MIN, !Y_MIN_ENDSTOP_LOGIC);
-    setLogic(Z_MIN, !Z_MIN_ENDSTOP_LOGIC);
-    setLogic(X_MAX, !X_MAX_ENDSTOP_LOGIC);
-    setLogic(Y_MAX, !Y_MAX_ENDSTOP_LOGIC);
-    setLogic(Z_MAX, !Z_MAX_ENDSTOP_LOGIC);
-    setLogic(X2_MIN, !X2_MIN_ENDSTOP_LOGIC);
-    setLogic(Y2_MIN, !Y2_MIN_ENDSTOP_LOGIC);
-    setLogic(Z2_MIN, !Z2_MIN_ENDSTOP_LOGIC);
-    setLogic(Z3_MIN, !Z3_MIN_ENDSTOP_LOGIC);
-    setLogic(X2_MAX, !X2_MAX_ENDSTOP_LOGIC);
-    setLogic(Y2_MAX, !Y2_MAX_ENDSTOP_LOGIC);
-    setLogic(Z2_MAX, !Z2_MAX_ENDSTOP_LOGIC);
-    setLogic(Z3_MAX, !Z3_MAX_ENDSTOP_LOGIC);
-    setLogic(Z_PROBE, !Z_PROBE_ENDSTOP_LOGIC);
-    setLogic(DOOR_OPEN, !DOOR_OPEN_LOGIC);
-
-  #else
-
-    setLogic(X_MIN, X_MIN_ENDSTOP_LOGIC);
-    setLogic(Y_MIN, Y_MIN_ENDSTOP_LOGIC);
-    setLogic(Z_MIN, Z_MIN_ENDSTOP_LOGIC);
-    setLogic(X_MAX, X_MAX_ENDSTOP_LOGIC);
-    setLogic(Y_MAX, Y_MAX_ENDSTOP_LOGIC);
-    setLogic(Z_MAX, Z_MAX_ENDSTOP_LOGIC);
-    setLogic(X2_MIN, X2_MIN_ENDSTOP_LOGIC);
-    setLogic(Y2_MIN, Y2_MIN_ENDSTOP_LOGIC);
-    setLogic(Z2_MIN, Z2_MIN_ENDSTOP_LOGIC);
-    setLogic(Z3_MIN, Z3_MIN_ENDSTOP_LOGIC);
-    setLogic(X2_MAX, X2_MAX_ENDSTOP_LOGIC);
-    setLogic(Y2_MAX, Y2_MAX_ENDSTOP_LOGIC);
-    setLogic(Z2_MAX, Z2_MAX_ENDSTOP_LOGIC);
-    setLogic(Z3_MAX, Z3_MAX_ENDSTOP_LOGIC);
-    setLogic(Z_PROBE, Z_PROBE_ENDSTOP_LOGIC);
-    setLogic(DOOR_OPEN, DOOR_OPEN_LOGIC);
-
-  #endif
+  setLogic(X_MIN, X_MIN_ENDSTOP_LOGIC);
+  setLogic(Y_MIN, Y_MIN_ENDSTOP_LOGIC);
+  setLogic(Z_MIN, Z_MIN_ENDSTOP_LOGIC);
+  setLogic(X_MAX, X_MAX_ENDSTOP_LOGIC);
+  setLogic(Y_MAX, Y_MAX_ENDSTOP_LOGIC);
+  setLogic(Z_MAX, Z_MAX_ENDSTOP_LOGIC);
+  setLogic(X2_MIN, X2_MIN_ENDSTOP_LOGIC);
+  setLogic(Y2_MIN, Y2_MIN_ENDSTOP_LOGIC);
+  setLogic(Z2_MIN, Z2_MIN_ENDSTOP_LOGIC);
+  setLogic(Z3_MIN, Z3_MIN_ENDSTOP_LOGIC);
+  setLogic(X2_MAX, X2_MAX_ENDSTOP_LOGIC);
+  setLogic(Y2_MAX, Y2_MAX_ENDSTOP_LOGIC);
+  setLogic(Z2_MAX, Z2_MAX_ENDSTOP_LOGIC);
+  setLogic(Z3_MAX, Z3_MAX_ENDSTOP_LOGIC);
+  setLogic(Z_PROBE, Z_PROBE_ENDSTOP_LOGIC);
+  setLogic(DOOR_OPEN, DOOR_OPEN_LOGIC);
 
   setPullup(X_MIN, ENDSTOPPULLUP_XMIN);
   setPullup(Y_MIN, ENDSTOPPULLUP_YMIN);
@@ -566,26 +539,15 @@ void Endstops::clamp_to_software(float target[XYZ]) {
 
   if (!isSoftEndstop()) return;
 
-  #if MECH(DELTA)
-    const float dist_2 = HYPOT2(target[X_AXIS], target[Y_AXIS]);
-    if (dist_2 > soft_endstop_radius_2) {
-      const float ratio = mechanics.data.print_radius / SQRT(dist_2);
-      target[X_AXIS] *= ratio;
-      target[Y_AXIS] *= ratio;
-    }
-    NOLESS(target[Z_AXIS], 0);
-    NOMORE(target[Z_AXIS], mechanics.data.height);
-  #else
-    #if ENABLED(MIN_SOFTWARE_ENDSTOPS)
-      NOLESS(target[X_AXIS], soft_endstop_min[X_AXIS]);
-      NOLESS(target[Y_AXIS], soft_endstop_min[Y_AXIS]);
-      NOLESS(target[Z_AXIS], soft_endstop_min[Z_AXIS]);
-    #endif
-    #if ENABLED(MAX_SOFTWARE_ENDSTOPS)
-      NOMORE(target[X_AXIS], soft_endstop_max[X_AXIS]);
-      NOMORE(target[Y_AXIS], soft_endstop_max[Y_AXIS]);
-      NOMORE(target[Z_AXIS], soft_endstop_max[Z_AXIS]);
-    #endif
+  #if ENABLED(MIN_SOFTWARE_ENDSTOPS)
+    NOLESS(target[X_AXIS], soft_endstop_min[X_AXIS]);
+    NOLESS(target[Y_AXIS], soft_endstop_min[Y_AXIS]);
+    NOLESS(target[Z_AXIS], soft_endstop_min[Z_AXIS]);
+  #endif
+  #if ENABLED(MAX_SOFTWARE_ENDSTOPS)
+    NOMORE(target[X_AXIS], soft_endstop_max[X_AXIS]);
+    NOMORE(target[Y_AXIS], soft_endstop_max[Y_AXIS]);
+    NOMORE(target[Z_AXIS], soft_endstop_max[Z_AXIS]);
   #endif
 }
 

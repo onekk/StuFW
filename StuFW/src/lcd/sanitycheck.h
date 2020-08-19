@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -32,134 +32,10 @@
 /**
  * Make sure only one display is enabled
  *
- * Note: BQ_LCD_SMART_CONTROLLER => REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
- *       REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER => REPRAP_DISCOUNT_SMART_CONTROLLER
- *       SAV_3DGLCD => U8GLIB_SH1106 => ULTIMAKERCONTROLLER
- *       MKS_12864OLED => U8GLIB_SH1106 => ULTIMAKERCONTROLLER
- *       MKS_12864OLED_SSD1306 => U8GLIB_SSD1306 => ULTIMAKERCONTROLLER
- *       miniVIKI => ULTIMAKERCONTROLLER
- *       VIKI2 => ULTIMAKERCONTROLLER
- *       ELB_FULL_GRAPHIC_CONTROLLER => ULTIMAKERCONTROLLER
- *       AZSMZ_12864 => ULTIMAKERCONTROLLER
- *       PANEL_ONE => ULTIMAKERCONTROLLER
- */
+*/
 static_assert(1 >= 0
-  #if ENABLED(ULTIMAKERCONTROLLER) \
-      && DISABLED(SAV_3DGLCD) \
-      && DISABLED(miniVIKI) \
-      && DISABLED(VIKI2) \
-      && DISABLED(ELB_FULL_GRAPHIC_CONTROLLER) \
-      && DISABLED(AZSMZ_12864) \
-      && DISABLED(PANEL_ONE) \
-      && DISABLED(MKS_12864OLED) \
-      && DISABLED(MKS_12864OLED_SSD1306)
-    + 1
-  #endif
   #if ENABLED(REPRAP_DISCOUNT_SMART_CONTROLLER) \
-      && DISABLED(REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER) \
-      && DISABLED(LCD_FOR_MELZI) \
-      && DISABLED(MAKEBOARD_MINI_2_LINE_DISPLAY_1602) \
-      && DISABLED(MKS_12864OLED) \
-      && DISABLED(MKS_12864OLED_SSD1306)
-    + 1
-  #endif
-  #if ENABLED(REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER) \
-      && DISABLED(BQ_LCD_SMART_CONTROLLER)
-    + 1
-  #endif
-  #if ENABLED(LCD_FOR_MELZI)
-    + 1
-  #endif
-  #if ENABLED(MKS_12864OLED)
-    + 1
-  #endif
-  #if ENABLED(MKS_12864OLED_SSD1306)
-    + 1
-  #endif
-  #if ENABLED(MAKEBOARD_MINI_2_LINE_DISPLAY_1602)
-    + 1
-  #endif
-  #if ENABLED(CARTESIO_UI)
-    + 1
-  #endif
-  #if ENABLED(PANEL_ONE)
-    + 1
-  #endif
-  #if ENABLED(MAKRPANEL)
-    + 1
-  #endif
-  #if ENABLED(REPRAPWORLD_GRAPHICAL_LCD)
-    + 1
-  #endif
-  #if ENABLED(VIKI2)
-    + 1
-  #endif
-  #if ENABLED(miniVIKI)
-    + 1
-  #endif
-  #if ENABLED(ELB_FULL_GRAPHIC_CONTROLLER)
-    + 1
-  #endif
-  #if ENABLED(AZSMZ_12864)
-    + 1
-  #endif
-  #if ENABLED(G3D_PANEL)
-    + 1
-  #endif
-  #if ENABLED(MINIPANEL) && DISABLED(MKS_MINI_12864)
-    + 1
-  #endif
-  #if ENABLED(MKS_MINI_12864)
-    + 1
-  #endif
-  #if ENABLED(REPRAPWORLD_KEYPAD) \
-      && DISABLED(CARTESIO_UI) \
-      && DISABLED(ZONESTAR_LCD)
-    + 1
-  #endif
-  #if ENABLED(RIGIDBOT_PANEL)
-    + 1
-  #endif
-  #if ENABLED(RA_CONTROL_PANEL)
-    + 1
-  #endif
-  #if ENABLED(LCD_SAINSMART_I2C_1602)
-    + 1
-  #endif
-  #if ENABLED(LCD_SAINSMART_I2C_2004)
-    + 1
-  #endif
-  #if ENABLED(LCM1602)
-    + 1
-  #endif
-  #if ENABLED(LCD_I2C_PANELOLU2)
-    + 1
-  #endif
-  #if ENABLED(LCD_I2C_VIKI)
-    + 1
-  #endif
-  #if ENABLED(U8GLIB_SSD1306) && DISABLED(OLED_PANEL_TINYBOY2) && DISABLED(MKS_12864OLED_SSD1306)
-    + 1
-  #endif
-  #if ENABLED(SAV_3DLCD)
-    + 1
-  #endif
-  #if ENABLED(BQ_LCD_SMART_CONTROLLER)
-    + 1
-  #endif
-  #if ENABLED(SAV_3DGLCD)
-    + 1
-  #endif
-  #if ENABLED(OLED_PANEL_TINYBOY2)
-    + 1
-  #endif
-  #if ENABLED(ZONESTAR_LCD)
-    + 1
-  #endif
-  #if ENABLED(ULTI_CONTROLLER)
-    + 1
-  #endif
-  #if HAS_NEXTION_LCD
+      && DISABLED(REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER)
     + 1
   #endif
   , "DEPENDENCY ERROR: Please select no more than one LCD controller option."
@@ -225,13 +101,6 @@ static_assert(1 >= 0
   #endif
 #endif
 
-// RepRapWorld keypad move step
-#if ENABLED(REPRAPWORLD_KEYPAD)
-  #if DISABLED(REPRAPWORLD_KEYPAD_MOVE_STEP)
-    #error "DEPENDENCY ERROR: Missing setting REPRAPWORLD_KEYPAD_MOVE_STEP."
-  #endif
-#endif
-
 // Manual feedrate
 #if ENABLED(ULTIPANEL) && DISABLED(MANUAL_FEEDRATE)
   #error "DEPENDENCY ERROR: Missing setting MANUAL_FEEDRATE."
@@ -243,9 +112,6 @@ static_assert(1 >= 0
 #endif
 
 // ULTIPANEL encoder
-#if ENABLED(ULTIPANEL) && DISABLED(NEWPANEL) && DISABLED(SR_LCD_2W_NL) && DISABLED(SHIFT_CLK)
-  #error "DEPENDENCY ERROR: ULTIPANEL requires some kind of encoder."
-#endif
 #if ENCODER_PULSES_PER_STEP < 0
   #error "DEPENDENCY ERROR: ENCODER_PULSES_PER_STEP should not be negative, use REVERSE_MENU_DIRECTION instead."
 #endif

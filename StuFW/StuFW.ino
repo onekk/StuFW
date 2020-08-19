@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on Mk4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -19,10 +19,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// dev-display version Here to distinguish in arduino IDE
 /**
- * Help to document MK4duo's G-codes online:
- *  - http://reprap.org/wiki/G-code
- *  - https://github.com/MagoKimbra/MK4duo/blob/master/Documentation/GCodes.md
  *
  * -----------------
  * Implemented Codes
@@ -30,19 +28,15 @@
  *
  * "G" Codes
  *
- * G0   -> G1 except for laser where G0 is "move without firing"
- * G1   - Coordinated Movement X Y Z E F(feedrate) P(Purge), for laser move by firing
+ * G0   -> G1
+ * G1   - Coordinated Movement X Y Z E F(feedrate) P(Purge)
  * G2   - CW ARC
  * G3   - CCW ARC
  * G4   - Dwell S[seconds] or P[milliseconds], delay in Second or Millisecond
  * G5   - Bezier curve - from http://forums.reprap.org/read.php?147,93577
- * G7   - Laser raster base64
  * G10  - Retract filament according to settings of M207
  * G11  - Retract recover filament according to settings of M208
  * G12  - Clean tool
- * G17  - Select Plane XY (Requires CNC_WORKSPACE_PLANES)
- * G18  - Select Plane ZX (Requires CNC_WORKSPACE_PLANES)
- * G19  - Select Plane YZ (Requires CNC_WORKSPACE_PLANES)
  * G20  - Set input units to inches
  * G21  - Set input units to millimeters
  * G26  - Mesh Validation Pattern (Requires G26_MESH_VALIDATION) 
@@ -59,10 +53,6 @@
  *          P = [bool] with a non-zero value will apply the result to current probe_offset_Z (ONLY DELTA)
  * G31  - Dock sled (Z_PROBE_SLED only)
  * G32  - Undock sled (Z_PROBE_SLED only)
- * G33  - Delta geometry Autocalibration (Requires DELTA_AUTO_CALIBRATION_?)
- *          F[nfactor] p[npoint] Q[debugging] (Requires DELTA_AUTO_CALIBRATION_1)
- *          P[points] [F] [O] [T] V[verbose] (Requires DELTA_AUTO_CALIBRATION_2)
- * G34  - Set Delta Height calculated from toolhead position (only DELTA)
  * G38  - Probe target - similar to G28 except it uses the Z_MIN endstop for all three axes
  * G42  - Coordinated move to a mesh point. (Requires MESH_BED_LEVELING or AUTO_BED_LEVELING_BILINEAR)
  * G60  - Save current position coordinates (all axes, for active extruder).
@@ -79,11 +69,6 @@
  *
  * M0   - Unconditional stop - Wait for user to press a button on the LCD (Only if ULTRA_LCD is enabled)
  * M1   -> M0
- * M3   - S[value] L[duration] P[ppm] D[diagnostic] B[set mode] in laser beam control. (Requires LASER)
- *        S[value] CNC clockwise speed. (Requires CNCROUTERS)
- * M4   - S[value] CNC counter clockwise speed. (Requires CNCROUTERS)
- * M5   - Turn laser/spindle off. (Requires LASER or Requires CNCROUTERS)
- * M6   - Tool change CNC. (Requires CNCROUTERS)
  * M17  - Enable/Power all stepper motors
  * M18  - Disable all stepper motors; same as M84
  * M20  - List SD card. (Requires SDSUPPORT)
@@ -101,17 +86,16 @@
  * M32  - Open file and start print
  * M33  - Stop printing, close file and save restart.gcode
  * M34  - Set SD Card Sorting Options
- * M35  - Upload Firmware to Nextion from SD
  * M42  - Change pin status via gcode Use M42 Px Sy to set pin x to value y, when omitting Px the onboard led will be used.
  * M43  - Display pin status, watch pins for changes, watch endstops & toggle LED, Z servo probe test, toggle pins
  *
  * M43         - report name and state of pin(s)
  *                 P[pin]  Pin to read or watch. If omitted, reads all pins.
- *                 I       Flag to ignore MK4duo's pin protection.
+ *                 I       Flag to ignore StuFW's pin protection.
  *
  * M43 W       - Watch pins -reporting changes- until reset, click, or M108.
  *                 P[pin]  Pin to read or watch. If omitted, read/watch all pins.
- *                 I       Flag to ignore MK4duo's pin protection.
+ *                 I       Flag to ignore StuFW's pin protection.
  *
  * M43 E[bool] - Enable / disable background endstop monitoring
  *                 - Machine continues to operate
@@ -122,7 +106,7 @@
  * M43 T       - Toggle pin(s) and report which pin is being toggled
  *                 S[pin]  - Start Pin number.   If not given, will default to 0
  *                 L[pin]  - End Pin number.   If not given, will default to last pin defined for this board
- *                 I       - Flag to ignore MK4duo's pin protection.   Use with caution!!!!
+ *                 I       - Flag to ignore StuFW's pin protection.   Use with caution!!!!
  *                 R       - Repeat pulses on each pin this number of times before continueing to next pin
  *                 W       - Wait time (in miliseconds) between pulses.  If not given will default to 500
  *
@@ -172,16 +156,11 @@
  * M123 - Set Endstop Logic X[bool] Y[bool] Z[bool] I[X2 bool] J[Y2 bool] K[Z2 bool] P[Probe bool] D[Door bool]
  * M124 - Set Endstop Pullup X[bool] Y[bool] Z[bool] I[X2 bool] J[Y2 bool] K[Z2 bool] P[Probe bool] D[Door bool]
  * M125 - Save current position and move to pause park position. (Requires PARK_HEAD_ON_PAUSE)
- * M126 - Solenoid Air Valve Open (BariCUDA support by jmil)
- * M127 - Solenoid Air Valve Closed (BariCUDA vent to atmospheric pressure by jmil)
- * M128 - EtoP Open (BariCUDA EtoP = electricity to air pressure transducer by jmil)
- * M129 - EtoP Closed (BariCUDA EtoP = electricity to air pressure transducer by jmil)
  * M140 - Set hot bed target temp
  * M141 - Set hot chamber target temp
  * M142 - Set cooler target temp
  * M145 - Set the heatup state H[hotend] B[bed] F[fan speed] for S[material] (0=PLA, 1=ABS)
  * M149 - Set temperature units
- * M150 - Set Status LED Color as R[red] U[green] B[blue]. Values 0-255. (Requires BLINKM, RGB_LED, RGBW_LED, or PCA9632)
  * M155 - S[1/0] Enable/disable auto report temperatures.
  * M163 - S[index] P[float] Set a single proportion for a mixing extruder. (Requires COLOR_MIXING_EXTRUDER)
  * M164 - S[index] Save the mix as a virtual extruder. (Requires COLOR_MIXING_EXTRUDER and MIXING_VIRTUAL_TOOLS)
@@ -233,8 +212,6 @@
  * M350 - Set microstepping mode. (Requires digital microstepping pins.)
  * M351 - Toggle MS1 MS2 pins directly. (Requires digital microstepping pins.)
  * M355 - Turn case lights on/off
- * M380 - Activate solenoid on active extruder
- * M381 - Disable all solenoids
  * M400 - Finish all moves
  * M401 - Lower z-probe if present
  * M402 - Raise z-probe if present
@@ -249,10 +226,6 @@
  *        Z[height] for leveling fade height (Requires ENABLE_LEVELING_FADE_HEIGHT)
  * M421 - Set a single Z coordinate in the Mesh Leveling grid. X[units] Y[units] Z[units] (Requires MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR, or AUTO_BED_LEVELING_UBL)
  * M428 - Set the home_offset logically based on the current_position
- * M450 - Report Printer Mode
- * M451 - Select FFF Printer Mode
- * M452 - Select Laser Printer Mode
- * M453 - Select CNC Printer Mode
  * M500 - Store parameters in EEPROM
  * M501 - Read parameters from EEPROM (if you need reset them after you changed them temporarily).
  * M502 - Revert to the default "factory settings". You still need to store them in EEPROM afterwards if you want to.
@@ -271,7 +244,6 @@
  * M603 - Set filament change T[toolhead] U[Retract distance] L[Extrude distance]
  * M604 - Set data Extruder Encoder S[Error steps] (requires EXTRUDER ENCODER)
  * M605 - Set dual x-carriage movement mode: S[mode] [ X[duplication x-offset] R[duplication temp offset] ]
- * M649 - Set laser options. S[intensity] L[duration] P[ppm] B[set mode] R[raster mm per pulse] F[feedrate]
  * M666 - Delta geometry adjustment
  * M666 - Set Two Endstops offsets for X, Y, and/or Z (requires TWO ENDSTOPS)
  * M701 - Load Filament T[toolhead] Z[distance] L[Extrude distance]
@@ -279,41 +251,8 @@
  * M800 - S goto to lcd menu. With no parameters run restart commands.
  * M851 - Set X Y Z Probe Offset in current units, set speed [F]ast and [S]low, [R]epetititons. (Requires Probe)
  * M900 - Set Linear Advance K-factor. (Requires LIN_ADVANCE)
- * M906 - Set motor currents XYZ T0-4 E (Requires ALLIGATOR)
- *        Set or get motor current in milliamps using axis codes X, Y, Z, E. Report values if no axis codes given. (Requires TRINAMIC)
- * M907 - Set digital trimpot motor current using axis codes. (Requires a board with digital trimpots)
- * M908 - Control digital trimpot directly. (Requires DIGIPOTSS_PIN)
- * M911 - Report stepper driver overtemperature pre-warn condition. (Requires TRINAMIC)
- * M912 - Clear stepper driver overtemperature pre-warn condition flag. (Requires TRINAMIC)
- * M913 - Set HYBRID_THRESHOLD speed. (Requires HYBRID_THRESHOLD)
- * M914 - Set StallGuard sensitivity. (Requires SENSORLESS_HOMING)
- * M915 - TMC Z axis calibration routine. (Requires TMC)
- * M922 - Enable/disable TMC debug. (Requires TMC_DEBUG)
- * M930 - TMC set blank_time.
- * M931 - TMC set off_time.
- * M932 - TMC set hysteresis_start.
- * M933 - TMC set hysteresis_end/sine_offset (chm = 0/1).
- * M934 - TMC set fast_decay_time (chm = 1).
- * M935 - TMC set disable_I_comparator (chm = 1).
- * M936 - TMC set stealth_gradient.
- * M937 - TMC set stealth_amplitude.
- * M938 - TMC set stealth_freq.
- * M939 - TMC switch stealth_autoscale.
- * M940 - TMC switch StealthChop.
- * M941 - TMC switch ChopperMode.
- * M942 - TMC switch interpolation.
- *
- * ************ SCARA Specific - This can change to suit future G-code regulations
- * M360 - SCARA calibration: Move to cal-position ThetaA (0 deg calibration)
- * M361 - SCARA calibration: Move to cal-position ThetaB (90 deg calibration - steps per degree)
- * M362 - SCARA calibration: Move to cal-position PsiA (0 deg calibration)
- * M363 - SCARA calibration: Move to cal-position PsiB (90 deg calibration - steps per degree)
- * M364 - SCARA calibration: Move to cal-position PsIC (90 deg to Theta calibration position)
- * ************* SCARA End ***************
  *
  * M928 - Start SD logging (M928 filename.g) - ended by M29
- * M995 - X Y Z Set origin for graphic in NEXTION
- * M996 - S[scale] Set scale for graphic in NEXTION
  * M999 - Restart after being stopped by error
  *
  * "T" Codes

@@ -1,9 +1,9 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,11 +20,6 @@
  *
  */
 
-/**
- * mcode
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
- */
 
 #if ENABLED(JSON_OUTPUT)
 
@@ -134,8 +129,6 @@
           SERIAL_MSG("corexz");
         #elif MECH(COREZX)
           SERIAL_MSG("corezx");
-        #elif MECH(DELTA)
-          SERIAL_MSG("delta");
         #endif
         SERIAL_MSG("\",\"name\":\"");
         SERIAL_MSG(CUSTOM_MACHINE_NAME);
@@ -226,31 +219,9 @@
         }
         SERIAL_MSG("],");
 
-        #if MB(ALLIGATOR_R2) || MB(ALLIGATOR_R3)
-          SERIAL_MSG("\"currents\":[");
-          SERIAL_VAL(externaldac.motor_current[X_AXIS]);
-          SERIAL_CHR(',');
-          SERIAL_VAL(externaldac.motor_current[Y_AXIS]);
-          SERIAL_CHR(',');
-          SERIAL_VAL(externaldac.motor_current[Z_AXIS]);
-          for (uint8_t i = 0; i < DRIVER_EXTRUDERS; i++) {
-            SERIAL_CHR(',');
-            SERIAL_VAL(externaldac.motor_current[E_AXIS + i]);
-          }
-          SERIAL_EM("],");
-        #endif
-
         SERIAL_MSG("\"firmwareElectronics\":\"");
         #if MB(RAMPS_13_HFB) || MB(RAMPS_13_HHB) || MB(RAMPS_13_HFF) || MB(RAMPS_13_HHF) || MB(RAMPS_13_HHH)
           SERIAL_MSG("RAMPS");
-        #elif MB(ALLIGATOR_R2)
-          SERIAL_MSG("ALLIGATOR_R2");
-        #elif MB(ALLIGATOR_R3)
-          SERIAL_MSG("ALLIGATOR_R3");
-        #elif MB(RADDS) || MB(RAMPS_FD_V1) || MB(RAMPS_FD_V2) || MB(SMART_RAMPS) || MB(RAMPS4DUE)
-          SERIAL_MSG("Arduino due");
-        #elif MB(ULTRATRONICS)
-          SERIAL_MSG("ULTRATRONICS");
         #else
           SERIAL_MSG("AVR");
         #endif

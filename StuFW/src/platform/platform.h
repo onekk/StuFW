@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -67,15 +67,7 @@
 #define SPI_DATAMODE_2 0x08
 #define SPI_DATAMODE_3 0x0C
 
-#if ENABLED(ARDUINO_ARCH_SAM)
-  #define CPU_32_BIT
-  #include "HAL_DUE/spi_pins.h"
-  #include "HAL_DUE/HAL.h"
-#elif ENABLED(ARDUINO_ARCH_SAMD)
-  #define CPU_32_BIT
-  #include "HAL_SAMD/spi_pins.h"
-  #include "HAL_SAMD/HAL.h"
-#elif ENABLED(__AVR__)
+#if ENABLED(__AVR__)
   #include "HAL_AVR/spi_pins.h"
   #include "HAL_AVR/HAL.h"
 #else

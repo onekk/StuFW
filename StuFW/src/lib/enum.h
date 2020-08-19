@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -54,13 +54,8 @@ enum AxisEnum : uint8_t {
  */
 enum PrinterModeEnum : uint8_t {
   PRINTER_MODE_FFF,           // M450 S0 or M451
-  PRINTER_MODE_LASER,         // M450 S1 or M452
-  PRINTER_MODE_CNC,           // M450 S2 or M453
-  PRINTER_MODE_PICKER,        // M450 S3 or M454
-  PRINTER_MODE_SOLDER,        // M450 S4
-  PRINTER_MODE_PLOTTER,
-  PRINTER_MODE_COUNT
 };
+
 enum InterruptEventEnum : uint8_t {
   INTERRUPT_EVENT_NONE,
   INTERRUPT_EVENT_FIL_RUNOUT,
@@ -68,7 +63,7 @@ enum InterruptEventEnum : uint8_t {
 };
 
 /**
- * States for managing MK4duo and host communication
+ * States for managing StuFW and host communication
  * MK4duo sends messages if blocked or busy
  */
 enum BusyStateEnum : uint8_t {
@@ -284,75 +279,3 @@ enum MeshLevelingStateEnum : uint8_t {
   MeshReset       // G29 S5
 };
 
-/**
- * Trinamic Debug
- */
-enum TMCdebugEnum : char {
-  TMC_CODES,
-  TMC_ENABLED,
-  TMC_CURRENT,
-  TMC_RMS_CURRENT,
-  TMC_MAX_CURRENT,
-  TMC_IRUN,
-  TMC_IHOLD,
-  TMC_CS_ACTUAL,
-  TMC_PWM_SCALE,
-  TMC_VSENSE,
-  TMC_STEALTHCHOP,
-  TMC_MICROSTEPS,
-  TMC_TSTEP,
-  TMC_TPWMTHRS,
-  TMC_TPWMTHRS_MMS,
-  TMC_OTPW,
-  TMC_OTPW_TRIGGERED,
-  TMC_TOFF,
-  TMC_TBL,
-  TMC_HEND,
-  TMC_HSTRT,
-  TMC_SGT,
-  TMC_NULL
-};
-enum TMCdrvStatusEnum : char {
-  TMC_DRV_CODES,
-  TMC_STST,
-  TMC_OLB,
-  TMC_OLA,
-  TMC_S2GB,
-  TMC_S2GA,
-  TMC_DRV_OTPW,
-  TMC_OT,
-  TMC_STALLGUARD,
-  TMC_DRV_CS_ACTUAL,
-  TMC_FSACTIVE,
-  TMC_SG_RESULT,
-  TMC_DRV_STATUS_HEX,
-  TMC_T157,
-  TMC_T150,
-  TMC_T143,
-  TMC_T120,
-  TMC_STEALTH,
-  TMC_S2VSB,
-  TMC_S2VSA
-};
-enum TMCgetRegistersEnum : char {
-  TMC_AXIS_CODES,
-  TMC_GET_GCONF,
-  TMC_GET_IHOLD_IRUN,
-  TMC_GET_GSTAT,
-  TMC_GET_IOIN,
-  TMC_GET_TPOWERDOWN,
-  TMC_GET_TSTEP,
-  TMC_GET_TPWMTHRS,
-  TMC_GET_TCOOLTHRS,
-  TMC_GET_THIGH,
-  TMC_GET_CHOPCONF,
-  TMC_GET_COOLCONF,
-  TMC_GET_PWMCONF,
-  TMC_GET_PWM_SCALE,
-  TMC_GET_DRV_STATUS,
-  TMC_GET_DRVCONF,
-  TMC_GET_DRVCTRL,
-  TMC_GET_DRVSTATUS,
-  TMC_GET_SGCSCONF,
-  TMC_GET_SMARTEN
-};

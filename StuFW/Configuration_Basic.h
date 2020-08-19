@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -130,7 +130,7 @@
 /**
  * Host Keepalive
  *
- * When enabled MK4duo will send a busy status message to the host
+ * When enabled StuFW will send a busy status message to the host
  * every couple of seconds when it can't accept commands.
  */
 // Disable this if your host doesn't like keepalive messages
@@ -145,7 +145,6 @@
  *****************************************************************************************
  *                                                                                       *
  * Either an numeric ID or name defined in boards.h is valid.                            *
- * See: https://github.com/MagoKimbra/MK4duo/blob/master/Documentation/Hardware.md *
  *                                                                                       *
  *****************************************************************************************/
 #define MOTHERBOARD BOARD_RAMPS_13_HFB
@@ -163,9 +162,6 @@
  * COREZX         - H-Bot/Core ZX (x_motor = z+x, z_motor = z-x)       *
  * COREYZ         - H-Bot/Core YZ (y_motor = y+z, z_motor = y-z)       *
  * COREZY         - H-Bot/Core ZY (y_motor = z+y, z_motor = z-y)       *
- * DELTA          - Rostock, Kossel, RostockMax, Cerberus, etc         *
- * MORGAN_SCARA   - SCARA classic                                      *
- * MAKERARM_SCARA - SCARA Makerfarm                                    *
  *                                                                     *
  ***********************************************************************/
 #define MECHANISM MECH_CARTESIAN
@@ -175,10 +171,6 @@
 //#define MECHANISM MECH_COREZX
 //#define MECHANISM MECH_COREYZ
 //#define MECHANISM MECH_COREZY
-//#define MECHANISM MECH_DELTA
-//#define MECHANISM MECH_MORGAN_SCARA
-//#define MECHANISM MECH_MAKERARM_SCARA
-//#define MECHANISM MECH_MUVE3D
 /***********************************************************************/
 
 

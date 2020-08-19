@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -50,12 +50,8 @@ class Endstops {
 
     static flagendstop_t  flag;
 
-    #if MECH(DELTA)
-      static float  soft_endstop_radius_2;
-    #else
-      static float  soft_endstop_min[XYZ],
+    static float  soft_endstop_min[XYZ],
                     soft_endstop_max[XYZ];
-    #endif
 
     #if ENABLED(X_TWO_ENDSTOPS)
       static float  x2_endstop_adj;

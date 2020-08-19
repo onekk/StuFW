@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -165,10 +165,6 @@
    */
   void Nozzle::clean(const uint8_t &pattern, const uint8_t &strokes, const float &radius, const uint8_t &objects/*=0*/) {
 
-    #if MECH(DELTA)
-      if (mechanics.current_position[Z_AXIS] > mechanics.delta_clip_start_height)
-        mechanics.do_blocking_move_to_z(mechanics.delta_clip_start_height);
-    #endif
 
     switch (pattern) {
       case 1:

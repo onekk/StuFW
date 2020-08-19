@@ -1,9 +1,9 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,11 +20,6 @@
  *
  */
 
-/**
- * gcode.h
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
- */
 
 void out_of_range_error(PGM_P p_edge) {
   SERIAL_MSG("?Probe ");
@@ -79,7 +74,6 @@ void out_of_range_error(PGM_P p_edge) {
  *  T  Generate a Bed Topology Report. Example: "G29 P5 T" for a detailed report.
  *     This is useful for manual bed leveling and finding flaws in the bed (to
  *     assist with part placement).
- *     Not supported by non-linear delta printer bed leveling.
  *
  * Parameters With LINEAR and BILINEAR leveling only:
  *
@@ -160,16 +154,8 @@ inline void gcode_G29(void) {
     const bool faux = no_action;
   #endif
 
-  #if MECH(DELTA)
-    if (!bedlevel.flag.g29_in_progress) {
-      // Homing
-      mechanics.home();
-      mechanics.do_blocking_move_to_z(_Z_PROBE_DEPLOY_HEIGHT, mechanics.homing_feedrate_mm_s[Z_AXIS]);
-    }
-  #else
-    // Don't allow auto-leveling without homing first
-    if (mechanics.axis_unhomed_error()) return;
-  #endif
+  // Don't allow auto-leveling without homing first
+  if (mechanics.axis_unhomed_error()) return;
 
   // Auto-level only if needed
   if (!no_action && bedlevel.flag.leveling_active && parser.boolval('O')) {

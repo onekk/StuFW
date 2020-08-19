@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -45,18 +45,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#endif
 	#if ENABLED(CODE_M2)
 		{ 2, gcode_M2 },
-	#endif
-	#if ENABLED(CODE_M3)
-		{ 3, gcode_M3 },
-	#endif
-	#if ENABLED(CODE_M4)
-		{ 4, gcode_M4 },
-	#endif
-	#if ENABLED(CODE_M5)
-		{ 5, gcode_M5 },
-	#endif
-	#if ENABLED(CODE_M6)
-		{ 6, gcode_M6 },
 	#endif
 	#if ENABLED(CODE_M7)
 		{ 7, gcode_M7 },
@@ -141,9 +129,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#endif
 	#if ENABLED(CODE_M34)
 		{ 34, gcode_M34 },
-	#endif
-	#if ENABLED(CODE_M35)
-		{ 35, gcode_M35 },
 	#endif
 	#if ENABLED(CODE_M36)
 		{ 36, gcode_M36 },
@@ -414,18 +399,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#endif
 	#if ENABLED(CODE_M125)
 		{ 125, gcode_M125 },
-	#endif
-	#if ENABLED(CODE_M126)
-		{ 126, gcode_M126 },
-	#endif
-	#if ENABLED(CODE_M127)
-		{ 127, gcode_M127 },
-	#endif
-	#if ENABLED(CODE_M128)
-		{ 128, gcode_M128 },
-	#endif
-	#if ENABLED(CODE_M129)
-		{ 129, gcode_M129 },
 	#endif
 	#if ENABLED(CODE_M130)
 		{ 130, gcode_M130 },
@@ -1087,12 +1060,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#if ENABLED(CODE_M349)
 		{ 349, gcode_M349 },
 	#endif
-	#if ENABLED(CODE_M350)
-		{ 350, gcode_M350 },
-	#endif
-	#if ENABLED(CODE_M351)
-		{ 351, gcode_M351 },
-	#endif
 	#if ENABLED(CODE_M352)
 		{ 352, gcode_M352 },
 	#endif
@@ -1116,21 +1083,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#endif
 	#if ENABLED(CODE_M359)
 		{ 359, gcode_M359 },
-	#endif
-	#if ENABLED(CODE_M360)
-		{ 360, gcode_M360 },
-	#endif
-	#if ENABLED(CODE_M361)
-		{ 361, gcode_M361 },
-	#endif
-	#if ENABLED(CODE_M362)
-		{ 362, gcode_M362 },
-	#endif
-	#if ENABLED(CODE_M363)
-		{ 363, gcode_M363 },
-	#endif
-	#if ENABLED(CODE_M364)
-		{ 364, gcode_M364 },
 	#endif
 	#if ENABLED(CODE_M365)
 		{ 365, gcode_M365 },
@@ -1176,12 +1128,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#endif
 	#if ENABLED(CODE_M379)
 		{ 379, gcode_M379 },
-	#endif
-	#if ENABLED(CODE_M380)
-		{ 380, gcode_M380 },
-	#endif
-	#if ENABLED(CODE_M381)
-		{ 381, gcode_M381 },
 	#endif
 	#if ENABLED(CODE_M382)
 		{ 382, gcode_M382 },
@@ -1387,18 +1333,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#if ENABLED(CODE_M449)
 		{ 449, gcode_M449 },
 	#endif
-	#if ENABLED(CODE_M450)
-		{ 450, gcode_M450 },
-	#endif
-	#if ENABLED(CODE_M451)
-		{ 451, gcode_M451 },
-	#endif
-	#if ENABLED(CODE_M452)
-		{ 452, gcode_M452 },
-	#endif
-	#if ENABLED(CODE_M453)
-		{ 453, gcode_M453 },
-	#endif
 	#if ENABLED(CODE_M454)
 		{ 454, gcode_M454 },
 	#endif
@@ -1602,9 +1536,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#endif
 	#if ENABLED(CODE_M521)
 		{ 521, gcode_M521 },
-	#endif
-	#if ENABLED(CODE_M522)
-		{ 522, gcode_M522 },
 	#endif
 	#if ENABLED(CODE_M523)
 		{ 523, gcode_M523 },
@@ -1984,27 +1915,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#if ENABLED(CODE_M648)
 		{ 648, gcode_M648 },
 	#endif
-	#if ENABLED(CODE_M649)
-		{ 649, gcode_M649 },
-	#endif
-	#if ENABLED(CODE_M650)
-		{ 650, gcode_M650 },
-	#endif
-	#if ENABLED(CODE_M651)
-		{ 651, gcode_M651 },
-	#endif
-	#if ENABLED(CODE_M652)
-		{ 652, gcode_M652 },
-	#endif
-	#if ENABLED(CODE_M653)
-		{ 653, gcode_M653 },
-	#endif
-	#if ENABLED(CODE_M654)
-		{ 654, gcode_M654 },
-	#endif
-	#if ENABLED(CODE_M655)
-		{ 655, gcode_M655 },
-	#endif
 	#if ENABLED(CODE_M656)
 		{ 656, gcode_M656 },
 	#endif
@@ -2031,12 +1941,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#endif
 	#if ENABLED(CODE_M664)
 		{ 664, gcode_M664 },
-	#endif
-	#if ENABLED(CODE_M665)
-		{ 665, gcode_M665 },
-	#endif
-	#if ENABLED(CODE_M666)
-		{ 666, gcode_M666 },
 	#endif
 	#if ENABLED(CODE_M667)
 		{ 667, gcode_M667 },
@@ -2755,35 +2659,11 @@ constexpr MCode_command_t MCode_Table [] = {
 	#if ENABLED(CODE_M905)
 		{ 905, gcode_M905 },
 	#endif
-	#if ENABLED(CODE_M906)
-		{ 906, gcode_M906 },
-	#endif
-	#if ENABLED(CODE_M907)
-		{ 907, gcode_M907 },
-	#endif
-	#if ENABLED(CODE_M908)
-		{ 908, gcode_M908 },
-	#endif
 	#if ENABLED(CODE_M909)
 		{ 909, gcode_M909 },
 	#endif
 	#if ENABLED(CODE_M910)
 		{ 910, gcode_M910 },
-	#endif
-	#if ENABLED(CODE_M911)
-		{ 911, gcode_M911 },
-	#endif
-	#if ENABLED(CODE_M912)
-		{ 912, gcode_M912 },
-	#endif
-	#if ENABLED(CODE_M913)
-		{ 913, gcode_M913 },
-	#endif
-	#if ENABLED(CODE_M914)
-		{ 914, gcode_M914 },
-	#endif
-	#if ENABLED(CODE_M915)
-		{ 915, gcode_M915 },
 	#endif
 	#if ENABLED(CODE_M916)
 		{ 916, gcode_M916 },
@@ -2802,9 +2682,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#endif
 	#if ENABLED(CODE_M921)
 		{ 921, gcode_M921 },
-	#endif
-	#if ENABLED(CODE_M922)
-		{ 922, gcode_M922 },
 	#endif
 	#if ENABLED(CODE_M923)
 		{ 923, gcode_M923 },
@@ -2826,45 +2703,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#endif
 	#if ENABLED(CODE_M929)
 		{ 929, gcode_M929 },
-	#endif
-	#if ENABLED(CODE_M930)
-		{ 930, gcode_M930 },
-	#endif
-	#if ENABLED(CODE_M931)
-		{ 931, gcode_M931 },
-	#endif
-	#if ENABLED(CODE_M932)
-		{ 932, gcode_M932 },
-	#endif
-	#if ENABLED(CODE_M933)
-		{ 933, gcode_M933 },
-	#endif
-	#if ENABLED(CODE_M934)
-		{ 934, gcode_M934 },
-	#endif
-	#if ENABLED(CODE_M935)
-		{ 935, gcode_M935 },
-	#endif
-	#if ENABLED(CODE_M936)
-		{ 936, gcode_M936 },
-	#endif
-	#if ENABLED(CODE_M937)
-		{ 937, gcode_M937 },
-	#endif
-	#if ENABLED(CODE_M938)
-		{ 938, gcode_M938 },
-	#endif
-	#if ENABLED(CODE_M939)
-		{ 939, gcode_M939 },
-	#endif
-	#if ENABLED(CODE_M940)
-		{ 940, gcode_M940 },
-	#endif
-	#if ENABLED(CODE_M941)
-		{ 941, gcode_M941 },
-	#endif
-	#if ENABLED(CODE_M942)
-		{ 942, gcode_M942 },
 	#endif
 	#if ENABLED(CODE_M943)
 		{ 943, gcode_M943 },
@@ -3021,12 +2859,6 @@ constexpr MCode_command_t MCode_Table [] = {
 	#endif
 	#if ENABLED(CODE_M994)
 		{ 994, gcode_M994 },
-	#endif
-	#if ENABLED(CODE_M995)
-		{ 995, gcode_M995 },
-	#endif
-	#if ENABLED(CODE_M996)
-		{ 996, gcode_M996 },
 	#endif
 	#if ENABLED(CODE_M997)
 		{ 997, gcode_M997 },

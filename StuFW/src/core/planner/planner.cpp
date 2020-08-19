@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  *
@@ -695,43 +695,15 @@ float Planner::previous_speed[NUM_AXIS]   = { 0.0 },
 void Planner::check_axes_activity() {
   unsigned char axis_active[NUM_AXIS] = { 0 };
 
-  #if ENABLED(BARICUDA)
-    #if HAS_HEATER_1
-      uint8_t tail_valve_pressure;
-    #endif
-    #if HAS_HEATER_2
-      uint8_t tail_e_to_p_pressure;
-    #endif
-  #endif
 
   if (has_blocks_queued()) {
 
     block_t* block;
 
-    #if ENABLED(BARICUDA)
-      block = &block_buffer[block_buffer_tail];
-      #if HAS_HEATER_1
-        tail_valve_pressure = block->valve_pressure;
-      #endif
-      #if HAS_HEATER_2
-        tail_e_to_p_pressure = block->e_to_p_pressure;
-      #endif
-    #endif
-
     for (uint8_t b = block_buffer_tail; b != block_buffer_head; b = next_block_index(b)) {
       block = &block_buffer[b];
       LOOP_XYZE(i) if (block->steps[i]) axis_active[i]++;
     }
-  }
-  else {
-    #if ENABLED(BARICUDA)
-      #if HAS_HEATER_1
-        tail_valve_pressure = printer.baricuda_valve_pressure;;
-      #endif
-      #if HAS_HEATER_2
-        tail_e_to_p_pressure = printer.baricuda_e_to_p_pressure;
-      #endif
-    #endif
   }
 
   #if DISABLE_X
@@ -749,15 +721,6 @@ void Planner::check_axes_activity() {
 
   #if HAS_TEMP_HOTEND && ENABLED(AUTOTEMP)
     getHighESpeed();
-  #endif
-
-  #if ENABLED(BARICUDA)
-    #if HAS_HEATER_1
-      analogWrite(HEATER_1_PIN, tail_valve_pressure);
-    #endif
-    #if HAS_HEATER_2
-      analogWrite(HEATER_2_PIN, tail_e_to_p_pressure);
-    #endif
   #endif
 }
 
@@ -921,9 +884,6 @@ bool Planner::buffer_steps(const int32_t (&target)[XYZE]
   #if HAS_POSITION_FLOAT
     , const float (&target_float)[XYZE]
   #endif
-  #if IS_KINEMATIC && ENABLED(JUNCTION_DEVIATION)
-    , const float (&delta_mm_cart)[XYZE]
-  #endif
   , float fr_mm_s, const uint8_t extruder, const float &millimeters/*=0.0*/
 ) {
 
@@ -938,9 +898,6 @@ bool Planner::buffer_steps(const int32_t (&target)[XYZE]
   if (!fill_block(block, false, target
     #if HAS_POSITION_FLOAT
       , target_float
-    #endif
-    #if IS_KINEMATIC && ENABLED(JUNCTION_DEVIATION)
-      , delta_mm_cart
     #endif
     , fr_mm_s, extruder, millimeters
   )) {
@@ -984,9 +941,6 @@ bool Planner::fill_block(block_t * const block, bool split_move,
   const int32_t (&target)[XYZE]
   #if HAS_POSITION_FLOAT
     , const float (&target_float)[XYZE]
-  #endif
-  #if IS_KINEMATIC && ENABLED(JUNCTION_DEVIATION)
-    , const float (&delta_mm_cart)[XYZE]
   #endif
   , float fr_mm_s, const uint8_t extruder, const float &millimeters/*=0.0*/
 ) {
@@ -1177,11 +1131,6 @@ bool Planner::fill_block(block_t * const block, bool split_move,
   // For a mixing extruder, get a magnified step_event_count for each
   #if ENABLED(COLOR_MIXING_EXTRUDER)
     mixer.populate_block(block->b_color);
-  #endif
-
-  #if ENABLED(BARICUDA)
-    block->valve_pressure   = printer.baricuda_valve_pressure;
-    block->e_to_p_pressure  = printer.baricuda_e_to_p_pressure;
   #endif
 
   #if EXTRUDERS > 1
@@ -1404,48 +1353,6 @@ bool Planner::fill_block(block_t * const block, bool split_move,
   else
     NOLESS(fr_mm_s, mechanics.data.min_travel_feedrate_mm_s);
 
-  #if ENABLED(LASER)
-
-    block->laser_intensity  = laser.intensity;
-    block->laser_duration   = laser.duration;
-    block->laser_status     = laser.status;
-    block->laser_mode       = laser.mode;
-
-    // When operating in PULSED or RASTER modes, laser pulsing must operate in sync with movement.
-    // Calculate steps between laser firings (steps_l) and consider that when determining largest
-    // interval between steps for X, Y, Z, E, L to feed to the motion control code.
-    if (laser.mode == RASTER || laser.mode == PULSED) {
-      block->steps_l = ABS(block->millimeters * laser.ppm);
-      #if ENABLED(LASER_RASTER)
-        for (uint8_t i = 0; i < LASER_MAX_RASTER_LINE; i++) {
-          // Scale the image intensity based on the raster power.
-          // 100% power on a pixel basis is 255, convert back to 255 = 100.
-          #if ENABLED(LASER_REMAP_INTENSITY)
-            const int NewRange = (laser.rasterlaserpower * 255.0 / 100.0 - LASER_REMAP_INTENSITY);
-            float     NewValue = (float)(((((float)laser.raster_data[i] - 0) * NewRange) / 255.0) + LASER_REMAP_INTENSITY);
-          #else
-            const int NewRange = (laser.rasterlaserpower * 255.0 / 100.0);
-            float     NewValue = (float)(((((float)laser.raster_data[i] - 0) * NewRange) / 255.0));
-          #endif
-
-          #if ENABLED(LASER_REMAP_INTENSITY)
-            // If less than 7%, turn off the laser tube.
-            if (NewValue <= LASER_REMAP_INTENSITY) NewValue = 0;
-          #endif
-
-          block->laser_raster_data[i] = NewValue;
-        }
-      #endif
-    }
-    else
-      block->steps_l = 0;
-
-    block->step_event_count = MAX(block->step_event_count, block->steps_l);
-
-    if (laser.diagnostics && block->laser_status == LASER_ON)
-      SERIAL_LM(ECHO, "Laser firing enabled");
-
-  #endif // LASER
 
   const float inverse_millimeters = 1.0f / block->millimeters;  // Inverse millimeters to remove multiple divides
 
@@ -1690,21 +1597,12 @@ bool Planner::fill_block(block_t * const block, bool split_move,
     // Unit vector of previous path line segment
     static float previous_unit_vec[XYZE];
 
-    #if IS_KINEMATIC && ENABLED(JUNCTION_DEVIATION)
-      float unit_vec[] = {
-        delta_mm_cart[X_AXIS] * inverse_millimeters,
-        delta_mm_cart[Y_AXIS] * inverse_millimeters,
-        delta_mm_cart[Z_AXIS] * inverse_millimeters,
-        delta_mm_cart[E_AXIS] * inverse_millimeters
-      };
-    #else
-      float unit_vec[] = {
-        delta_mm[A_AXIS] * inverse_millimeters,
-        delta_mm[B_AXIS] * inverse_millimeters,
-        delta_mm[C_AXIS] * inverse_millimeters,
-        delta_mm[E_AXIS] * inverse_millimeters
-      };
-    #endif
+    float unit_vec[] = {
+      delta_mm[A_AXIS] * inverse_millimeters,
+      delta_mm[B_AXIS] * inverse_millimeters,
+      delta_mm[C_AXIS] * inverse_millimeters,
+      delta_mm[E_AXIS] * inverse_millimeters
+    };
 
     // Skip first block or when previous_nominal_speed is used as a flag for homing and offset cycles.
     if (moves_queued && !UNEAR_ZERO(previous_nominal_speed_sqr)) {
@@ -1943,9 +1841,6 @@ void Planner::buffer_sync_block() {
  *  millimeters - the length of the movement, if known
  */
 bool Planner::buffer_segment(const float &a, const float &b, const float &c, const float &e
-  #if IS_KINEMATIC && ENABLED(JUNCTION_DEVIATION)
-    , const float (&delta_mm_cart)[XYZE]
-  #endif
   , const float &fr_mm_s, const uint8_t extruder, const float &millimeters/*=0.0*/
 ) {
 
@@ -1975,24 +1870,13 @@ bool Planner::buffer_segment(const float &a, const float &b, const float &c, con
 
   /* <-- add a slash to enable
     SERIAL_MV("  buffer_segment FR:", fr_mm_s);
-    #if IS_KINEMATIC
-      SERIAL_MV(" A:", a);
-      SERIAL_MV(" (", position[A_AXIS]);
-      SERIAL_MV("->", target[A_AXIS]);
-      SERIAL_MV(") B:", b);
-    #else
-      SERIAL_MV(" X:", a);
-      SERIAL_MV(" (", position[X_AXIS]);
-      SERIAL_MV("->", target[X_AXIS]);
-      SERIAL_MV(") Y:", b);
-    #endif
+    SERIAL_MV(" X:", a);
+    SERIAL_MV(" (", position[X_AXIS]);
+    SERIAL_MV("->", target[X_AXIS]);
+    SERIAL_MV(") Y:", b);
     SERIAL_MV(" (", position[Y_AXIS]);
     SERIAL_MV("->", target[Y_AXIS]);
-    #if MECH(DELTA)
-      SERIAL_MV(") C:", c);
-    #else
-      SERIAL_MV(") Z:", c);
-    #endif
+    SERIAL_MV(") Z:", c);
     SERIAL_MV(" (", position[Z_AXIS]);
     SERIAL_MV("->", target[Z_AXIS]);
     SERIAL_MV(") E:", e);
@@ -2012,9 +1896,6 @@ bool Planner::buffer_segment(const float &a, const float &b, const float &c, con
     #if HAS_POSITION_FLOAT
       , target_float
     #endif
-    #if IS_KINEMATIC && ENABLED(JUNCTION_DEVIATION)
-      , delta_mm_cart
-    #endif
     , fr_mm_s, extruder, millimeters
   )) return false;
 
@@ -2025,8 +1906,6 @@ bool Planner::buffer_segment(const float &a, const float &b, const float &c, con
 
 /**
  * Add a new linear movement to the buffer.
- * The target is cartesian, it's translated to delta/scara if
- * needed.
  *
  *
  *  rx,ry,rz,e   - target position in mm or degrees
@@ -2042,53 +1921,7 @@ bool Planner::buffer_line(const float &rx, const float &ry, const float &rz, con
     apply_modifiers(raw);
   #endif
 
-  #if IS_KINEMATIC
-
-    const float delta_mm_cart[] = {
-      rx - position_cart[X_AXIS],
-      ry - position_cart[Y_AXIS],
-      rz - position_cart[Z_AXIS]
-      #if ENABLED(JUNCTION_DEVIATION)
-        , e - position_cart[E_AXIS]
-      #endif
-    };
-
-    float mm = millimeters;
-    if (mm == 0.0)
-      mm = (delta_mm_cart[X_AXIS] != 0.0 || delta_mm_cart[Y_AXIS] != 0.0) ? SQRT(sq(delta_mm_cart[X_AXIS]) + sq(delta_mm_cart[Y_AXIS]) + sq(delta_mm_cart[Z_AXIS])) : ABS(delta_mm_cart[Z_AXIS]);
-
-    mechanics.Transform(raw);
-
-    #if ENABLED(SCARA_FEEDRATE_SCALING)
-      // For SCARA scale the feed rate from mm/s to degrees/s
-      // i.e., Complete the angular vector in the given time.
-      const float duration_recip = inv_duration ? inv_duration : fr_mm_s / mm,
-                  feedrate = HYPOT(delta[A_AXIS] - position_float[A_AXIS], delta[B_AXIS] - position_float[B_AXIS]) * duration_recip;
-    #else
-      const float feedrate = fr_mm_s;
-    #endif
-
-    if (buffer_segment(mechanics.delta[A_AXIS], mechanics.delta[B_AXIS], mechanics.delta[C_AXIS], raw[E_AXIS]
-      #if ENABLED(JUNCTION_DEVIATION)
-        , delta_mm_cart
-      #endif
-      , feedrate, extruder, mm
-    )) {
-      position_cart[X_AXIS] = rx;
-      position_cart[Y_AXIS] = ry;
-      position_cart[Z_AXIS] = rz;
-      position_cart[E_AXIS] = e;
-      return true;
-    }
-    else
-      return false;
-
-  #else
-
-    return buffer_segment(raw, fr_mm_s, extruder, millimeters);
-
-  #endif
-
+  return buffer_segment(raw, fr_mm_s, extruder, millimeters);
 }
 
 /**
@@ -2133,17 +1966,7 @@ void Planner::set_position_mm(const float &rx, const float &ry, const float &rz,
     );
   #endif
 
-  #if IS_KINEMATIC
-    position_cart[X_AXIS] = rx;
-    position_cart[Y_AXIS] = ry;
-    position_cart[Z_AXIS] = rz;
-    position_cart[E_AXIS] = e;
-
-    mechanics.Transform(raw);
-    set_machine_position_mm(mechanics.delta[A_AXIS], mechanics.delta[B_AXIS], mechanics.delta[C_AXIS], raw[E_AXIS]);
-  #else
-    set_machine_position_mm(raw[X_AXIS], raw[Y_AXIS], raw[Z_AXIS], raw[E_AXIS]);
-  #endif
+  set_machine_position_mm(raw[X_AXIS], raw[Y_AXIS], raw[Z_AXIS], raw[E_AXIS]);
 }
 
 void Planner::set_e_position_mm(const float &e) {
@@ -2162,9 +1985,6 @@ void Planner::set_e_position_mm(const float &e) {
     position_float[E_AXIS] = e_new;
   #endif
 
-  #if IS_KINEMATIC
-    position_cart[E_AXIS] = e;
-  #endif
 
   if (has_blocks_queued())
     buffer_sync_block();

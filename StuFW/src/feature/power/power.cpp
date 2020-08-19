@@ -1,7 +1,7 @@
 /**
- * MK4duo Firmware for 3D Printer, Laser and CNC
+ * StuFW Firmware for 3D Printer
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
@@ -94,10 +94,6 @@
       if (!powersupply_on) {
         OUT_WRITE(PS_ON_PIN, PS_ON_AWAKE);
         powersupply_on = true;
-        #if HAS_TRINAMIC
-          HAL::delayMilliseconds(100); // Wait for power to settle
-          tmc.restore();
-        #endif
         HAL::delayMilliseconds((DELAY_AFTER_POWER_ON) * 1000UL);
       }
     }
