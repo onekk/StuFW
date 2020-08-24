@@ -3,7 +3,7 @@
  *
  * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
- * gcode.h
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
 #if ENABLED(G26_MESH_VALIDATION)
@@ -48,8 +42,8 @@
 /**
  *   G26 Mesh Validation Tool
  *
- *   G26 is a Mesh Validation Tool intended to provide support for the MK4duo Unified Bed Leveling System.
- *   In order to fully utilize and benefit from the MK4duo Unified Bed Leveling System an accurate Mesh must
+ *   G26 is a Mesh Validation Tool intended to provide support for the StuFW Unified Bed Leveling System.
+ *   In order to fully utilize and benefit from the StuFW Unified Bed Leveling System an accurate Mesh must
  *   be defined. G29 is designed to allow the user to quickly validate the correctness of her Mesh. It will
  *   first heat the bed and nozzle. It will then print lines and circles along the Mesh Cell boundaries and
  *   the intersections of those lines (respectively).

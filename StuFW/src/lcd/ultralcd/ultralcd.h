@@ -23,10 +23,6 @@
 
 #if HAS_SPI_LCD
 
-  #if HAS_ADC_BUTTONS
-    uint8_t get_ADC_keyValue();
-  #endif
-
   #if HAS_GRAPHICAL_LCD
     #define SETCURSOR(col, row)     lcd_moveto(col * (MENU_FONT_WIDTH), (row + 1) * (MENU_FONT_HEIGHT))
     #define SETCURSOR_RJ(len, row)  lcd_moveto(LCD_PIXEL_WIDTH - len * (MENU_FONT_WIDTH), (row + 1) * (MENU_FONT_HEIGHT))
@@ -70,38 +66,6 @@
 
 #endif // HAS_SPI_LCD
 
-// REPRAPWORLD_KEYPAD (and ADC_KEYPAD)
-#if ENABLED(REPRAPWORLD_KEYPAD)
-  #define BTN_OFFSET          0 // Bit offset into buttons for shift register values
-
-  #define BLEN_KEYPAD_F3      0
-  #define BLEN_KEYPAD_F2      1
-  #define BLEN_KEYPAD_F1      2
-  #define BLEN_KEYPAD_DOWN    3
-  #define BLEN_KEYPAD_RIGHT   4
-  #define BLEN_KEYPAD_MIDDLE  5
-  #define BLEN_KEYPAD_UP      6
-  #define BLEN_KEYPAD_LEFT    7
-
-  #define EN_KEYPAD_F1      _BV(BTN_OFFSET + BLEN_KEYPAD_F1)
-  #define EN_KEYPAD_F2      _BV(BTN_OFFSET + BLEN_KEYPAD_F2)
-  #define EN_KEYPAD_F3      _BV(BTN_OFFSET + BLEN_KEYPAD_F3)
-  #define EN_KEYPAD_DOWN    _BV(BTN_OFFSET + BLEN_KEYPAD_DOWN)
-  #define EN_KEYPAD_RIGHT   _BV(BTN_OFFSET + BLEN_KEYPAD_RIGHT)
-  #define EN_KEYPAD_MIDDLE  _BV(BTN_OFFSET + BLEN_KEYPAD_MIDDLE)
-  #define EN_KEYPAD_UP      _BV(BTN_OFFSET + BLEN_KEYPAD_UP)
-  #define EN_KEYPAD_LEFT    _BV(BTN_OFFSET + BLEN_KEYPAD_LEFT)
-
-  #define RRK(B) (keypad_buttons & (B))
-
-  #ifdef EN_C
-    #define BUTTON_CLICK()  ((buttons & EN_C) || RRK(EN_KEYPAD_MIDDLE))
-  #else
-    #define BUTTON_CLICK()  RRK(EN_KEYPAD_MIDDLE)
-  #endif
-
-#endif
-
 #if HAS_DIGITAL_BUTTONS
 
   // Wheel spin pins where BA is 00, 10, 11, 01 (1 bit always changes)
@@ -117,52 +81,6 @@
   #if BUTTON_EXISTS(ENC)
     #define BLEN_C 2
     #define EN_C _BV(BLEN_C)
-  #endif
-
-  #if ENABLED(LCD_I2C_VIKI)
-
-    #define B_I2C_BTN_OFFSET 3 // (the first three bit positions reserved for EN_A, EN_B, EN_C)
-
-    // button and encoder bit positions within 'buttons'
-    #define B_LE (BUTTON_LEFT   << B_I2C_BTN_OFFSET)      // The remaining normalized buttons are all read via I2C
-    #define B_UP (BUTTON_UP     << B_I2C_BTN_OFFSET)
-    #define B_MI (BUTTON_SELECT << B_I2C_BTN_OFFSET)
-    #define B_DW (BUTTON_DOWN   << B_I2C_BTN_OFFSET)
-    #define B_RI (BUTTON_RIGHT  << B_I2C_BTN_OFFSET)
-
-    #if BUTTON_EXISTS(ENC)                                // The pause/stop/restart button is connected to BTN_ENC when used
-      #define B_ST (EN_C)                                 // Map the pause/stop/resume button into its normalized functional name
-      #if ENABLED(INVERT_CLICK_BUTTON)
-        #define BUTTON_CLICK() !(buttons & (B_MI|B_RI|B_ST)) // pause/stop button also acts as click until we implement proper pause/stop.
-      #else
-        #define BUTTON_CLICK()  (buttons & (B_MI|B_RI|B_ST)) // pause/stop button also acts as click until we implement proper pause/stop.
-      #endif
-    #else
-      #if ENABLED(INVERT_CLICK_BUTTON)
-        #define BUTTON_CLICK() !(buttons & (B_MI|B_RI))
-      #else
-        #define BUTTON_CLICK()  (buttons & (B_MI|B_RI))
-      #endif
-    #endif
-
-    // I2C buttons take too long to read inside an interrupt context and so we read them during lcd_update
-
-  #elif ENABLED(LCD_I2C_PANELOLU2)
-
-    #if !BUTTON_EXISTS(ENC) // Use I2C if not directly connected to a pin
-
-      #define B_I2C_BTN_OFFSET 3 // (the first three bit positions reserved for EN_A, EN_B, EN_C)
-
-      #define B_MI (PANELOLU2_ENCODER_C << B_I2C_BTN_OFFSET) // requires LiquidTWI2 library v1.2.3 or later
-
-      #if ENABLED(INVERT_CLICK_BUTTON)
-        #define BUTTON_CLICK() !(buttons & B_MI)
-      #else
-        #define BUTTON_CLICK()  (buttons & B_MI)
-      #endif
-
-    #endif
-
   #endif
 
 #else

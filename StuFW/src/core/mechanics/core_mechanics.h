@@ -136,10 +136,6 @@ class Core_Mechanics: public Mechanics {
       static void print_M206();
     #endif
 
-    #if HAS_NEXTION_LCD && ENABLED(NEXTION_GFX)
-      static void Nextion_gfx_clear();
-    #endif
-
   private: /** Private Function */
 
     /**

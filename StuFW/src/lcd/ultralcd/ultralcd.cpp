@@ -52,9 +52,6 @@ LcdUI lcdui;
 
 #if HAS_ENCODER_ACTION
   volatile uint8_t LcdUI::buttons;
-  #if HAS_SLOW_BUTTONS
-    volatile uint8_t LcdUI::slow_buttons;
-  #endif
 #endif
 
 #if HAS_SD_SUPPORT && PIN_EXISTS(SD_DETECT)
@@ -67,7 +64,7 @@ LcdUI lcdui;
 
 uint8_t LcdUI::status_update_delay = 1; // First update one loop delayed
 
-#if (HAS_LCD_FILAMENT_SENSOR && HAS_SD_SUPPORT) || HAS_LCD_POWER_SENSOR
+#if (HAS_LCD_FILAMENT_SENSOR && HAS_SD_SUPPORT)
   millis_t LcdUI::previous_status_ms = 0;
 #endif
 
@@ -75,10 +72,6 @@ millis_t next_button_update_ms;
 
 #if HAS_GRAPHICAL_LCD
   bool LcdUI::drawing_screen, LcdUI::first_page; // = false
-#endif
-
-#if HAS_LCD_POWER_SENSOR
-  millis_t LcdUI::print_millis = 0;
 #endif
 
 // Encoder Handling
@@ -90,7 +83,7 @@ millis_t next_button_update_ms;
 #if HAS_LCD_MENU
 
   #if HAS_SD_SUPPORT
-  
+
     #if ENABLED(SCROLL_LONG_FILENAMES)
       uint8_t LcdUI::filename_scroll_pos, LcdUI::filename_scroll_max;
     #endif
@@ -171,54 +164,11 @@ void LcdUI::init() {
       SET_INPUT_PULLUP(BTN_ENC);
     #endif
 
-    #if ENABLED(REPRAPWORLD_KEYPAD) && DISABLED(ADC_KEYPAD)
-      SET_OUTPUT(SHIFT_CLK);
-      OUT_WRITE(SHIFT_LD, HIGH);
-      SET_INPUT_PULLUP(SHIFT_OUT);
-    #endif
-
-    #if BUTTON_EXISTS(UP)
-      SET_INPUT(BTN_UP);
-    #endif
-    #if BUTTON_EXISTS(DWN)
-      SET_INPUT(BTN_DWN);
-    #endif
-    #if BUTTON_EXISTS(LFT)
-      SET_INPUT(BTN_LFT);
-    #endif
-    #if BUTTON_EXISTS(RT)
-      SET_INPUT(BTN_RT);
-    #endif
-
-  #endif // !HAS_DIGITAL_BUTTONS
-
-  #if HAS_SHIFT_ENCODER
-
-    #if ENABLED(SR_LCD_2W_NL) // Non latching 2 wire shift register
-
-      SET_OUTPUT(SR_DATA_PIN);
-      SET_OUTPUT(SR_CLK_PIN);
-
-    #elif ENABLED(SHIFT_CLK)
-
-      SET_OUTPUT(SHIFT_CLK);
-      OUT_WRITE(SHIFT_LD, HIGH);
-      #if ENABLED(SHIFT_EN) && SHIFT_EN >= 0
-        OUT_WRITE(SHIFT_EN, LOW);
-      #endif
-      SET_INPUT_PULLUP(SHIFT_OUT);
-
-    #endif // SR_LCD_2W_NL
-
-  #endif // !HAS_DIGITAL_BUTTONS
+  #endif // HAS_DIGITAL_BUTTONS
 
   #if HAS_SD_SUPPORT && PIN_EXISTS(SD_DETECT)
     SET_INPUT_PULLUP(SD_DETECT_PIN);
     lcd_sd_status = 2; // UNKNOWN
-  #endif
-
-  #if HAS_ENCODER_ACTION && HAS_SLOW_BUTTONS
-    slow_buttons = 0;
   #endif
 
   update_buttons();
@@ -239,114 +189,6 @@ bool LcdUI::get_blink() {
   }
   return blink != 0;
 }
-
-////////////////////////////////////////////
-///////////// Keypad Handling //////////////
-////////////////////////////////////////////
-
-#if ENABLED(REPRAPWORLD_KEYPAD) && HAS_ENCODER_ACTION
-
-  volatile uint8_t LcdUI::keypad_buttons;
-
-  #if HAS_LCD_MENU && !HAS_ADC_BUTTONS
-
-    void lcd_move_x();
-    void lcd_move_y();
-    void lcd_move_z();
-
-    void _reprapworld_keypad_move(const AxisEnum axis, const int16_t dir) {
-      move_menu_scale = REPRAPWORLD_KEYPAD_MOVE_STEP;
-      encoderPosition = dir;
-      switch (axis) {
-        case X_AXIS: lcd_move_x(); break;
-        case Y_AXIS: lcd_move_y(); break;
-        case Z_AXIS: lcd_move_z();
-        default: break;
-      }
-    }
-
-  #endif
-
-  bool LcdUI::handle_keypad() {
-
-    #if HAS_ADC_BUTTONS
-
-      #define ADC_MIN_KEY_DELAY 100
-      if (keypad_buttons) {
-        #if HAS_ENCODER_ACTION
-          refresh(LCDVIEW_REDRAW_NOW);
-          #if HAS_LCD_MENU
-            if (encoderDirection == -1) { // side effect which signals we are inside a menu
-              if      (RRK(EN_KEYPAD_DOWN))   encoderPosition -= ENCODER_STEPS_PER_MENU_ITEM;
-              else if (RRK(EN_KEYPAD_UP))     encoderPosition += ENCODER_STEPS_PER_MENU_ITEM;
-              else if (RRK(EN_KEYPAD_LEFT))   { MenuItem_back::action(); quick_feedback(); }
-              else if (RRK(EN_KEYPAD_RIGHT))  { return_to_status(); quick_feedback(); }
-            }
-            else
-          #endif
-          {
-            #if HAS_LCD_MENU
-                   if (RRK(EN_KEYPAD_UP))     encoderPosition -= ENCODER_PULSES_PER_STEP;
-              else if (RRK(EN_KEYPAD_DOWN))   encoderPosition += ENCODER_PULSES_PER_STEP;
-              else if (RRK(EN_KEYPAD_LEFT))   { MenuItem_back::action(); quick_feedback(); }
-              else if (RRK(EN_KEYPAD_RIGHT))  encoderPosition = 0;
-            #else
-                   if (RRK(EN_KEYPAD_UP)   || RRK(EN_KEYPAD_LEFT))  encoderPosition -= ENCODER_PULSES_PER_STEP;
-              else if (RRK(EN_KEYPAD_DOWN) || RRK(EN_KEYPAD_RIGHT)) encoderPosition += ENCODER_PULSES_PER_STEP;
-            #endif
-          }
-        #endif
-        next_button_update_ms = millis() + ADC_MIN_KEY_DELAY;
-        return true;
-      }
-
-    #else // !ADC_KEYPAD
-
-      static uint8_t keypad_debounce = 0;
-
-      if (!RRK( EN_KEYPAD_F1    | EN_KEYPAD_F2
-              | EN_KEYPAD_F3    | EN_KEYPAD_DOWN
-              | EN_KEYPAD_RIGHT | EN_KEYPAD_MIDDLE
-              | EN_KEYPAD_UP    | EN_KEYPAD_LEFT )
-      ) {
-        if (keypad_debounce > 0) keypad_debounce--;
-      }
-      else if (!keypad_debounce) {
-        keypad_debounce = 2;
-
-        const bool homed = mechanics.isHomedAll();
-
-        #if HAS_LCD_MENU
-
-          if (RRK(EN_KEYPAD_MIDDLE))  goto_screen(menu_move);
-
-          #if Z_HOME_DIR == -1
-            if (RRK(EN_KEYPAD_F2))    _reprapworld_keypad_move(Z_AXIS,  1);
-          #endif
-
-          if (homed) {
-            #if Z_HOME_DIR != -1
-              if (RRK(EN_KEYPAD_F2))  _reprapworld_keypad_move(Z_AXIS,  1);
-            #endif
-            if (RRK(EN_KEYPAD_F3))    _reprapworld_keypad_move(Z_AXIS, -1);
-            if (RRK(EN_KEYPAD_LEFT))  _reprapworld_keypad_move(X_AXIS, -1);
-            if (RRK(EN_KEYPAD_RIGHT)) _reprapworld_keypad_move(X_AXIS,  1);
-            if (RRK(EN_KEYPAD_DOWN))  _reprapworld_keypad_move(Y_AXIS,  1);
-            if (RRK(EN_KEYPAD_UP))    _reprapworld_keypad_move(Y_AXIS, -1);
-          }
-
-        #endif // HAS_LCD_MENU
-
-        if (!homed && RRK(EN_KEYPAD_F1)) commands.enqueue_and_echo_P(PSTR("G28"));
-        return true;
-      }
-
-    #endif // !ADC_KEYPAD
-
-    return false;
-  }
-
-#endif // REPRAPWORLD_KEYPAD
 
 /**
  * Status Screen
@@ -412,7 +254,7 @@ void LcdUI::status_screen() {
   #if HAS_LCD_MENU
 
     if (use_click()) {
-      #if (HAS_LCD_FILAMENT_SENSOR && ENABLED(SDSUPPORT)) || HAS_LCD_POWER_SENSOR
+      #if (HAS_LCD_FILAMENT_SENSOR && ENABLED(SDSUPPORT))
         previous_status_ms = millis();  // Show status message for 5s
       #endif
       goto_screen(menu_main);
@@ -558,7 +400,6 @@ void LcdUI::quick_feedback(const bool clear_buttons/*=true*/) {
  * Update the LCD, read encoder buttons, etc.
  *   - Read button states
  *   - Check the SD Card slot state
- *   - Act on RepRap World keypad input
  *   - Update the encoder position
  *   - Apply acceleration to the encoder position
  *   - Do refresh(LCDVIEW_CALL_REDRAW_NOW) on controller events
@@ -590,13 +431,7 @@ void LcdUI::quick_feedback(const bool clear_buttons/*=true*/) {
 LCDViewActionEnum LcdUI::lcdDrawUpdate = LCDVIEW_CLEAR_CALL_REDRAW;
 
 bool LcdUI::detected() {
-  return
-    #if (ENABLED(LCD_I2C_TYPE_MCP23017) || ENABLED(LCD_I2C_TYPE_MCP23008)) && defined(DETECT_DEVICE)
-      lcd.LcdDetected() == 1
-    #else
-      true
-    #endif
-  ;
+  return true;
 }
 
 void LcdUI::update() {
@@ -679,20 +514,6 @@ void LcdUI::update() {
     #endif
 
     #if HAS_ENCODER_ACTION
-
-      #if HAS_SLOW_BUTTONS
-        slow_buttons = read_slow_buttons(); // Buttons that take too long to read in interrupt context
-      #endif
-
-      #if ENABLED(REPRAPWORLD_KEYPAD)
-
-        if (handle_keypad()) {
-          #if HAS_LCD_MENU && LCD_TIMEOUT_TO_STATUS
-            return_to_status_ms = ms + LCD_TIMEOUT_TO_STATUS;
-          #endif
-        }
-
-      #endif
 
       const float abs_diff = ABS(encoderDiff);
       const bool encoderPastThreshold = (abs_diff >= (ENCODER_PULSES_PER_STEP));
@@ -785,10 +606,6 @@ void LcdUI::update() {
           break;
       } // switch
 
-      #if HAS_ADC_BUTTONS
-        keypad_buttons = 0;
-      #endif
-
       #if HAS_GRAPHICAL_LCD
 
         if (!drawing_screen) {                // If not already drawing pages
@@ -846,78 +663,7 @@ void LcdUI::update() {
   } // ELAPSED(ms, next_lcd_update_ms)
 }
 
-#if HAS_ADC_BUTTONS
-
-  typedef struct {
-    uint16_t ADCKeyValueMin, ADCKeyValueMax;
-    uint8_t  ADCKeyNo;
-  } _stADCKeypadTable_;
-
-  static const _stADCKeypadTable_ stADCKeyTable[] PROGMEM = {
-    // VALUE_MIN, VALUE_MAX, KEY
-    { 250, 256, BLEN_KEYPAD_F1 + 1      },  // F1
-    { 250, 256, BLEN_KEYPAD_F2 + 1      },  // F2
-    { 250, 256, BLEN_KEYPAD_F3 + 1      },  // F3
-    {  18,  32, BLEN_KEYPAD_LEFT + 1    },  // LEFT
-    { 118, 138, BLEN_KEYPAD_RIGHT + 1   },  // RIGHT
-    {  34,  54, BLEN_KEYPAD_UP + 1      },  // UP
-    { 166, 180, BLEN_KEYPAD_DOWN + 1    },  // DOWN
-    {  70,  90, BLEN_KEYPAD_MIDDLE + 1  },  // ENTER
-  };
-
-  uint8_t get_ADC_keyValue(void) {
-
-    static uint8_t ADCKey_count = 0;
-    const uint16_t currentkpADCValue = (HAL::AnalogInputValues[ADC_KEYPAD_PIN] >> 2);
-
-    #if ENABLED(ADC_KEYPAD_DEBUG)
-      SERIAL_EV(currentkpADCValue);
-    #endif
-
-    if (ADCKey_count < 3) {
-      if (currentkpADCValue > 250)
-        // ADC Key release
-        ADCKey_count = 0;
-      else
-        ADCKey_count++;
-    }
-    else {
-      ADCKey_count = 0;
-      if (currentkpADCValue < 250) {
-        for (uint8_t i = 0; i < ADC_KEY_NUM; i++) {
-          const uint16_t lo = pgm_read_word(&stADCKeyTable[i].ADCKeyValueMin),
-                         hi = pgm_read_word(&stADCKeyTable[i].ADCKeyValueMax);
-          if (WITHIN(currentkpADCValue, lo, hi)) return pgm_read_byte(&stADCKeyTable[i].ADCKeyNo);
-        }
-      }
-    }
-
-    return 0;
-  }
-#endif
-
 #if HAS_ENCODER_ACTION
-
-  #if DISABLED(ADC_KEYPAD) && (ENABLED(REPRAPWORLD_KEYPAD) || !HAS_DIGITAL_BUTTONS)
-
-    /**
-     * Setup Rotary Encoder Bit Values (for two pin encoders to indicate movement)
-     * These values are independent of which pins are used for EN_A and EN_B indications
-     * The rotary encoder part is also independent to the chipset used for the LCD
-     */
-    #define GET_SHIFT_BUTTON_STATES(DST) \
-      uint8_t new_##DST = 0; \
-      WRITE(SHIFT_LD, LOW); \
-      WRITE(SHIFT_LD, HIGH); \
-      for (int8_t i = 0; i < 8; i++) { \
-        new_##DST >>= 1; \
-        if (READ(SHIFT_OUT)) SBI(new_##DST, 7); \
-        WRITE(SHIFT_CLK, HIGH); \
-        WRITE(SHIFT_CLK, LOW); \
-      } \
-      DST = ~new_##DST; //invert it, because a pressed switch produces a logical 0
-
-  #endif
 
   /**
    * Read encoder buttons from the hardware registers
@@ -936,12 +682,15 @@ void LcdUI::update() {
           #if BUTTON_EXISTS(EN1)
             if (BUTTON_PRESSED(EN1)) newbutton |= EN_A;
           #endif
+
           #if BUTTON_EXISTS(EN2)
             if (BUTTON_PRESSED(EN2)) newbutton |= EN_B;
           #endif
+
           #if BUTTON_EXISTS(ENC)
             if (BUTTON_PRESSED(ENC)) newbutton |= EN_C;
           #endif
+
           #if BUTTON_EXISTS(BACK)
             if (BUTTON_PRESSED(BACK)) newbutton |= EN_D;
           #endif
@@ -952,68 +701,7 @@ void LcdUI::update() {
 
         #endif
 
-        //
-        // Directional buttons
-        //
-        #if LCD_HAS_DIRECTIONAL_BUTTONS
-
-          const int8_t pulses = (ENCODER_PULSES_PER_STEP) * encoderDirection;
-
-          if (false) {
-            // for the else-ifs below
-          }
-          #if BUTTON_EXISTS(UP)
-            else if (BUTTON_PRESSED(UP)) {
-              encoderDiff = (ENCODER_STEPS_PER_MENU_ITEM) * pulses;
-              next_button_update_ms = now + 300;
-            }
-          #endif
-          #if BUTTON_EXISTS(DWN)
-            else if (BUTTON_PRESSED(DWN)) {
-              encoderDiff = -(ENCODER_STEPS_PER_MENU_ITEM) * pulses;
-              next_button_update_ms = now + 300;
-            }
-          #endif
-          #if BUTTON_EXISTS(LFT)
-            else if (BUTTON_PRESSED(LFT)) {
-              encoderDiff = -pulses;
-              next_button_update_ms = now + 300;
-            }
-          #endif
-          #if BUTTON_EXISTS(RT)
-            else if (BUTTON_PRESSED(RT)) {
-              encoderDiff = pulses;
-              next_button_update_ms = now + 300;
-            }
-          #endif
-
-        #endif // LCD_HAS_DIRECTIONAL_BUTTONS
-
-        buttons = newbutton
-          #if HAS_SLOW_BUTTONS
-            | slow_buttons
-          #endif
-        ;
-
-      #elif HAS_ADC_BUTTONS
-
-        buttons = 0;
-        if (keypad_buttons == 0) {
-          const uint8_t b = get_ADC_keyValue();
-          if (WITHIN(b, 1, 8)) keypad_buttons = _BV(b - 1);
-        }
-
-      #endif
-
-      #if HAS_SHIFT_ENCODER
-
-        GET_SHIFT_BUTTON_STATES(
-          #if ENABLED(REPRAPWORLD_KEYPAD)
-            keypad_buttons
-          #else
-            buttons
-          #endif
-        );
+        buttons = newbutton;
 
       #endif
 
@@ -1054,23 +742,6 @@ void LcdUI::update() {
 
   bool LcdUI::button_pressed() { return BUTTON_CLICK(); }
 
-  #if HAS_SLOW_BUTTONS
-
-    uint8_t LcdUI::read_slow_buttons() {
-      #if ENABLED(LCD_I2C_TYPE_MCP23017)
-        // Reading these buttons this is likely to be too slow to call inside interrupt context
-        // so they are called during normal lcdui.update
-        uint8_t slow_bits = lcd.readButtons() << B_I2C_BTN_OFFSET;
-        #if ENABLED(LCD_I2C_VIKI)
-          if ((slow_bits & (B_MI | B_RI)) && PENDING(millis(), next_button_update_ms)) // LCD clicked
-            slow_bits &= ~(B_MI | B_RI); // Disable LCD clicked buttons if screen is updated
-        #endif // LCD_I2C_VIKI
-        return slow_bits;
-      #endif // LCD_I2C_TYPE_MCP23017
-    }
-
-  #endif // LCD_HAS_SLOW_BUTTONS
-
 #endif // HAS_ENCODER_ACTION
 
 ////////////////////////////////////////////
@@ -1090,7 +761,7 @@ void LcdUI::finishstatus(const bool persist) {
     #endif
   #endif
 
-  #if (HAS_LCD_FILAMENT_SENSOR && ENABLED(SDSUPPORT)) || HAS_LCD_POWER_SENSOR
+  #if (HAS_LCD_FILAMENT_SENSOR && ENABLED(SDSUPPORT))
     previous_status_ms = millis(); // Show status message for 5s
   #endif
 
@@ -1181,15 +852,7 @@ void LcdUI::reset_status() {
   static const char paused[] PROGMEM = MSG_PRINT_PAUSED;
   static const char printing[] PROGMEM = MSG_PRINTING;
   static const char welcome[] PROGMEM = WELCOME_MSG;
-  #if ENABLED(SERVICE_TIME_1)
-    static const char service1[] PROGMEM = { "> " SERVICE_NAME_1 "!" };
-  #endif
-  #if ENABLED(SERVICE_TIME_2)
-    static const char service2[] PROGMEM = { "> " SERVICE_NAME_2 "!" };
-  #endif
-  #if ENABLED(SERVICE_TIME_3)
-    static const char service3[] PROGMEM = { "> " SERVICE_NAME_3 "!" };
-  #endif
+
   PGM_P msg;
   if (!IS_SD_PRINTING() && print_job_counter.isPaused())
     msg = paused;
@@ -1199,15 +862,6 @@ void LcdUI::reset_status() {
   #endif
   else if (print_job_counter.isRunning())
     msg = printing;
-  #if ENABLED(SERVICE_TIME_1)
-    else if (print_job_counter.needService(1)) msg = service1;
-  #endif
-  #if ENABLED(SERVICE_TIME_2)
-    else if (print_job_counter.needService(2)) msg = service2;
-  #endif
-  #if ENABLED(SERVICE_TIME_3)
-    else if (print_job_counter.needService(3)) msg = service3;
-  #endif
   else
     msg = welcome;
 

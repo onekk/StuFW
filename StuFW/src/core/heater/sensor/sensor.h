@@ -18,16 +18,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-#pragma once
-
-/**
+ *-------------------------------------
  * sensor.h - sensor object
  */
-
-#if ENABLED(SUPPORT_DHT11)
-  #include "../../../feature/dhtsensor/dhtsensor.h"
-#endif
+#pragma once
 
 typedef struct {
 
@@ -98,11 +92,6 @@ typedef struct {
 
         return (recipT > 0.0) ? (1.0 / recipT) + (ABS_ZERO) : 2000.0;
       }
-
-      #if ENABLED(SUPPORT_DHT11)
-        if (type == 11)
-          return dhtsensor.Temperature;
-      #endif
 
       #if ENABLED(SUPPORT_AMPLIFIER)
 

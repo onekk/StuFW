@@ -1204,12 +1204,6 @@ bool Planner::fill_block(block_t * const block, bool split_move,
             #endif
             stepper.enable_E0();
             g_uc_extruder_last_move[0] = (BLOCK_BUFFER_SIZE) * 2;
-            #if ENABLED(DUAL_X_CARRIAGE)
-              if (mechanics.extruder_duplication_enabled) {
-                stepper.enable_E1();
-                g_uc_extruder_last_move[1] = (BLOCK_BUFFER_SIZE) * 2;
-              }
-            #endif
           break;
           #if EXTRUDERS > 1
             case 1:
@@ -1343,7 +1337,7 @@ bool Planner::fill_block(block_t * const block, bool split_move,
           stepper.enable_E1();
         break;
       }
-    #elif ENABLED(DONDOLO_SINGLE_MOTOR) || ENABLED(MKSE6)
+    #elif ENABLED(MKSE6)
       stepper.enable_E0();
     #endif
   }
@@ -2353,8 +2347,8 @@ void Planner::forward_pass() {
 
     // Skip SYNC blocks
     if (!TEST(current->flag, BLOCK_BIT_SYNC_POSITION)) {
-      
-      
+
+
       //  If we don't have a previous block or the previous block
       // is not busy (thus, modifiable), run the forward_pass_kernel.
       //  Otherwise, the previous block became BUSY (read only), so

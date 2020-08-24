@@ -82,7 +82,7 @@
 #endif
 
 #include "src/inc/conditionals_pre.h"
-// pin.sh include Configuration_Pins.h after some checks
+// pin.h include Configuration_Pins.h after some checks
 #include "src/inc/pins.h"
 #include "src/inc/conditionals_post.h"
 
@@ -144,8 +144,6 @@
 #include "src/feature/filamentrunout/filamentrunout.h"
 #include "src/feature/fwretract/fwretract.h"
 #include "src/feature/advanced_pause/advanced_pause.h"
-#include "src/feature/flowmeter/flowmeter.h"
-#include "src/feature/dhtsensor/dhtsensor.h"
 #include "src/feature/rgbled/led.h"
 #include "src/feature/rgbled/led_events.h"
 #include "src/feature/caselight/caselight.h"

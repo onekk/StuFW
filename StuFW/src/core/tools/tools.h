@@ -106,14 +106,6 @@
         static void MK_multi_tool_change(const uint8_t e);
       #endif
 
-      #if HAS_DONDOLO
-        static void move_extruder_servo(const uint8_t e);
-      #endif
-
-      #if ENABLED(DUAL_X_CARRIAGE)
-        static void dualx_tool_change(const uint8_t tmp_extruder, bool &no_move);
-      #endif
-
   };
 
   extern Tools tools;

@@ -49,7 +49,8 @@
 //#define FASTER_GCODE_EXECUTE
 #define HOST_KEEPALIVE_FEATURE
 #define DEFAULT_KEEPALIVE_INTERVAL 2
-#define MOTHERBOARD BOARD_RAMPS_13_HFB
+// see boards.h for the board names
+#define MOTHERBOARD BOARD_RAMPS_13_HFB  //BOARD_MKS_13 
 #define MECHANISM MECH_CARTESIAN
 //#define MECHANISM MECH_COREXY
 //#define MECHANISM MECH_COREYX
@@ -71,16 +72,15 @@
 #define TEMP_SENSOR_0 9
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
-#define TEMP_SENSOR_3 0
-#define TEMP_SENSOR_BED 9
+#define TEMP_SENSOR_3 9
+// put this to 0 to disable hot bed
+#define TEMP_SENSOR_BED 0
 #define TEMP_SENSOR_CHAMBER 0
 #define TEMP_SENSOR_COOLER 0
 #define THERMISTOR_SERIES_RS 4700
 #define T9_NAME "User sensor"
 #define T9_R25 100000
 #define T9_BETA 4036
-//#define DHT_SENSOR
-#define DHT_TYPE 11
 #define TEMP_SENSOR_AD595_OFFSET 0
 #define TEMP_SENSOR_AD595_GAIN 1
 #define DUMMY_THERMISTOR_998_VALUE 25
@@ -221,9 +221,6 @@
 //#define Z_PROBE_FIX_MOUNTED
 //#define BLTOUCH
 //#define BLTOUCH_DELAY 375 // (ms) Enable and increase if needed
-//#define Z_PROBE_SENSORLESS
-//#define Z_PROBE_SLED
-#define SLED_DOCKING_OFFSET 5
 #define X_PROBE_OFFSET_FROM_NOZZLE 0
 #define Y_PROBE_OFFSET_FROM_NOZZLE 0
 #define Z_PROBE_OFFSET_FROM_NOZZLE -1
@@ -406,12 +403,6 @@
 #define MKSE6_SERVOPOS_E4   60
 #define MKSE6_SERVOPOS_E5   90
 #define MKSE6_SERVO_DELAY 1000
-//#define DONDOLO_SINGLE_MOTOR
-//#define DONDOLO_DUAL_MOTOR
-#define DONDOLO_SERVO_INDEX 0
-#define DONDOLO_SERVOPOS_E0 120
-#define DONDOLO_SERVOPOS_E1 10
-#define DONDOLO_SERVO_DELAY 1000
 //#define IDLE_OOZING_PREVENT
 #define IDLE_OOZING_MINTEMP           190
 #define IDLE_OOZING_FEEDRATE          50    //default feedrate for retracting (mm/s)
@@ -470,14 +461,6 @@
 #define RETRACT_RECOVER_LENGTH_SWAP   0   // Default additional swap recover length (mm, added to retract length when recovering from extruder change)
 #define RETRACT_RECOVER_FEEDRATE      8   // Default feedrate for recovering from retraction (mm/s)
 #define RETRACT_RECOVER_FEEDRATE_SWAP 8   // Default feedrate for recovering from swap retraction (mm/s)
-//#define DUAL_X_CARRIAGE
-#define X1_MIN_POS X_MIN_POS    // set minimum to ensure first x-carriage doesn't hit the parked second X-carriage
-#define X1_MAX_POS X_BED_SIZE   // set maximum to ensure first x-carriage doesn't hit the parked second X-carriage
-#define X2_MIN_POS 80           // set minimum to ensure second x-carriage doesn't hit the parked first X-carriage
-#define X2_MAX_POS 353          // set maximum to the distance between toolheads when both heads are homed
-#define X2_HOME_DIR 1           // the second X-carriage always homes to the maximum endstop position
-#define X2_HOME_POS X2_MAX_POS  // default home position is the maximum carriage position
-#define DEFAULT_DUAL_X_CARRIAGE_MODE DXC_FULL_CONTROL_MODE
 #define TOOLCHANGE_PARK_ZLIFT   0.2      // the distance to raise Z axis when parking an extruder
 #define TOOLCHANGE_UNPARK_ZLIFT 1        // the distance to raise Z axis when unparking an extruder
 #define DEFAULT_DUPLICATION_X_OFFSET 100
@@ -523,18 +506,6 @@
 #define FIL_RUNOUT_5_PULLUP false
 #define FILAMENT_RUNOUT_DOUBLE_CHECK 0
 #define FILAMENT_RUNOUT_SCRIPT "M600"
-//#define POWER_CONSUMPTION
-#define POWER_VOLTAGE      12.00    //(V) The power supply OUT voltage
-#define POWER_SENSITIVITY   0.066   //(V/A) How much increase V for 1A of increase
-#define POWER_OFFSET        0.005   //(A) Help to get 0A when no load is connected.
-#define POWER_ZERO          2.500   //(V) The /\V coming out from the sensor when no current flow.
-#define POWER_ERROR         0.0     //(%) Ammortize measure error.
-#define POWER_EFFICIENCY  100.0     //(%) The power efficency of the power supply
-//#define POWER_CONSUMPTION_LCD_DISPLAY
-//#define FLOWMETER_SENSOR
-#define FLOWMETER_MAXFLOW  6.0      // Liters per minute max
-#define FLOWMETER_MAXFREQ  55       // frequency of pulses at max flow
-//#define MINFLOW_PROTECTION 4
 //#define DOOR_OPEN_FEATURE
 #define DOOR_OPEN_LOGIC false
 #define PULLUP_DOOR_OPEN true
@@ -665,31 +636,6 @@
 #define MAXIMUM_STEPPER_RATE 500000
 #define DIRECTION_STEPPER_DELAY 0
 //#define ADAPTIVE_STEP_SMOOTHING
-#define X_MICROSTEPS 16
-#define Y_MICROSTEPS 16
-#define Z_MICROSTEPS 16
-#define E0_MICROSTEPS 16
-#define E1_MICROSTEPS 16
-#define E2_MICROSTEPS 16
-#define E3_MICROSTEPS 16
-#define E4_MICROSTEPS 16
-#define E5_MICROSTEPS 16
-#define X_CURRENT 800
-#define Y_CURRENT 800
-#define Z_CURRENT 800
-#define E0_CURRENT 800
-#define E1_CURRENT 800
-#define E2_CURRENT 800
-#define E3_CURRENT 800
-#define E4_CURRENT 800
-#define E5_CURRENT 800
-//#define SERVICE_NAME_1        "Service 1"
-//#define SERVICE_TIME_1        100
-//#define SERVICE_NAME_2        "Service 2"
-//#define SERVICE_TIME_2        100
-//#define SERVICE_NAME_3        "Service 3"
-//#define SERVICE_TIME_3        100
-#define SERVICE_WARNING_BUZZES  3
 #define BLOCK_BUFFER_SIZE 16
 #define MAX_CMD_SIZE 96
 #define BUFSIZE 4
@@ -767,4 +713,3 @@
 #define USER_GCODE_4 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nG28\nG29"
 #define USER_DESC_5 "Home & Info"
 #define USER_GCODE_5 "G28\nM503"
-

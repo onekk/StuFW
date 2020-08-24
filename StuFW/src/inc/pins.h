@@ -234,15 +234,13 @@
 // Disabled MIN or MAX endstop if not used
 #if DISABLED(ENABLED_ALL_SIX_ENDSTOP)
 
-  #if DISABLED(DUAL_X_CARRIAGE)
-    #if X_HOME_DIR > 0    // Home X to MAX
-      #undef X_MIN_PIN
-      #define X_MIN_PIN NoPin
-    #elif X_HOME_DIR < 0  // Home X to MIN
-      #undef X_MAX_PIN
-      #define X_MAX_PIN NoPin
-    #endif // X_HOME_DIR > 0
-  #endif // DISABLED(DUAL_X_CARRIAGE)
+  #if X_HOME_DIR > 0    // Home X to MAX
+    #undef X_MIN_PIN
+    #define X_MIN_PIN NoPin
+  #elif X_HOME_DIR < 0  // Home X to MIN
+    #undef X_MAX_PIN
+    #define X_MAX_PIN NoPin
+  #endif // X_HOME_DIR > 0
 
   #if Y_HOME_DIR > 0    // Home Y to MAX
     #undef Y_MIN_PIN
@@ -324,12 +322,6 @@
 #if DISABLED(COOLER_PIN)
   #define COOLER_PIN NoPin
 #endif
-
-
-#if DISABLED(FLOWMETER_PIN)
-  #define FLOWMETER_PIN NoPin
-#endif
-
 
 #define SENSITIVE_PINS { 0, 1, \
                         X_STEP_PIN, X_DIR_PIN, X_ENABLE_PIN, \

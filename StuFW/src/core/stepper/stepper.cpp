@@ -18,9 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
+ *-------------------------------------
  * stepper.cpp - A singleton object to execute motion plans using stepper motors
  *
  * Derived from Grbl
@@ -61,14 +59,10 @@
  *  first block->accelerate_until step_events_completed, then keeps going at constant speed until
  *  step_events_completed reaches block->decelerate_after after which it decelerates until the trapezoid generator is reset.
  *  The slope of acceleration is calculated using v = u + at where t is the accumulated timer values of the steps so far.
- */
-
-/**
- * MK4duo uses the Bresenham algorithm. For a detailed explanation of theory and
+ *
+ * StuFW uses the Bresenham algorithm. For a detailed explanation of theory and
  * method see https://www.cs.helsinki.fi/group/goa/mallinnus/lines/bresenh.html
- */
-
-/**
+ *
  * Jerk controlled movements planner added Apr 2018 by Eduardo José Tagle.
  * Equations based on Synthethos TinyG2 sources, but the fixed-point
  * implementation is new, as we are running the ISR with a variable period.
@@ -229,7 +223,7 @@ void Stepper::init() {
   #if HAS_X_ENABLE
     X_ENABLE_INIT();
     if (!X_ENABLE_ON) X_ENABLE_WRITE(HIGH);
-    #if (ENABLED(DUAL_X_CARRIAGE) || ENABLED(X_TWO_STEPPER_DRIVERS)) && HAS_X2_ENABLE
+    #if ENABLED(X_TWO_STEPPER_DRIVERS) && HAS_X2_ENABLE
       X2_ENABLE_INIT();
       if (!X_ENABLE_ON) X2_ENABLE_WRITE(HIGH);
     #endif
@@ -298,7 +292,7 @@ void Stepper::init() {
   #if HAS_X_STEP
     X_STEP_INIT();
     X_STEP_WRITE(INVERT_X_STEP_PIN);
-    #if ENABLED(X_TWO_STEPPER_DRIVERS) || ENABLED(DUAL_X_CARRIAGE)
+    #if ENABLED(X_TWO_STEPPER_DRIVERS)
       X2_STEP_INIT();
       X2_STEP_WRITE(INVERT_X_STEP_PIN);
     #endif
@@ -443,7 +437,7 @@ void Stepper::init() {
 void Stepper::factory_parameters() {
   constexpr bool tmpdir[] = { INVERT_X_DIR, INVERT_Y_DIR, INVERT_Z_DIR, INVERT_E0_DIR, INVERT_E1_DIR, INVERT_E2_DIR, INVERT_E3_DIR, INVERT_E4_DIR, INVERT_E5_DIR };
 
-  for (uint8_t axis = 0; axis < sizeof(tmpdir); ++axis) 
+  for (uint8_t axis = 0; axis < sizeof(tmpdir); ++axis)
     setStepDir((AxisEnum)axis, tmpdir[axis]);
 
   direction_delay = DIRECTION_STEPPER_DELAY;
@@ -1578,17 +1572,6 @@ FORCE_INLINE void Stepper::start_X_step() {
       X_STEP_WRITE(!INVERT_X_STEP_PIN);
       X2_STEP_WRITE(!INVERT_X_STEP_PIN);
     #endif
-  #elif ENABLED(DUAL_X_CARRIAGE)
-    if (mechanics.extruder_duplication_enabled) {
-      X_STEP_WRITE(!INVERT_X_STEP_PIN);
-      X2_STEP_WRITE(!INVERT_X_STEP_PIN);
-    }
-    else {
-      if (movement_extruder())
-        X2_STEP_WRITE(!INVERT_X_STEP_PIN);
-      else
-        X_STEP_WRITE(!INVERT_X_STEP_PIN);
-    }
   #else
     X_STEP_WRITE(!INVERT_X_STEP_PIN);
   #endif
@@ -1678,7 +1661,7 @@ FORCE_INLINE void Stepper::start_Z_step() {
  */
 FORCE_INLINE void Stepper::stop_X_step() {
   X_STEP_WRITE(INVERT_X_STEP_PIN);
-  #if ENABLED(X_TWO_STEPPER_DRIVERS) || ENABLED(DUAL_X_CARRIAGE)
+  #if ENABLED(X_TWO_STEPPER_DRIVERS)
     X2_STEP_WRITE(INVERT_X_STEP_PIN);
   #endif
 }
@@ -1705,17 +1688,6 @@ FORCE_INLINE void Stepper::set_X_dir(const bool dir) {
   #if ENABLED(X_TWO_STEPPER_DRIVERS)
     X_DIR_WRITE(dir);
     X2_DIR_WRITE((dir) != INVERT_X2_VS_X_DIR);
-  #elif ENABLED(DUAL_X_CARRIAGE)
-    if (mechanics.extruder_duplication_enabled) {
-      X_DIR_WRITE(dir);
-      X2_DIR_WRITE(dir);
-    }
-    else {
-      if (movement_extruder())
-        X2_DIR_WRITE(dir);
-      else
-        X_DIR_WRITE(dir);
-    }
   #else
     X_DIR_WRITE(dir);
   #endif
@@ -1756,20 +1728,6 @@ FORCE_INLINE void Stepper::set_nor_E_dir(const uint8_t e/*=0*/) {
     #if DRIVER_EXTRUDERS > 5
       E5_DIR_WRITE(!isStepDir(E5_AXIS));
     #endif
-  #elif ENABLED(DUAL_X_CARRIAGE)
-    if (mechanics.extruder_duplication_enabled) {
-      E0_DIR_WRITE(!isStepDir(E0_AXIS));
-      E1_DIR_WRITE(!isStepDir(E1_AXIS));
-    }
-    else if (e == 0) {
-      E0_DIR_WRITE(!isStepDir(E0_AXIS));
-    }
-    else {
-      E1_DIR_WRITE(!isStepDir(E1_AXIS));
-    }
-  #elif ENABLED(DONDOLO_SINGLE_MOTOR)
-    UNUSED(e);
-    E0_DIR_WRITE(active_extruder ? isStepDir(E0_AXIS) : !isStepDir(E0_AXIS));
   #else
     switch (e) {
       #if DRIVER_EXTRUDERS > 0
@@ -1815,20 +1773,6 @@ FORCE_INLINE void Stepper::set_rev_E_dir(const uint8_t e/*=0*/) {
     #if DRIVER_EXTRUDERS > 5
       E5_DIR_WRITE(isStepDir(E5_AXIS));
     #endif
-  #elif ENABLED(DUAL_X_CARRIAGE)
-    if (mechanics.extruder_duplication_enabled) {
-      E0_DIR_WRITE(isStepDir(E0_AXIS));
-      E1_DIR_WRITE(isStepDir(E1_AXIS));
-    }
-    else if (e == 0) {
-      E0_DIR_WRITE(isStepDir(E0_AXIS));
-    }
-    else {
-      E1_DIR_WRITE(isStepDir(E1_AXIS));
-    }
-  #elif ENABLED(DONDOLO_SINGLE_MOTOR)
-    UNUSED(e);
-    E0_DIR_WRITE(active_extruder ? !isStepDir(E0_AXIS) : isStepDir(E0_AXIS));
   #else
     switch (e) {
       #if DRIVER_EXTRUDERS > 0
@@ -1894,7 +1838,7 @@ void Stepper::_set_position(const int32_t &a, const int32_t &b, const int32_t &c
 #if DISABLED(COLOR_MIXING_EXTRUDER)
 
   /**
-   * Get active driver for Multitools MKr, MKs o Dondolo
+   * Get active driver for Multitools MKr, MKs
    */
   uint8_t Stepper::get_active_extruder_driver() {
 
@@ -1905,7 +1849,7 @@ void Stepper::_set_position(const int32_t &a, const int32_t &b, const int32_t &c
         const uint8_t driver = active_extruder & 1;
         if (driver)
           return 1;
-        else 
+        else
           return 0;
       #elif ENABLED(MKR6) || ENABLED(MKR12)
         if WITHIN(active_extruder, 0, 2)
@@ -1917,8 +1861,6 @@ void Stepper::_set_position(const int32_t &a, const int32_t &b, const int32_t &c
         if WITHIN(active_extruder, 9, 11)
           return 3;
       #endif
-    #elif ENABLED(DONDOLO_SINGLE_MOTOR)
-      return 0;
     #else
       return active_extruder;
     #endif
@@ -2887,4 +2829,3 @@ void Stepper::_set_position(const int32_t &a, const int32_t &b, const int32_t &c
 void reset_stepper_drivers() {
   stepper.set_directions();
 }
-

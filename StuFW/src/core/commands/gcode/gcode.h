@@ -81,7 +81,6 @@
 #include "control/m400.h"                 // Finish all moves
 #include "control/m410.h"                 // Quickstop
 #include "control/m540.h"                 // Enable/disable SD card abort on endstop hit
-#include "control/m605.h"                 // Set dual x-carriage movement mode
 #include "control/m999.h"                 // Restart after being stopped
 #include "control/m9999.h"                // Banzai code for erase bootloader on DUE
 
@@ -153,7 +152,6 @@
 
 // Probe Commands
 #include "probe/g30.h"
-#include "probe/g31_g32.h"
 #include "probe/g38.h"
 #include "probe/m401_m402.h"              // Lower e Raise probe
 #include "probe/m851.h"                   // Set probe offset
@@ -167,7 +165,6 @@
 #include "sdcard/sdcard.h"
 
 // Sensor Commands
-#include "sensor/m70.h"
 #include "sensor/m404_m407.h"             // Filament Sensor
 #include "sensor/m512.h"                  // Extruder Encoder read pin
 #include "sensor/m602_m604.h"             // Extruder Encoder settings (M602 still TODO)

@@ -40,7 +40,6 @@
  * - Multiextruder MKR6
  * - Multiextruder MKR12
  * - Multiextruder MKSE6 (multiextruder with Servo)
- * - Multiextruder DONDOLO
  * - Extruder idle oozing prevention
  * - Extruder run-out prevention
  * - Extruder Advance Linear Pressure Control
@@ -70,7 +69,6 @@
  * - Extruder Encoder Control
  * - Filament diameter sensor
  * - Filament Runout sensor
- * - Power consumption sensor
  * - Flow sensor
  * - Door open sensor
  * - Power check sensor
@@ -101,8 +99,7 @@
  * - Motor's current
  * - I2C DIGIPOT
  * ADVANCED FEATURES:
- * - Service Timers function
- * - Buffer stuff
+  * - Buffer stuff
  * - Nozzle Clean Feature
  * - Nozzle Park
  * - Advanced Pause Park
@@ -362,32 +359,6 @@
 #define MKSE6_SERVO_DELAY 1000
 /***********************************************************************/
 
-
-/***********************************************************************
- ********************* Dual Extruder DONDOLO ***************************
- ***********************************************************************
- *                                                                     *
- * Setting for multiextruder DONDOLO 1.0b by Gianni Franci             *
- * Enable DONDOLO SINGLE MOTOR for original DONDOLO by Gianni Franci   *
- * Enable DONDOLO DUAL MOTOR for bowden and dual EXTRUDER              *
- * http://www.thingiverse.com/thing:673816                             *
- * For function set NUM_SERVOS +1 if you use for endstop or probe      *
- * Set DONDOLO SERVO INDEX for servo you use for DONDOLO               *
- * Set DONDOLO SERVOPOS E0 angle for E0 extruder                       *
- * Set DONDOLO SERVOPOS E1 angle for E1 extruder                       *
- * Remember set HOTEND OFFSET X Y Z                                    *
- *                                                                     *
- ***********************************************************************/
-//#define DONDOLO_SINGLE_MOTOR
-//#define DONDOLO_DUAL_MOTOR
-
-#define DONDOLO_SERVO_INDEX 0
-#define DONDOLO_SERVOPOS_E0 120
-#define DONDOLO_SERVOPOS_E1 10
-#define DONDOLO_SERVO_DELAY 1000
-/***********************************************************************/
-
-
 /***********************************************************************
  **************** Extruder idle oozing prevention **********************
  ***********************************************************************
@@ -473,7 +444,7 @@
  *************************** Workspace offsets ****************************
  **************************************************************************
  *                                                                        *
- * Enable this option for a leaner build of MK4duo that enable all        *
+ * Enable this option for a leaner build of StuFW that enable all         *
  * workspace offsets, simplifying coordinate transformations,             *
  * leveling, etc.                                                         *
  *                                                                        *
@@ -587,8 +558,6 @@
  * Enable Z the last moment.                                           *
  * Needed if your Z driver overheats.                                  *
  *                                                                     *
- * This feature is not compatible with delta printer.                  *
- *                                                                     *
  * Uncomment Z_LATE_ENABLE to enable this feature                      *
  *                                                                     *
  ***********************************************************************/
@@ -615,9 +584,6 @@
  * If both x and y are to be homed, a diagonal move will               *
  * be performed initially.                                             *
  *                                                                     *
- * This feature is not compatible with delta printer.                  *
- * This feature is enabled by default for scara printer.               *
- *                                                                     *
  ***********************************************************************/
 //#define QUICK_HOME
 /***********************************************************************/
@@ -629,8 +595,6 @@
  *                                                                     *
  * When G28 is called, this option will make Y home before X           *
  *                                                                     *
- * This feature is not compatible with delta and scara printer.        *
- *                                                                     *
  ***********************************************************************/
 //#define HOME_Y_BEFORE_X
 /***********************************************************************/
@@ -641,8 +605,6 @@
  ***********************************************************************
  *                                                                     *
  * When G28 is called, this option force XY home before Z              *
- *                                                                     *
- * This feature is not compatible with delta and scara printer.        *
  *                                                                     *
  ***********************************************************************/
 //#define FORCE_HOME_XY_BEFORE_Z
@@ -718,45 +680,6 @@
 /**************************************************************************/
 
 
-/*****************************************************************************************
- ************************************ Dual X Carriage ************************************
- *****************************************************************************************
- *                                                                                       *
- * This setup has two X carriages that can move independently, each with its own hotend. *
- * The carriages can be used to print an object with two colors or materials, or in      *
- * "duplication mode" it can print two identical or X-mirrored objects simultaneously.   *
- * The inactive carriage is parked automatically to prevent oozing.                      *
- * X1 is the left carriage, X2 the right. They park and home at opposite ends            *
- * of the X axis.                                                                        *
- * By default the X2 stepper is assigned to the first unused E plug on the board.        *
- *                                                                                       *
- *****************************************************************************************/
-//#define DUAL_X_CARRIAGE
-
-#define X1_MIN_POS X_MIN_POS    // set minimum to ensure first x-carriage doesn't hit the parked second X-carriage
-#define X1_MAX_POS X_BED_SIZE   // set maximum to ensure first x-carriage doesn't hit the parked second X-carriage
-#define X2_MIN_POS 80           // set minimum to ensure second x-carriage doesn't hit the parked first X-carriage
-#define X2_MAX_POS 353          // set maximum to the distance between toolheads when both heads are homed
-#define X2_HOME_DIR 1           // the second X-carriage always homes to the maximum endstop position
-#define X2_HOME_POS X2_MAX_POS  // default home position is the maximum carriage position
-// However: In this mode the HOTEND_OFFSET_X value for the second extruder provides a software
-// override for X2_HOME_POS. This also allow recalibration of the distance between the two endstops
-// without modifying the firmware (through the "M218 T1 X???" command).
-// Remember: you should set the second extruder x-offset to 0 in your slicer.
-
-// There are a few selectable movement modes for dual x-carriages using M605 S<mode>
-//    Mode 0 (DXC_FULL_CONTROL_MODE)        : Full control. The slicer has full control over both x-carriages and can achieve optimal travel results
-//                                            as long as it supports dual x-carriages. (M605 S0)
-//    Mode 1 (DXC_AUTO_PARK_MODE)           : Auto-park mode. The firmware will automatically park and unpark the x-carriages on tool changes so
-//                                            that additional slicer support is not required. (M605 S1)
-//    Mode 2 (DXC_DUPLICATION_MODE)         : Duplication mode. The firmware will transparently make the second x-carriage and extruder copy all
-//                                            actions of the first x-carriage. This allows the printer to print 2 arbitrary items at
-//                                            once. (2nd extruder x offset and temp offset are set using: M605 S2 [Xnnn] [Rmmm])
-//    Mode 3 (DXC_SCALED_DUPLICATION_MODE)  : Not working yet, but support routines in place
-//
-
-// This is the default power-up mode which can be later using M605.
-#define DEFAULT_DUAL_X_CARRIAGE_MODE DXC_FULL_CONTROL_MODE
 
 // Default settings in "Auto-park Mode"
 #define TOOLCHANGE_PARK_ZLIFT   0.2      // the distance to raise Z axis when parking an extruder
@@ -817,8 +740,6 @@
  * If the second motor needs its own endstop set Z TWO ENDSTOPS.                         *
  * Extra endstops will appear in the output of 'M119'.                                   *
  *                                                                                       *
- * Only Cartesian & Core                                                                 *
- *                                                                                       *
  *****************************************************************************************/
 //#define Z_TWO_STEPPER_DRIVERS
 
@@ -836,8 +757,6 @@
  * If the motors need to spin in opposite directions set INVERT Z2 VS Z DIR.             *
  * If the second motor needs its own endstop set Z TWO ENDSTOPS.                         *
  * Extra endstops will appear in the output of 'M119'.                                   *
- *                                                                                       *
- * Only Cartesian & Core                                                                 *
  *                                                                                       *
  *****************************************************************************************/
 //#define Z_THREE_STEPPER_DRIVERS
@@ -975,88 +894,6 @@
 #define FILAMENT_RUNOUT_SCRIPT "M600"
 /**********************************************************************************/
 
-
-/**************************************************************************
- *********************** Power consumption sensor *************************
- **************************************************************************
- *                                                                        *
- * Support for a current sensor (Hall effect sensor like ACS712) for      *
- * measure the power consumption. Since it's more simple to deal with,    *
- * we measure the DC current and we assume that POWER_VOLTAGE that comes  *
- * from your power supply it's almost stable.                             *
- * You have to change the POWER_SENSITIVITY with the one that you can     *
- * find in the datasheet. (in case of ACS712: set to .100 for 20A version *
- * or set .066 for 30A version).                                          *
- *                                                                        *
- * After setted POWER_VOLTAGE and POWER_SENSITIVITY you have to found     *
- * correct value for POWER_ZERO.                                          *
- * You can do it by using "M70 Z" gcode and read the calculated value     *
- * from serial messages.                                                  *
- * Before calling "M70 Z" you have to disconnect the cable for measure    *
- * the current from the sensor leaving only +5, OUT and GND connections.  *
- * Insert new values into FW and recompile.                               *
- * Now you can reconnect the current cable to the sensor.                 *
- *                                                                        *
- * Now you have to set right value for POWER_ERROR.                       *
- * Get a good multimeter and meacure DC current coming out from the       *
- * power supply.                                                          *
- * In order to get an accurate value power-on something                   *
- * (Eg. Heater, Motor, Fan) DO NOT POWER-ON THE BED OR YOU MAY KILL IT!   *
- * Call "M70 Ax" where 'x' is the value measured by the multimeter.       *
- * Insert new values into FW and recompile.                               *
- *                                                                        *
- * With this module we measure the Printer power consumption ignoring     *
- * the Power Supply power consumption,                                    *
- * so we consider the POWER_EFFICIENCY of our supply to be 100%.          *
- * WARNING: from this moment the procedure can be REALLY HARMFUL to       *
- * health unless you have a little experience so:                         *
- * DO NOT DO IT IF YOU DO NOT KNOW WHAT YOU ARE DOING!!!                  *
- * If you want to approximately add the supply consumption you have       *
- * measure the AC current with a good multimeter and moltiple it with the *
- * mains voltage (110V AC - 220V AC).                                     *
- * MULTIMETER_WATT = MULTIMETER_CURRENT * MAINS_VOLTAGE                   *
- * Call "M70 Wx" where 'x' is MULTIMETER_WATT;                            *
- * Insert new values into FW and recompile.                               *
- *                                                                        *
- * Now you AC712 it should be calibrated.                                 *
- *                                                                        *
- * You also need to set POWER_CONSUMPTION_PIN in pins.h                   *
- *                                                                        *
- **************************************************************************/
-//#define POWER_CONSUMPTION
-
-#define POWER_VOLTAGE      12.00    //(V) The power supply OUT voltage
-#define POWER_SENSITIVITY   0.066   //(V/A) How much increase V for 1A of increase
-#define POWER_OFFSET        0.005   //(A) Help to get 0A when no load is connected.
-#define POWER_ZERO          2.500   //(V) The /\V coming out from the sensor when no current flow.
-#define POWER_ERROR         0.0     //(%) Ammortize measure error.
-#define POWER_EFFICIENCY  100.0     //(%) The power efficency of the power supply
-
-//When using an LCD, uncomment the line below to display the Power consumption sensor data on the last line instead of status. Status will appear for 5 sec.
-//#define POWER_CONSUMPTION_LCD_DISPLAY
-/**************************************************************************/
-
-
-/**************************************************************************
- ****************************** Flow sensor *******************************
- **************************************************************************
- *                                                                        *
- * Flow sensors for water circulators, usefull in case of coolers using   *
- * water or other liquid as heat vector                                   *
- *                                                                        *
- * You also need to set FLOWMETER PIN in Configurations_pins.h            *
- *                                                                        *
- **************************************************************************/
-//#define FLOWMETER_SENSOR
-
-#define FLOWMETER_MAXFLOW  6.0      // Liters per minute max
-#define FLOWMETER_MAXFREQ  55       // frequency of pulses at max flow
-
-// uncomment this to kill print job under the min flow rate, in liters/minute
-//#define MINFLOW_PROTECTION 4
-/**************************************************************************/
-
-
 /**************************************************************************
  ************************** Door Open Sensor ******************************
  **************************************************************************
@@ -1139,7 +976,7 @@
  * The alternative to the SD reader and put a USB Flash reader.                          *
  * Support for USB thumb drives using an Arduino USB Host Shield or                      *
  * equivalent MAX3421E breakout board. The USB thumb drive will appear                   *
- * to MK4duo as an SD card.                                                              *
+ * to StuFW as an SD card.                                                              *
  *                                                                                       *
  * The MAX3421E must be assigned the same pins as the SD card reader, with               *
  * the following pin mapping:                                                            *
@@ -1181,7 +1018,7 @@
 // around this by connecting a push button or single throw switch to the pin defined
 // as SD_DETECT_PIN in your board's pins definitions.
 // This setting should be disabled unless you are using a push button, pulling the pin to ground.
-// Note: This is always disabled for ULTIPANEL (except ELB_FULL_GRAPHIC_CONTROLLER).
+// Note: This is always disabled for ULTIPANEL.
 //#define SD_DETECT_INVERTED
 
 #define SD_FINISHED_STEPPERRELEASE true           // if sd support and the file is finished: disable steppers?
@@ -1238,11 +1075,12 @@
  *********************************** LCD Language ****************************************
  *****************************************************************************************
  *                                                                                       *
- * Here you may choose the language used by MK4duo on the LCD menus,                     *
+ * Here you may choose the language used by StuFW on the LCD menus,                      *
  * the following list of languages are available:                                        *
- *  en, an, bg, ca, cn, cz, de, el, el-gr, es, eu, fi, fr,                               *
- *  gl, hr, it, jp-kana, nl, pl, pt, pt-br, ru, sk,                                      *
- *  tr, uk, zh_CN, zh_TW                                                                 *
+ *  en, it                                                                               *
+ *                                                                                       *
+ *  if you want one of theese language to be added please contact developer through      *
+ *  project GitHub pages                                                                 *
  *                                                                                       *
  * 'en':'English',          'an':'Aragonese', 'bg':'Bulgarian',       'ca':'Catalan',    *
  * 'cn':'Chinese',          'cz':'Czech',     'de':'German',          'el':'Greek',      *
@@ -1320,7 +1158,7 @@
 
 // If you want you can define your own set of delays
 // useful to debug some displays
-// 
+//
 
 //#define ST7920_DELAY_1 DELAY_NS(0)
 //#define ST7920_DELAY_2 DELAY_NS(0)
@@ -1337,15 +1175,7 @@
 #define BOOTSCREEN_TIMEOUT 2500
 
 //
-// *** VENDORS PLEASE READ ***
-//
-// MK4duo allows you to add a custom boot image for Graphical LCDs.
-// With this option MK4duo will first show your custom screen followed
-// by the standard MK4duo logo with version number and web URL.
-// We encourage you to take advantage of this new feature and we also
-// respectfully request that you retain the unmodified MK4duo boot screen.
-//
-// Enable to show the bitmap in MK4duo/src/lcd/custom_bootscreen.h on startup.
+// Enable to show the bitmap in StuFW/src/lcd/custom_bootscreen.h on startup.
 //#define SHOW_CUSTOM_BOOTSCREEN
 
 // Custom custom_statusscreen.h files can define:
@@ -1354,15 +1184,14 @@
 // - A custom fan bitmap / animation
 //
 // See the included examples for guidance
-// Enable this to show the logo in MK4duo/src/lcd/custom_statusscreen.h on display.
+// Enable this to show the logo in StuFW/src/lcd/custom_statusscreen.h on display.
 //#define CUSTOM_STATUS_SCREEN_IMAGE
 
 // Additional options for Graphical Displays
 //
 // Use the optimizations here to improve printing performance,
 // which can be adversely affected by graphical display drawing,
-// especially when doing several short moves, and when printing
-// on DELTA and SCARA machines.
+// especially when doing several short moves
 //
 // Some of these options may result in the display lagging behind
 // controller events, as there is a trade-off between reliable
@@ -1454,7 +1283,7 @@
 
 // SPEAKER/BUZZER
 // If you have a speaker that can produce tones, enable it here.
-// By default MK4duo assumes you have a buzzer with a fixed frequency.
+// By default StuFW assumes you have a buzzer with a fixed frequency.
 //#define SPEAKER
 
 // The duration and frequency for the UI feedback sound.
@@ -1761,75 +1590,9 @@
 //#define ADAPTIVE_STEP_SMOOTHING
 /***********************************************************************/
 
-
-/***********************************************************************
- *************************** Microstepping *****************************
- ***********************************************************************
- *                                                                     *
- * Microstep setting - Only functional when stepper driver microstep   *
- * pins are connected to MCU or TMC DRIVER.                            *
- *                                                                     *
- * [1, 2, 4, 8, 16, 32, 64, 128]                                       *
- *                                                                     *
- *                                                                     *
- ***********************************************************************/
-#define X_MICROSTEPS  16
-#define Y_MICROSTEPS  16
-#define Z_MICROSTEPS  16
-#define E0_MICROSTEPS 16
-#define E1_MICROSTEPS 16
-#define E2_MICROSTEPS 16
-#define E3_MICROSTEPS 16
-#define E4_MICROSTEPS 16
-#define E5_MICROSTEPS 16
-/***********************************************************************/
-
-
-/***********************************************************************
- ************************** Motor's current ****************************
- ***********************************************************************
- *                                                                     *
- * Motor Current setting                                               *
- * Values 100 - 3000 in mA                                             *
- *                                                                     *
- ***********************************************************************/
-#define X_CURRENT   800
-#define Y_CURRENT   800
-#define Z_CURRENT   800
-#define E0_CURRENT  800
-#define E1_CURRENT  800
-#define E2_CURRENT  800
-#define E3_CURRENT  800
-#define E4_CURRENT  800
-#define E5_CURRENT  800
-
 //===========================================================================
 //============================= ADVANCED FEATURES ===========================
 //===========================================================================
-
-
-/****************************************************************************
- **************************** Service Timers function ***********************
- ****************************************************************************
- *                                                                          *
- * Activate up to 3 service interval function                               *
- * time is in hours                                                         *
- *                                                                          *
- * Example:                                                                 *
- *  SERVICE_NAME_1        "Clean bearing"                                   *
- *  SERVICE_TIME_1        200  hours                                        *
- *                                                                          *
- ****************************************************************************/
-//#define SERVICE_NAME_1        "Service 1"
-//#define SERVICE_TIME_1        100
-//#define SERVICE_NAME_2        "Service 2"
-//#define SERVICE_TIME_2        100
-//#define SERVICE_NAME_3        "Service 3"
-//#define SERVICE_TIME_3        100
-
-#define SERVICE_WARNING_BUZZES  3
-/****************************************************************************/
-
 
 /****************************************************************************************
  ************************************** Buffer stuff ************************************

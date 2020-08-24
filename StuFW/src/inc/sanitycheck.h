@@ -18,9 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
+ *-------------------------------------
  * sanitycheck.h
  *
  * Test configuration values for errors at compile-time.
@@ -34,7 +32,7 @@
 #define _SANITYCHECK_H_
 
 #if __cplusplus < 201103L
-  #error "DEPENDENCY ERROR: MK4duo requires C++11 support (gcc >= 4.7, Arduino IDE >= 1.8.2). Please upgrade your toolchain."
+  #error "DEPENDENCY ERROR: StuFW requires C++11 support (gcc >= 4.7, Arduino IDE >= 1.8.2). Please upgrade your toolchain."
 #endif
 
 // Start check
@@ -59,7 +57,7 @@
 
 // Limited number of servos
 #if NUM_SERVOS > 4
-  #error "DEPENDENCY ERROR: The maximum number of SERVOS in MK4duo is 4."
+  #error "DEPENDENCY ERROR: The maximum number of SERVOS in StuFW is 4."
 #endif
 #if ENABLED(ENABLE_SERVOS)
   #if NUM_SERVOS < 1
@@ -105,10 +103,8 @@
 #include "../feature/caselight/sanitycheck.h"
 #include "../feature/filament/sanitycheck.h"
 #include "../feature/filamentrunout/sanitycheck.h"
-#include "../feature/flowmeter/sanitycheck.h"
 #include "../feature/fwretract/sanitycheck.h"
 #include "../feature/mixing/sanitycheck.h"
-#include "../feature/power/sanitycheck.h"
 #include "../feature/probe/sanitycheck.h"
 #include "../feature/restart/sanitycheck.h"
 #include "../feature/rgbled/sanitycheck.h"

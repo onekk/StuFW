@@ -19,7 +19,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// dev-display version Here to distinguish in arduino IDE
+// development-github version 
+// to distinguish versions in arduino IDE that don't expose the path
 /**
  *
  * -----------------
@@ -51,8 +52,6 @@
  *          S = [bool] Stows the probe if 1 (default=1)
  *          Z = [bool] with a non-zero value will apply the result to current delta_height (ONLY DELTA)
  *          P = [bool] with a non-zero value will apply the result to current probe_offset_Z (ONLY DELTA)
- * G31  - Dock sled (Z_PROBE_SLED only)
- * G32  - Undock sled (Z_PROBE_SLED only)
  * G38  - Probe target - similar to G28 except it uses the Z_MIN endstop for all three axes
  * G42  - Coordinated move to a mesh point. (Requires MESH_BED_LEVELING or AUTO_BED_LEVELING_BILINEAR)
  * G60  - Save current position coordinates (all axes, for active extruder).
@@ -116,13 +115,12 @@
  *          I G-code list, J M-code list
  * M48  - Measure Z_Probe repeatability. M48 [P # of points] [X position] [Y position] [V_erboseness #] [E_ngage Probe] [L # of legs of travel]
  * M49  - Turn on or off G26 debug flag for verbose output (Requires G26_MESH_VALIDATION)
- * M70  - Power consumption sensor calibration
  * M73  - P[percent] Set percentage complete (compatibility with Marlin)
  * M75  - Start the print job timer
  * M76  - Pause the print job timer
  * M77  - Stop the print job timer
  * M78  - Show statistical information about the print jobs
- *        S78 reset statistics, R[index] reset service index
+ *        S78 reset statistics 
  * M80  - Turn on Power Supply
  * M81  - Turn off Power Supply
  * M82  - Set E codes absolute (default)
@@ -204,13 +202,10 @@
  * M305 - Set thermistor and ADC parameters: H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER, H = -3 COOLER,
  *          A[float] Thermistor resistance at 25°C, B[float] BetaK, C[float] Steinhart-Hart C coefficien, R[float] Pullup resistor value,
  *          L[int] ADC low offset correction, O[int] ADC high offset correction, P[int] Sensor Pin
- *        Set DHT sensor parameter: D0 P[int] Sensor Pin, S[int] Sensor Type (11, 21, 22).
  * M306 - Set Heaters parameters: H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER, H = -3 COOLER,
  *          A[int] Pid Drive Min, B[int] Pid Drive Max, C[int] Pid Max,
  *          L[int] Min temperature, O[int] Max temperature, U[bool] Use Pid/bang bang,
  *          I[bool] Hardware Inverted, T[bool] Thermal Protection, P[int] Pin
- * M350 - Set microstepping mode. (Requires digital microstepping pins.)
- * M351 - Toggle MS1 MS2 pins directly. (Requires digital microstepping pins.)
  * M355 - Turn case lights on/off
  * M400 - Finish all moves
  * M401 - Lower z-probe if present

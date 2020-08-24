@@ -18,12 +18,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
+ *-------------------------------------
+ *
+ * status_screen_dogm.cpp
+ * Standard Status Screen for Graphical Display
  */
-
-//
-// status_screen_dogm.cpp
-// Standard Status Screen for Graphical Display
-//
 
 #include "../../../../StuFW.h"
 
@@ -368,29 +367,14 @@ void LcdUI::draw_status_screen() {
     (void)elapsed.toDigital(buffer1, false);
     (void)finished.toDigital(buffer2, false);
 
-    #if HAS_LCD_POWER_SENSOR
-      if (millis() < print_millis + 1000) {
-        lcd_moveto(54, 48);
-        lcd_put_wchar('S');
-        lcd_put_u8str(buffer1);
+    lcd_moveto(54, 48);
+    lcd_put_wchar('S');
+    lcd_put_u8str(buffer1);
 
-        lcd_moveto(92, 48);
-        lcd_put_wchar('E');
-        lcd_put_u8str(buffer2);
-      }
-      else {
-        lcd_put_u8str(ui32tostr4(print_job_counter.getConsumptionHour() - powerManager.startpower));
-        lcd_put_u8str((char*)"Wh");
-      }
-    #else
-      lcd_moveto(54, 48);
-      lcd_put_wchar('S');
-      lcd_put_u8str(buffer1);
+    lcd_moveto(92, 48);
+    lcd_put_wchar('E');
+    lcd_put_u8str(buffer2);
 
-      lcd_moveto(92, 48);
-      lcd_put_wchar('E');
-      lcd_put_u8str(buffer2);
-    #endif
   }
 
   //
@@ -497,37 +481,20 @@ void LcdUI::draw_status_screen() {
   if (PAGE_CONTAINS(STATUS_BASELINE - INFO_FONT_ASCENT, STATUS_BASELINE + INFO_FONT_DESCENT)) {
     lcd_moveto(0, STATUS_BASELINE);
 
-    #if (HAS_LCD_FILAMENT_SENSOR && ENABLED(SDSUPPORT)) || HAS_LCD_POWER_SENSOR
+    #if (HAS_LCD_FILAMENT_SENSOR && ENABLED(SDSUPPORT))
       if (PENDING(millis(), previous_status_ms + 5000UL)) { // Display both Status message line and Filament display on the last line
         lcd_implementation_status_message(blink);
       }
 
-      #if HAS_LCD_POWER_SENSOR
-        #if (HAS_LCD_FILAMENT_SENSOR && ENABLED(SDSUPPORT))
-          else if (PENDING(millis(), previous_status_ms + 10000UL))
-        #else
-          else
-        #endif
-          {
-            lcd_put_u8str_P(PSTR("P:"));
-            lcd_put_u8str(ftostr31(powerManager.consumption_meas));
-            lcd_put_u8str_P(PSTR("W C:"));
-            lcd_put_u8str(ltostr7(print_job_counter.getConsumptionHour()));
-            lcd_put_u8str_P(PSTR("Wh"));
-          }
-      #endif
-
-      #if HAS_LCD_FILAMENT_SENSOR && HAS_SD_SUPPORT
-        else {
-          lcd_put_u8str_P(PSTR(LCD_STR_FILAM_DIA));
-          lcd_put_wchar(':');
-          lcd_put_u8str(wstring);
-          lcd_put_u8str_P(PSTR("  " LCD_STR_FILAM_MUL));
-          lcd_put_wchar(':');
-          lcd_put_u8str(mstring);
-          lcd_put_wchar('%');
-        }
-      #endif
+      else {
+        lcd_put_u8str_P(PSTR(LCD_STR_FILAM_DIA));
+        lcd_put_wchar(':');
+        lcd_put_u8str(wstring);
+        lcd_put_u8str_P(PSTR("  " LCD_STR_FILAM_MUL));
+        lcd_put_wchar(':');
+        lcd_put_u8str(mstring);
+        lcd_put_wchar('%');
+      }
     #else
       draw_status_message(blink);
     #endif

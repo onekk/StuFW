@@ -26,23 +26,6 @@
 #define STATS_UPDATE_INTERVAL   10
 #define STATS_SAVE_INTERVAL   3600
 
-// Service times
-#if ENABLED(SERVICE_TIME_1)
-  #define SERVICE_TIME_1_SEC  (3600UL * SERVICE_TIME_1)
-#else
-  #define SERVICE_TIME_1_SEC  (3600UL * 100)
-#endif
-#if ENABLED(SERVICE_TIME_2)
-  #define SERVICE_TIME_2_SEC  (3600UL * SERVICE_TIME_2)
-#else
-  #define SERVICE_TIME_2_SEC  (3600UL * 100)
-#endif
-#if ENABLED(SERVICE_TIME_3)
-  #define SERVICE_TIME_3_SEC  (3600UL * SERVICE_TIME_3)
-#else
-  #define SERVICE_TIME_3_SEC  (3600UL * 100)
-#endif
-
 PrintCounter print_job_counter;
 
 /** Private Parameters */
@@ -71,15 +54,6 @@ void PrintCounter::initStats() {
   data.timePowerOn    = 0;
   data.filamentUsed   = 0.0;
 
-  #if HAS_SERVICE_TIMES
-    data.ServiceTime1 = SERVICE_TIME_1_SEC;
-    data.ServiceTime2 = SERVICE_TIME_2_SEC;
-    data.ServiceTime3 = SERVICE_TIME_3_SEC;
-  #endif
-
-  #if HAS_POWER_CONSUMPTION_SENSOR
-    data.consumptionHour = 0;
-  #endif
 
   #if HAS_EEPROM
     memorystore.write_data(address, (uint8_t*)&statistics_version, sizeof(statistics_version));
@@ -121,22 +95,6 @@ void PrintCounter::showStats() {
   lengthtoString(buffer, data.filamentUsed);
   SERIAL_EMT("Filament used:", buffer);
 
-  #if ENABLED(SERVICE_TIME_1)
-    service_when(buffer, PSTR(SERVICE_NAME_1), data.ServiceTime1);
-  #endif
-  #if ENABLED(SERVICE_TIME_2)
-    service_when(buffer, PSTR(SERVICE_NAME_2), data.ServiceTime2);
-  #endif
-  #if ENABLED(SERVICE_TIME_3)
-    service_when(buffer, PSTR(SERVICE_NAME_3), data.ServiceTime3);
-  #endif
-
-  #if HAS_POWER_CONSUMPTION_SENSOR
-    SERIAL_MSG(MSG_STATS);
-    SERIAL_MV(CFG, "Watt/h consumed:", data.consumptionHour);
-    SERIAL_EM(" Wh");
-  #endif
-
 }
 
 void PrintCounter::loadStats() {
@@ -160,24 +118,6 @@ void PrintCounter::loadStats() {
   #endif
 
   printer.setStatisticsLoaded(true);
-
-  #if HAS_SERVICE_TIMES
-
-    bool doBuzz = false;
-    #if ENABLED(SERVICE_TIME_1)
-      if (data.ServiceTime1 == 0) doBuzz = service_warning(PSTR(" " SERVICE_NAME_1));
-    #endif
-    #if ENABLED(SERVICE_TIME_2)
-      if (data.ServiceTime2 == 0) doBuzz = service_warning(PSTR(" " SERVICE_NAME_2));
-    #endif
-    #if ENABLED(SERVICE_TIME_3)
-      if (data.ServiceTime3 == 0) doBuzz = service_warning(PSTR(" " SERVICE_NAME_3));
-    #endif
-    #if HAS_BUZZER && SERVICE_WARNING_BUZZES > 0
-      if (doBuzz) for (uint8_t i = 0; i < SERVICE_WARNING_BUZZES; i++) sound.playTone(200, NOTE_A4);
-    #endif
-
-  #endif // HAS_SERVICE_TIMES
 
 }
 
@@ -212,16 +152,6 @@ void PrintCounter::tick() {
     data.timePrint += delta;
     data.timePowerOn += STATS_UPDATE_INTERVAL;
 
-    #if ENABLED(SERVICE_TIME_1)
-      data.ServiceTime1 -= MIN(delta, data.ServiceTime1);
-    #endif
-    #if ENABLED(SERVICE_TIME_2)
-      data.ServiceTime2 -= MIN(delta, data.ServiceTime2);
-    #endif
-    #if ENABLED(SERVICE_TIME_3)
-      data.ServiceTime3 -= MIN(delta, data.ServiceTime3);
-    #endif
-
     update_next = now + (STATS_UPDATE_INTERVAL * 1000);
   }
 
@@ -243,51 +173,12 @@ void PrintCounter::incFilamentUsed(float const &amount) {
   data.filamentUsed += amount; // mm
 }
 
-#if HAS_SERVICE_TIMES
-
-  void PrintCounter::resetServiceTime(const int index) {
-    switch (index) {
-      #if ENABLED(SERVICE_TIME_1)
-        case 1: data.ServiceTime1 = SERVICE_TIME_1_SEC; break;
-      #endif
-      #if ENABLED(SERVICE_TIME_2)
-        case 2: data.ServiceTime2 = SERVICE_TIME_2_SEC; break;
-      #endif
-      #if ENABLED(SERVICE_TIME_3)
-        case 3: data.ServiceTime3 = SERVICE_TIME_3_SEC; break;
-      #endif
-      default: break;
-    }
-    saveStats();
-  }
-
-  bool PrintCounter::needService(const int index) {
-    switch (index) {
-      #if ENABLED(SERVICE_TIME_1)
-        case 1: return data.ServiceTime1 == 0; break;
-      #endif
-      #if ENABLED(SERVICE_TIME_2)
-        case 2: return data.ServiceTime2 == 0; break;
-      #endif
-      #if ENABLED(SERVICE_TIME_3)
-        case 3: return data.ServiceTime3 == 0; break;
-      #endif
-      default: return false;
-    }
-  }
-
-#endif // HAS_SERVICE_TIMES
-
 bool PrintCounter::start() {
   #if ENABLED(DEBUG_PRINTCOUNTER)
     debug(PSTR("start"));
   #endif
 
   bool paused = isPaused();
-
-  #if HAS_POWER_CONSUMPTION_SENSOR
-    powerManager.startpower = data.consumptionHour;
-  #endif
 
   if (super::start()) {
     if (!paused) {
@@ -336,26 +227,6 @@ void PrintCounter::reset() {
 
 #endif
 
-/** Private Function */
-#if HAS_SERVICE_TIMES
-
-  void PrintCounter::service_when(char buffer[], const char * const msg, const uint32_t when) {
-    duration_t elapsed = when;
-    elapsed.toString(buffer);
-    SERIAL_MSG(MSG_SERVICE);
-    SERIAL_PGM(msg);
-    SERIAL_EMT(" in ", buffer);
-  }
-
-  bool PrintCounter::service_warning(const char * const msg) {
-    SERIAL_STR(ECHO);
-    SERIAL_PGM(msg);
-    SERIAL_CHR('!');
-    SERIAL_EOL();
-    return true;
-  }
-
-#endif
 
 /** Protected Function */
 millis_t PrintCounter::deltaDuration() {

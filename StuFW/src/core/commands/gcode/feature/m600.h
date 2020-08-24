@@ -52,19 +52,6 @@
 
     if (commands.get_target_tool(600)) return;
 
-    #if ENABLED(DUAL_X_CARRIAGE)
-      int8_t DXC_ext = tools.target_extruder;
-      if (!parser.seen('T')) {  // If no tool index is specified, M600 was (probably) sent in response to filament runout.
-                                // In this case, for duplicating modes set DXC_ext to the extruder that ran out.
-        #if ENABLED(FILAMENT_RUNOUT_SENSOR) && PIN_EXISTS(FIL_RUNOUT1)
-          if (mechanics.dxc_is_duplicating())
-            DXC_ext = (READ(FIL_RUNOUT_1_PIN) == endstops.isLogic(FIL_RUNOUT) ? 1 : 0;
-        #else
-          DXC_ext = tools.active_extruder;
-        #endif
-      }
-    #endif
-
     // Show initial "wait for start" message
     #if HAS_LCD_MENU
       lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_INIT, ADVANCED_PAUSE_MODE_PAUSE_PRINT, TARGET_HOTEND);
@@ -78,11 +65,8 @@
     #if EXTRUDERS > 1
       // Change toolhead if specified
       uint8_t active_extruder_before_filament_change = tools.active_extruder;
-      if (tools.active_extruder != tools.target_extruder
-        #if ENABLED(DUAL_X_CARRIAGE)
-          && mechanics.dual_x_carriage_mode != DXC_DUPLICATION_MODE && mechanics.dual_x_carriage_mode != DXC_SCALED_DUPLICATION_MODE
-        #endif
-      ) tools.change(tools.target_extruder, 0, false);
+      if (tools.active_extruder != tools.target_extruder)
+        tools.change(tools.target_extruder, 0, false);
     #endif
 
     // Initial retract before move to pause park position
@@ -99,7 +83,7 @@
     if (parser.seenval('X')) park_point.x = parser.linearval('X');
     if (parser.seenval('Y')) park_point.y = parser.linearval('Y');
 
-    #if HOTENDS > 1 && DISABLED(DUAL_X_CARRIAGE))
+    #if HOTENDS > 1
       park_point.x += (tools.active_extruder ? tools.hotend_offset[X_AXIS][tools.active_extruder] : 0);
       park_point.y += (tools.active_extruder ? tools.hotend_offset[Y_AXIS][tools.active_extruder] : 0);
     #endif

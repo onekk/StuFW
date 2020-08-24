@@ -127,10 +127,6 @@
   #define HOT0_NAME "AD595"
   #define HOT0_R25  0.0
   #define HOT0_BETA 0.0
-#elif TEMP_SENSOR_0 == 11
-  #define HOT0_NAME "DHT11"
-  #define HOT0_R25  0.0
-  #define HOT0_BETA 0.0
 #elif TEMP_SENSOR_0 == 20
   #define HOT0_NAME "AMPLIFIER"
   #define HOT0_R25  0.0
@@ -155,10 +151,6 @@
   #define HOT1_BETA 0.0
 #elif TEMP_SENSOR_1 == -1
   #define HOT1_NAME "AD595"
-  #define HOT1_R25  0.0
-  #define HOT1_BETA 0.0
-#elif TEMP_SENSOR_1 == 11
-  #define HOT1_NAME "DHT11"
   #define HOT1_R25  0.0
   #define HOT1_BETA 0.0
 #elif TEMP_SENSOR_1 == 20
@@ -187,10 +179,6 @@
   #define HOT2_NAME "AD595"
   #define HOT2_R25  0.0
   #define HOT2_BETA 0.0
-#elif TEMP_SENSOR_2 == 11
-  #define HOT2_NAME "DHT11"
-  #define HOT2_R25  0.0
-  #define HOT2_BETA 0.0
 #elif TEMP_SENSOR_2 == 20
   #define HOT2_NAME "AMPLIFIER"
   #define HOT2_R25  0.0
@@ -215,10 +203,6 @@
   #define HOT3_BETA 0.0
 #elif TEMP_SENSOR_3 == -1
   #define HOT3_NAME "AD595"
-  #define HOT3_R25  0.0
-  #define HOT3_BETA 0.0
-#elif TEMP_SENSOR_3 == 11
-  #define HOT3_NAME "DHT11"
   #define HOT3_R25  0.0
   #define HOT3_BETA 0.0
 #elif TEMP_SENSOR_3 == 20
@@ -247,10 +231,6 @@
   #define BED_NAME "AD595"
   #define BED_R25  0.0
   #define BED_BETA 0.0
-#elif TEMP_SENSOR_BED == 11
-  #define BED_NAME "DHT11"
-  #define BED_R25  0.0
-  #define BED_BETA 0.0
 #elif TEMP_SENSOR_BED == 20
   #define BED_NAME "AMPLIFIER"
   #define BED_R25  0.0
@@ -277,10 +257,6 @@
   #define CHAMBER_NAME "AD595"
   #define CHAMBER_R25  0.0
   #define CHAMBER_BETA 0.0
-#elif TEMP_SENSOR_CHAMBER == 11
-  #define CHAMBER_NAME "DHT11"
-  #define CHAMBER_R25  0.0
-  #define CHAMBER_BETA 0.0
 #elif TEMP_SENSOR_CHAMBER == 20
   #define CHAMBER_NAME "AMPLIFIER"
   #define CHAMBER_R25  0.0
@@ -305,10 +281,6 @@
   #define COOLER_BETA 0.0
 #elif TEMP_SENSOR_COOLER == -1
   #define COOLER_NAME "AD595"
-  #define COOLER_R25  0.0
-  #define COOLER_BETA 0.0
-#elif TEMP_SENSOR_COOLER == 11
-  #define COOLER_NAME "DHT11"
   #define COOLER_R25  0.0
   #define COOLER_BETA 0.0
 #elif TEMP_SENSOR_COOLER == 20

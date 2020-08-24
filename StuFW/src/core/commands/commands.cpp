@@ -325,7 +325,7 @@ void Commands::get_serial() {
   }
 
   // If the command buffer is empty for too long,
-  // send "wait" to indicate MK4duo is still waiting.
+  // send "wait" to indicate StuFW is still waiting.
   #if NO_TIMEOUTS > 0
     if (buffer_ring.isEmpty() && !Com::serialDataAvailable() && last_command_watch.elapsed()) {
       SERIAL_STR(WT);

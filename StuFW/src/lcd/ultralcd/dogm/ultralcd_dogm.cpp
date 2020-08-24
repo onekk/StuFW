@@ -165,14 +165,7 @@ void LcdUI::init_lcd() {
   #if PIN_EXISTS(LCD_BACKLIGHT) // Enable LCD backlight
     OUT_WRITE(LCD_BACKLIGHT_PIN, HIGH);
   #endif
-
-  #if ENABLED(MKS_12864OLED) || ENABLED(MKS_12864OLED_SSD1306)
-    SET_OUTPUT(LCD_PINS_DC);
-    #if !defined(LCD_RESET_PIN)
-      #define LCD_RESET_PIN LCD_PINS_RS
-    #endif
-  #endif
-
+  
   #if PIN_EXISTS(LCD_RESET)
     OUT_WRITE(LCD_RESET_PIN, LOW); // perform a clean hardware reset
     HAL::delayMilliseconds(5);

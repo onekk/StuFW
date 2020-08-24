@@ -90,10 +90,6 @@ void Printer::setup() {
 
   HAL::hwSetup();
 
-  #if ENABLED(MB_SETUP)
-    MB_SETUP;
-  #endif
-
   setup_pinout();
 
   #if HAS_POWER_CHECK || HAS_POWER_SWITCH
@@ -106,7 +102,6 @@ void Printer::setup() {
   // Check startup
   SERIAL_L(START);
   SERIAL_STR(ECHO);
-
 
   // Check startup - does nothing if bootloader sets MCUSR to 0
   HAL::showStartReason();
@@ -156,7 +151,6 @@ void Printer::setup() {
   // Initialize stepper. This enables interrupts!
   stepper.init();
 
-
   // Initialize all Servo
   #if HAS_SERVOS
     servo_init();
@@ -170,22 +164,14 @@ void Printer::setup() {
     endstops.setSoftEndstop(true);
   #endif
 
-
   #if HAS_COLOR_LEDS
     leds.setup();
-  #endif
-
-  #if ENABLED(FLOWMETER_SENSOR)
-    #if ENABLED(MINFLOW_PROTECTION)
-      flowmeter.flow_firstread = false;
-    #endif
-    flowmeter.flow_init();
   #endif
 
   lcdui.init();
   lcdui.reset_status();
 
-  // Show MK4duo boot screen
+  // Show StuFW boot screen
   #if ENABLED(SHOW_BOOTSCREEN) && (HAS_GRAPHICAL_LCD || HAS_SPI_LCD)
     lcdui.show_bootscreen();
   #endif
@@ -200,7 +186,6 @@ void Printer::setup() {
 
   // All Initialized set Running to true.
   setRunning(true);
-
 
   zero_fan_speed();
 
@@ -395,16 +380,11 @@ void Printer::minikill() {
   for (int i = 1000; i--;) HAL::delayMicroseconds(250);
 
   // Turn off heaters again
-  thermalManager.disable_all_heaters(); 
+  thermalManager.disable_all_heaters();
 
   #if ENABLED(KILL_METHOD) && (KILL_METHOD == 1)
     HAL::resetHardware();
   #endif
-
-  #if ENABLED(FLOWMETER_SENSOR) && ENABLED(MINFLOW_PROTECTION)
-    flowmeter.flow_firstread = false;
-  #endif
-
 
   #if HAS_POWER_SWITCH
     powerManager.power_off();
@@ -424,10 +404,6 @@ void Printer::minikill() {
  * After a stop the machine may be resumed with M999
  */
 void Printer::Stop() {
-  #if ENABLED(FLOWMETER_SENSOR) && ENABLED(MINFLOW_PROTECTION)
-    flowmeter.flow_firstread = false;
-  #endif
-
   thermalManager.disable_all_heaters();
 
   #if ENABLED(PROBING_FANS_OFF)
@@ -482,27 +458,9 @@ void Printer::idle(const bool ignore_stepper_queue/*=false*/) {
     thermalManager.getTemperature_SPI();
   #endif
 
-  #if ENABLED(DHT_SENSOR)
-    dhtsensor.spin();
-  #endif
-
-
   #if ENABLED(FILAMENT_RUNOUT_SENSOR)
     filamentrunout.spin();
   #endif
-
-  #if ENABLED(FLOWMETER_SENSOR)
-
-    flowmeter.flowrate_manage();
-
-    #if ENABLED(MINFLOW_PROTECTION)
-      if (flowmeter.flow_firstread && print_job_counter.isRunning() && (flowmeter.flowrate < (float)MINFLOW_PROTECTION)) {
-        flowmeter.flow_firstread = false;
-        kill(PSTR(MSG_KILLED));
-      }
-    #endif
-
-  #endif // ENABLED(FLOWMETER_SENSOR)
 
   // Prevent steppers timing-out in the middle of M600
   #if ENABLED(ADVANCED_PAUSE_FEATURE) && ENABLED(PAUSE_PARK_NO_STEPPER_TIMEOUT)
@@ -589,30 +547,25 @@ void Printer::idle(const bool ignore_stepper_queue/*=false*/) {
       && extruder_runout_watch.elapsed()
       && !planner.has_blocks_queued()
     ) {
-      #if ENABLED(DONDOLO_SINGLE_MOTOR)
-        const bool oldstatus = E0_ENABLE_READ();
-        enable_E0();
-      #else // !DONDOLO_SINGLE_MOTOR
-        bool oldstatus;
-        switch (tools.active_extruder) {
-          case 0: oldstatus = E0_ENABLE_READ(); enable_E0(); break;
-          #if DRIVER_EXTRUDERS > 1
-            case 1: oldstatus = E1_ENABLE_READ(); enable_E1(); break;
-            #if DRIVER_EXTRUDERS > 2
-              case 2: oldstatus = E2_ENABLE_READ(); enable_E2(); break;
-              #if DRIVER_EXTRUDERS > 3
-                case 3: oldstatus = E3_ENABLE_READ(); enable_E3(); break;
-                #if DRIVER_EXTRUDERS > 4
-                  case 4: oldstatus = E4_ENABLE_READ(); enable_E4(); break;
-                  #if DRIVER_EXTRUDERS > 5
-                    case 5: oldstatus = E5_ENABLE_READ(); enable_E5(); break;
-                  #endif // DRIVER_EXTRUDERS > 5
-                #endif // DRIVER_EXTRUDERS > 4
-              #endif // DRIVER_EXTRUDERS > 3
-            #endif // DRIVER_EXTRUDERS > 2
-          #endif // DRIVER_EXTRUDERS > 1
+      bool oldstatus;
+      switch (tools.active_extruder) {
+        case 0: oldstatus = E0_ENABLE_READ(); enable_E0(); break;
+        #if DRIVER_EXTRUDERS > 1
+          case 1: oldstatus = E1_ENABLE_READ(); enable_E1(); break;
+          #if DRIVER_EXTRUDERS > 2
+            case 2: oldstatus = E2_ENABLE_READ(); enable_E2(); break;
+            #if DRIVER_EXTRUDERS > 3
+              case 3: oldstatus = E3_ENABLE_READ(); enable_E3(); break;
+              #if DRIVER_EXTRUDERS > 4
+                case 4: oldstatus = E4_ENABLE_READ(); enable_E4(); break;
+                #if DRIVER_EXTRUDERS > 5
+                  case 5: oldstatus = E5_ENABLE_READ(); enable_E5(); break;
+                #endif // DRIVER_EXTRUDERS > 5
+              #endif // DRIVER_EXTRUDERS > 4
+            #endif // DRIVER_EXTRUDERS > 3
+          #endif // DRIVER_EXTRUDERS > 2
+        #endif // DRIVER_EXTRUDERS > 1
         }
-      #endif // !DONDOLO_SINGLE_MOTOR
 
       const float olde = mechanics.current_position[E_AXIS];
       mechanics.current_position[E_AXIS] += EXTRUDER_RUNOUT_EXTRUDE;
@@ -620,42 +573,28 @@ void Printer::idle(const bool ignore_stepper_queue/*=false*/) {
       mechanics.current_position[E_AXIS] = olde;
       planner.set_e_position_mm(olde);
       planner.synchronize();
-      #if ENABLED(DONDOLO_SINGLE_MOTOR)
-        E0_ENABLE_WRITE(oldstatus);
-      #else
-        switch(tools.active_extruder) {
-          case 0: E0_ENABLE_WRITE(oldstatus); break;
-          #if DRIVER_EXTRUDERS > 1
-            case 1: E1_ENABLE_WRITE(oldstatus); break;
-            #if DRIVER_EXTRUDERS > 2
-              case 2: E2_ENABLE_WRITE(oldstatus); break;
-              #if DRIVER_EXTRUDERS > 3
-                case 3: E3_ENABLE_WRITE(oldstatus); break;
-                #if DRIVER_EXTRUDERS > 4
-                  case 4: E4_ENABLE_WRITE(oldstatus); break;
-                  #if DRIVER_EXTRUDERS > 5
-                    case 5: E5_ENABLE_WRITE(oldstatus); break;
-                  #endif // DRIVER_EXTRUDERS > 5
-                #endif // DRIVER_EXTRUDERS > 4
-              #endif // DRIVER_EXTRUDERS > 3
-            #endif // DRIVER_EXTRUDERS > 2
-          #endif // DRIVER_EXTRUDERS > 1
-        }
-      #endif // !DONDOLO_SINGLE_MOTOR
+      switch(tools.active_extruder) {
+        case 0: E0_ENABLE_WRITE(oldstatus); break;
+        #if DRIVER_EXTRUDERS > 1
+          case 1: E1_ENABLE_WRITE(oldstatus); break;
+          #if DRIVER_EXTRUDERS > 2
+            case 2: E2_ENABLE_WRITE(oldstatus); break;
+            #if DRIVER_EXTRUDERS > 3
+              case 3: E3_ENABLE_WRITE(oldstatus); break;
+              #if DRIVER_EXTRUDERS > 4
+                case 4: E4_ENABLE_WRITE(oldstatus); break;
+                #if DRIVER_EXTRUDERS > 5
+                  case 5: E5_ENABLE_WRITE(oldstatus); break;
+                #endif // DRIVER_EXTRUDERS > 5
+              #endif // DRIVER_EXTRUDERS > 4
+            #endif // DRIVER_EXTRUDERS > 3
+          #endif // DRIVER_EXTRUDERS > 2
+        #endif // DRIVER_EXTRUDERS > 1
+      }
 
       extruder_runout_watch.start();
     }
   #endif // EXTRUDER_RUNOUT_PREVENT
-
-  #if ENABLED(DUAL_X_CARRIAGE)
-    // handle delayed move timeout
-    if (mechanics.delayed_move_time && ELAPSED(millis(), mechanics.delayed_move_time + 1000UL) && isRunning()) {
-      // travel moves have been received so enact them
-      mechanics.delayed_move_time = 0xFFFFFFFFUL; // force moves to be done
-      mechanics.set_destination_to_current();
-      mechanics.prepare_move_to_destination();
-    }
-  #endif
 
   #if ENABLED(IDLE_OOZING_PREVENT)
     if (planner.has_blocks_queued()) axis_last_activity = millis();
@@ -801,10 +740,6 @@ void Printer::setup_pinout() {
 
   #if HAS_CASE_LIGHT && DISABLED(CASE_LIGHT_USE_NEOPIXEL)
     SET_OUTPUT(CASE_LIGHT_PIN);
-  #endif
-
-  #if HAS_Z_PROBE_SLED
-    OUT_WRITE(SLED_PIN, LOW); // turn it off
   #endif
 
   #if HAS_HOME

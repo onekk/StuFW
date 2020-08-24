@@ -39,7 +39,7 @@
   int16_t Tools::flow_percentage[EXTRUDERS]       = ARRAY_BY_EXTRUDERS(100),
           Tools::density_percentage[EXTRUDERS]    = ARRAY_BY_EXTRUDERS(100);
   float   Tools::e_factor[EXTRUDERS]              = ARRAY_BY_EXTRUDERS(1.0);
-  
+
   #if ENABLED(VOLUMETRIC_EXTRUSION)
     float Tools::filament_size[EXTRUDERS]         = ARRAY_BY_EXTRUDERS(DEFAULT_NOMINAL_FILAMENT_DIA),
           Tools::volumetric_area_nominal          = CIRCLE_AREA(float(DEFAULT_NOMINAL_FILAMENT_DIA) * 0.5f),
@@ -85,12 +85,6 @@
     #else // EXTRUDERS > 1
 
       planner.synchronize();
-    
-      #if ENABLED(DUAL_X_CARRIAGE)  // Only T0 allowed if the Printer is in DXC_DUPLICATION_MODE or DXC_SCALED_DUPLICATION_MODE
-        // Only T0 allowed in DXC_DUPLICATION_MODE
-        if (tmp_extruder != 0 && mechanics.dxc_is_duplicating())
-           return invalid_extruder_error(tmp_extruder);
-      #endif
 
       #if HAS_LEVELING
         // Set current position to the physical position
@@ -113,76 +107,49 @@
             no_move = true;
           }
 
-          #if ENABLED(DUAL_X_CARRIAGE)
+        mechanics.set_destination_to_current();
 
-            dualx_tool_change(tmp_extruder, no_move); // Can modify no_move
+        const float x_diff = hotend_offset[X_AXIS][tmp_extruder] - hotend_offset[X_AXIS][active_extruder],
+                    y_diff = hotend_offset[Y_AXIS][tmp_extruder] - hotend_offset[Y_AXIS][active_extruder],
+                    z_diff = hotend_offset[Z_AXIS][tmp_extruder] - hotend_offset[Z_AXIS][active_extruder];
 
-          #else // !DUAL_X_CARRIAGE
+        #if ENABLED(DEBUG_FEATURE)
+          if (printer.debugFeature()) {
+            SERIAL_MV("Offset Tool XYZ by { ", x_diff);
+            SERIAL_MV(", ", y_diff);
+            SERIAL_MV(", ", z_diff);
+            SERIAL_EM(" }");
+           }
+         #endif
 
-            mechanics.set_destination_to_current();
+        // The newly-selected extruder XY is actually at...
+        mechanics.current_position[X_AXIS] += x_diff;
+        mechanics.current_position[Y_AXIS] += y_diff;
+        mechanics.current_position[Z_AXIS] += z_diff;
 
-            const float x_diff = hotend_offset[X_AXIS][tmp_extruder] - hotend_offset[X_AXIS][active_extruder],
-                        y_diff = hotend_offset[Y_AXIS][tmp_extruder] - hotend_offset[Y_AXIS][active_extruder],
-                        z_diff = hotend_offset[Z_AXIS][tmp_extruder] - hotend_offset[Z_AXIS][active_extruder];
+        // Set the new active extruder
+        previous_extruder = active_extruder;
+        active_extruder = tmp_extruder;
 
-            #if HAS_DONDOLO
-              // Always raise by at least 1 to avoid workpiece
-              mechanics.current_position[Z_AXIS] += (z_diff < 0.0 ? -z_diff : 0.0) + 1;
-              planner.buffer_line(mechanics.current_position, mechanics.data.max_feedrate_mm_s[Z_AXIS], active_extruder);
-              move_extruder_servo(tmp_extruder);
-            #endif
+        // Tell the planner the new "current position"
+        mechanics.sync_plan_position();
 
-            #if ENABLED(DEBUG_FEATURE)
-              if (printer.debugFeature()) {
-                SERIAL_MV("Offset Tool XYZ by { ", x_diff);
-                SERIAL_MV(", ", y_diff);
-                SERIAL_MV(", ", z_diff);
-                SERIAL_EM(" }");
-              }
-            #endif
+        constexpr bool safe_to_move = true;
 
-            // The newly-selected extruder XY is actually at...
-            mechanics.current_position[X_AXIS] += x_diff;
-            mechanics.current_position[Y_AXIS] += y_diff;
-            mechanics.current_position[Z_AXIS] += z_diff;
+        // Raise, move, and lower again
+        if (safe_to_move && !no_move && printer.isRunning()) {
+          // Do a small lift to avoid the workpiece in the move back (below)
+          mechanics.current_position[Z_AXIS] += 1.0;
+          planner.buffer_line(mechanics.current_position, mechanics.data.max_feedrate_mm_s[Z_AXIS], active_extruder);
 
-            // Set the new active extruder
-            previous_extruder = active_extruder;
-            active_extruder = tmp_extruder;
-
-          #endif // !DUAL_X_CARRIAGE
-
-          // Tell the planner the new "current position"
-          mechanics.sync_plan_position();
-
-          #if ENABLED(DELTA)
-            const bool safe_to_move = mechanics.current_position[Z_AXIS] < mechanics.delta_clip_start_height - 1;
-          #else
-            constexpr bool safe_to_move = true;
+          #if ENABLED(DEBUG_FEATURE)
+            if (printer.debugFeature()) DEBUG_POS("Move back", mechanics.destination);
           #endif
-
-          // Raise, move, and lower again
-          if (safe_to_move && !no_move && printer.isRunning()) {
-            #if !HAS_DONDOLO
-              // Do a small lift to avoid the workpiece in the move back (below)
-              mechanics.current_position[Z_AXIS] += 1.0;
-              planner.buffer_line(mechanics.current_position, mechanics.data.max_feedrate_mm_s[Z_AXIS], active_extruder);
-            #endif
-            #if ENABLED(DEBUG_FEATURE)
-              if (printer.debugFeature()) DEBUG_POS("Move back", mechanics.destination);
-            #endif
-            // Move back to the original (or tweaked) position
-            mechanics.do_blocking_move_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.destination[Z_AXIS]);
-            #if ENABLED(DUAL_X_CARRIAGE)
-              mechanics.active_extruder_parked = false;
-            #endif
+          // Move back to the original (or tweaked) position
+          mechanics.do_blocking_move_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.destination[Z_AXIS]);
           }
-          #if HAS_DONDOLO
-            else {
-              // Move back down. (Including when the new tool is higher.)
-              mechanics.do_blocking_move_to_z(mechanics.destination[Z_AXIS], mechanics.data.max_feedrate_mm_s[Z_AXIS]);
-            }
-          #endif
+        // Move back down. (Including when the new tool is higher.)
+        mechanics.do_blocking_move_to_z(mechanics.destination[Z_AXIS], mechanics.data.max_feedrate_mm_s[Z_AXIS]);
         } // (tmp_extruder != active_extruder)
 
         planner.synchronize();
@@ -224,8 +191,6 @@
     SERIAL_MV(" Z", LINEAR_UNIT(tools.hotend_offset[Z_AXIS][h]), 3);
     SERIAL_EOL();
   }
-
-
 
 
   void Tools::invalid_extruder_error(const uint8_t e) {
@@ -441,109 +406,6 @@
       previous_extruder = active_extruder;
       active_extruder = e;
     }
-
   #endif
-
-  #if HAS_DONDOLO
-
-    void Tools::move_extruder_servo(const uint8_t e) {
-      planner.synchronize();
-      MOVE_SERVO(DONDOLO_SERVO_INDEX, servo[DONDOLO_SERVO_INDEX].angle[e]);
-      #if (DONDOLO_SERVO_DELAY > 0)
-        printer.safe_delay(DONDOLO_SERVO_DELAY);
-      #endif
-    }
-
-  #endif
-
-  #if ENABLED(DUAL_X_CARRIAGE)
-
-    void Tools::dualx_tool_change(const uint8_t tmp_extruder, bool &no_move) {
-      #if ENABLED(DEBUG_FEATURE)
-        if (printer.debugFeature()) {
-          SERIAL_MSG("Dual X Carriage Mode ");
-          switch (mechanics.dual_x_carriage_mode) {
-            case DXC_FULL_CONTROL_MODE:       SERIAL_EM("DXC_FULL_CONTROL_MODE");       break;
-            case DXC_AUTO_PARK_MODE:          SERIAL_EM("DXC_AUTO_PARK_MODE");          break;
-            case DXC_DUPLICATION_MODE:        SERIAL_EM("DXC_DUPLICATION_MODE");        break;
-            case DXC_SCALED_DUPLICATION_MODE: SERIAL_EM("DXC_SCALED_DUPLICATION_MODE"); break;
-          }
-        }
-      #endif
-
-      const float xhome = mechanics.x_home_pos(active_extruder);
-      if (mechanics.dual_x_carriage_mode == DXC_AUTO_PARK_MODE
-          && printer.isRunning()
-          && (mechanics.delayed_move_time || mechanics.current_position[X_AXIS] != xhome)
-      ) {
-        float raised_z = mechanics.current_position[Z_AXIS] + TOOLCHANGE_PARK_ZLIFT;
-        #if ENABLED(MAX_SOFTWARE_ENDSTOPS)
-          NOMORE(raised_z, endstops.soft_endstop_max[Z_AXIS]);
-        #endif
-        #if ENABLED(DEBUG_FEATURE)
-          if (printer.debugFeature()) {
-            SERIAL_EMV("Raise to ", raised_z);
-            SERIAL_EMV("MoveX to ", xhome);
-            SERIAL_EMV("Lower to ", mechanics.current_position[Z_AXIS]);
-          }
-        #endif
-        // Park old head: 1) raise 2) move to park position 3) lower
-        #define CUR_X mechanics.current_position[X_AXIS]
-        #define CUR_Y mechanics.current_position[Y_AXIS]
-        #define CUR_Z mechanics.current_position[Z_AXIS]
-        #define CUR_E mechanics.current_position[E_AXIS]
-
-        planner.buffer_line( CUR_X, CUR_Y, raised_z, CUR_E, mechanics.data.max_feedrate_mm_s[Z_AXIS], active_extruder);
-        planner.buffer_line( xhome, CUR_Y, raised_z, CUR_E, mechanics.data.max_feedrate_mm_s[X_AXIS], active_extruder);
-        planner.buffer_line( xhome, CUR_Y, CUR_Z,    CUR_E, mechanics.data.max_feedrate_mm_s[Z_AXIS], active_extruder);
-
-        planner.synchronize();
-      }
-
-      // apply Y & Z extruder offset (x offset is already used in determining home pos)
-      mechanics.current_position[Y_AXIS] -= hotend_offset[Y_AXIS][active_extruder] - hotend_offset[Y_AXIS][tmp_extruder];
-      mechanics.current_position[Z_AXIS] -= hotend_offset[Z_AXIS][active_extruder] - hotend_offset[Z_AXIS][tmp_extruder];
-
-      // Activate the new extruder
-      active_extruder = tmp_extruder;
-
-      // This function resets the max/min values - the current position may be overwritten below.
-      mechanics.set_axis_is_at_home(X_AXIS);
-
-      #if ENABLED(DEBUG_FEATURE)
-        if (printer.debugFeature()) DEBUG_POS("New Extruder", mechanics.current_position);
-      #endif
-
-      // Only when auto-parking are carriages safe to move
-      if (mechanics.dual_x_carriage_mode != DXC_AUTO_PARK_MODE) no_move = true;
-
-      switch (mechanics.dual_x_carriage_mode) {
-        case DXC_FULL_CONTROL_MODE:
-          // New current position is the position of the activated hotend
-          mechanics.current_position[X_AXIS] = mechanics.inactive_extruder_x_pos;
-          // Save the inactive hotend's position (from the old mechanics.current_position)
-          mechanics.inactive_extruder_x_pos = mechanics.destination[X_AXIS];
-          break;
-        case DXC_AUTO_PARK_MODE:
-          // record raised toolhead position for use by unpark
-          COPY_ARRAY(mechanics.raised_parked_position, mechanics.current_position);
-          mechanics.raised_parked_position[Z_AXIS] += TOOLCHANGE_UNPARK_ZLIFT;
-          #if ENABLED(MAX_SOFTWARE_ENDSTOPS)
-            NOMORE(mechanics.raised_parked_position[Z_AXIS], endstops.soft_endstop_max[Z_AXIS]);
-          #endif
-          mechanics.active_extruder_parked = true;
-          mechanics.delayed_move_time = 0;
-          break;
-      }
-
-      #if ENABLED(DEBUG_FEATURE)
-        if (printer.debugFeature()) {
-          SERIAL_EMV("Active hotend parked: ", mechanics.active_extruder_parked ? "yes" : "no");
-          DEBUG_POS("New hotend (parked)", mechanics.current_position);
-        }
-      #endif
-    }
-
-  #endif // DUAL_X_CARRIAGE
-
 #endif // EXTRUDERS > 0
+

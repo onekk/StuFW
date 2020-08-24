@@ -49,11 +49,6 @@
       const int16_t temp = parser.value_celsius();
       heaters[TARGET_HOTEND].setTarget(temp);
 
-      #if ENABLED(DUAL_X_CARRIAGE)
-        if (mechanics.dxc_is_duplicating() && TARGET_EXTRUDER == 0)
-          heaters[1].setTarget(temp ? temp + mechanics.duplicate_extruder_temp_offset : 0);
-      #endif
-
       const bool heating = heaters[TARGET_HOTEND].isHeating();
       if (heating || !no_wait_for_cooling) {
         #if HOTENDS > 1

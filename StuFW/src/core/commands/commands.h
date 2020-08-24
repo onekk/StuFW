@@ -1,9 +1,11 @@
 /**
+ * commands.h
+ *
  * StuFW Firmware for 3D Printer
  *
  * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +22,6 @@
  *
  */
 #pragma once
-
-/**
- * commands.h
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
- */
 
 #include "parser.h"
 
@@ -58,7 +54,7 @@ class Commands {
 
     /**
      * GCode line number handling. Hosts may opt to include line numbers when
-     * sending commands to MK4duo, and lines will be checked for sequentiality.
+     * sending commands to StuFW, and lines will be checked for sequentiality.
      * M110 N<int> sets the current line number.
      */
     static long gcode_LastN;
@@ -71,7 +67,7 @@ class Commands {
 
     /**
      * Next Injected Command pointer. NULL if no commands are being injected.
-     * Used by MK4duo internally to ensure that commands initiated from within
+     * Used by StuFW internally to ensure that commands initiated from within
      * are enqueued ahead of any pending serial or sd card
      */
     static PGM_P injected_commands_P;
@@ -100,7 +96,7 @@ class Commands {
     static void advance_queue();
 
     /**
-     * Clear the MK4duo command buffer_ring
+     * Clear the StuFW command buffer_ring
      */
     static void clear_queue();
 

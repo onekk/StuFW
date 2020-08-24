@@ -38,45 +38,19 @@
     if (!parser.seen('P')) return;
     const int servo_index = parser.value_int();
 
-    #if HAS_DONDOLO
 
-      int servo_position = 0;
-      if (parser.seenval('S')) {
-        servo_position = parser.value_int();
-        if (servo_index >= 0 && servo_index < NUM_SERVOS && servo_index != DONDOLO_SERVO_INDEX)
-          MOVE_SERVO(servo_index, servo_position);
-        else if (servo_index == DONDOLO_SERVO_INDEX) {
-          Servo *srv = &servo[servo_index];
-          srv->attach(0);
-          srv->write(servo_position);
-          #if (DONDOLO_SERVO_DELAY > 0)
-            printer.safe_delay(DONDOLO_SERVO_DELAY);
-            srv->detach();
-          #endif
-        }
-        else {
-          SERIAL_SMV(ER, "Servo ", servo_index);
-          SERIAL_EM(" out of range");
-        }
-      }
-
-    #else // !HAS_DONDOLO
-    
-      if (WITHIN(servo_index, 0, NUM_SERVOS - 1)) {
-        if (parser.seenval('S'))
-          MOVE_SERVO(servo_index, parser.value_int());
-        else {
-          SERIAL_SMV(ECHO, " Servo ", servo_index);
-          SERIAL_EMV(": ", servo[servo_index].read());
-        }
-      }
+    if (WITHIN(servo_index, 0, NUM_SERVOS - 1)) {
+      if (parser.seenval('S'))
+        MOVE_SERVO(servo_index, parser.value_int());
       else {
-        SERIAL_SMV(ER, "Servo ", servo_index);
-        SERIAL_EM(" out of range");
+        SERIAL_SMV(ECHO, " Servo ", servo_index);
+        SERIAL_EMV(": ", servo[servo_index].read());
       }
-
-    #endif // !HAS_DONDOLO
-
+    }
+    else {
+      SERIAL_SMV(ER, "Servo ", servo_index);
+      SERIAL_EM(" out of range");
+    }
   }
 
 #endif // NUM_SERVOS > 0

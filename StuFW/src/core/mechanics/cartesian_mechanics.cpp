@@ -35,18 +35,6 @@ const float Cartesian_Mechanics::base_max_pos[XYZ]  = { X_MAX_POS, Y_MAX_POS, Z_
             Cartesian_Mechanics::base_home_pos[XYZ] = { X_HOME_POS, Y_HOME_POS, Z_HOME_POS },
             Cartesian_Mechanics::max_length[XYZ]    = { X_MAX_LENGTH, Y_MAX_LENGTH, Z_MAX_LENGTH };
 
-#if ENABLED(DUAL_X_CARRIAGE)
-  DualXModeEnum Cartesian_Mechanics::dual_x_carriage_mode           = DEFAULT_DUAL_X_CARRIAGE_MODE;
-  float         Cartesian_Mechanics::inactive_extruder_x_pos        = X2_MAX_POS,
-                Cartesian_Mechanics::raised_parked_position[XYZE],
-                Cartesian_Mechanics::duplicate_extruder_x_offset    = DEFAULT_DUPLICATION_X_OFFSET;
-  int16_t       Cartesian_Mechanics::duplicate_extruder_temp_offset = 0;
-  millis_t      Cartesian_Mechanics::delayed_move_time              = 0;
-  bool          Cartesian_Mechanics::active_extruder_parked         = false,
-                Cartesian_Mechanics::extruder_duplication_enabled   = false,
-                Cartesian_Mechanics::scaled_duplication_mode        = false;
-#endif
-
 /** Private Parameters */
 constexpr float slop = 0.0001;
 
@@ -168,11 +156,6 @@ void Cartesian_Mechanics::home(const bool homeX/*=false*/, const bool homeY/*=fa
     return;
   }
 
-  #if ENABLED(DUAL_X_CARRIAGE)
-    const bool DXC_saved_duplication_state = extruder_duplication_enabled;
-    DualXModeEnum DXC_saved_mode = dual_x_carriage_mode;
-  #endif
-
   #if HAS_POWER_SWITCH
     powerManager.power_on(); // Power On if power is off
   #endif
@@ -195,10 +178,6 @@ void Cartesian_Mechanics::home(const bool homeX/*=false*/, const bool homeY/*=fa
   #if HOTENDS > 1
     const uint8_t old_tool_index = tools.active_extruder;
     tools.change(0, 0, true);
-  #endif
-
-  #if ENABLED(DUAL_X_CARRIAGE)
-    extruder_duplication_enabled = false;
   #endif
 
   printer.setup_for_endstop_or_probe_move();
@@ -248,25 +227,7 @@ void Cartesian_Mechanics::home(const bool homeX/*=false*/, const bool homeY/*=fa
 
   // Home X
   if (home_all || homeX) {
-    #if ENABLED(DUAL_X_CARRIAGE)
-      // Always home the 2nd (right) extruder first
-      tools.active_extruder = 1;
-      homeaxis(X_AXIS);
-
-      // Remember this extruder's position for later tool change
-      inactive_extruder_x_pos = current_position[X_AXIS];
-
-      // Home the 1st (left) extruder
-      tools.active_extruder = 0;
-      homeaxis(X_AXIS);
-
-      // Consider the active extruder to be parked
-      COPY_ARRAY(raised_parked_position, current_position);
-      delayed_move_time = 0;
-      active_extruder_parked = true;
-    #else
-      homeaxis(X_AXIS);
-    #endif
+    homeaxis(X_AXIS);
   }
 
   #if DISABLED(HOME_Y_BEFORE_X)
@@ -294,32 +255,6 @@ void Cartesian_Mechanics::home(const bool homeX/*=false*/, const bool homeY/*=fa
   #endif
 
   sync_plan_position();
-
-  #if ENABLED(DUAL_X_CARRIAGE)
-
-    if (dxc_is_duplicating()) {
-
-      // Always home the 2nd (right) extruder first
-      tools.active_extruder = 1;
-      homeaxis(X_AXIS);
-
-      // Remember this extruder's position for later tool change
-      inactive_extruder_x_pos = current_position[X_AXIS];
-
-      // Home the 1st (left) extruder
-      tools.active_extruder = 0;
-      homeaxis(X_AXIS);
-
-      // Consider the active extruder to be parked
-      COPY_ARRAY(raised_parked_position, current_position);
-      delayed_move_time = 0;
-      active_extruder_parked = true;
-      extruder_duplication_enabled  = false;
-      dual_x_carriage_mode          = DXC_saved_mode;
-      stepper.set_directions();
-    }
-
-  #endif // DUAL_X_CARRIAGE
 
   endstops.setNotHoming();
 
@@ -375,11 +310,7 @@ void Cartesian_Mechanics::do_homing_move(const AxisEnum axis, const float distan
   #endif
 
   // Only do some things when moving towards an endstop
-  const int8_t axis_home_dir =
-    #if ENABLED(DUAL_X_CARRIAGE)
-      (axis == X_AXIS) ? mechanics.x_home_dir(tools.active_extruder) :
-    #endif
-    get_homedir(axis);
+  const int8_t axis_home_dir = get_homedir(axis);
   const bool is_home_dir = (axis_home_dir > 0) == (distance > 0);
 
 
@@ -492,13 +423,6 @@ void Cartesian_Mechanics::set_axis_is_at_home(const AxisEnum axis) {
     endstops.update_software_endstops(axis);
   #endif
 
-  #if ENABLED(DUAL_X_CARRIAGE)
-    if (axis == X_AXIS && (tools.active_extruder == 1 || dxc_is_duplicating())) {
-      current_position[X_AXIS] = x_home_pos(tools.active_extruder);
-      return;
-    }
-  #endif
-
   current_position[axis] = base_home_pos[axis];
 
   /**
@@ -533,14 +457,7 @@ void Cartesian_Mechanics::set_axis_is_at_home(const AxisEnum axis) {
 // Return true if the given position is within the machine bounds.
 bool Cartesian_Mechanics::position_is_reachable(const float &rx, const float &ry) {
   if (!WITHIN(ry, Y_MIN_POS - slop, Y_MAX_POS + slop)) return false;
-  #if ENABLED(DUAL_X_CARRIAGE)
-    if (tools.active_extruder)
-      return WITHIN(rx, X2_MIN_POS - slop, X2_MAX_POS + slop);
-    else
-      return WITHIN(rx, X1_MIN_POS - slop, X1_MAX_POS + slop);
-  #else
     return WITHIN(rx, X_MIN_POS - slop, X_MAX_POS + slop);
-  #endif
 }
 // Return whether the given position is within the bed, and whether the nozzle
 //  can reach the position required to put the probe at the given position.
@@ -767,98 +684,6 @@ void Cartesian_Mechanics::report_current_position_detail() {
 
 #endif // ENABLED(ARC_SUPPORT)
 
-#if ENABLED(DUAL_X_CARRIAGE)
-
-  float Cartesian_Mechanics::x_home_pos(const int extruder) {
-    if (extruder == 0)
-      return base_home_pos[X_AXIS];
-    else
-      // In dual carriage mode the extruder offset provides an override of the
-      // second X-carriage offset when homed - otherwise X2_HOME_POS is used.
-      // This allow soft recalibration of the second extruder offset position without firmware reflash
-      // (through the M218 command).
-      return tools.hotend_offset[X_AXIS][1] > 0 ? tools.hotend_offset[X_AXIS][1] : X2_HOME_POS;
-  }
-
-  /**
-   * Prepare a linear move in a dual X axis setup
-   *
-   * Return true if current_position[] was set to destination[]
-   */
-  bool Cartesian_Mechanics::dual_x_carriage_unpark() {
-    if (active_extruder_parked) {
-      switch (dual_x_carriage_mode) {
-        case DXC_FULL_CONTROL_MODE:
-          break;
-        case DXC_AUTO_PARK_MODE:
-          if (current_position[E_AXIS] == destination[E_AXIS]) {
-            // This is a travel move (with no extrusion)
-            // Skip it, but keep track of the current position
-            // (so it can be used as the start of the next non-travel move)
-            if (delayed_move_time != 0xFFFFFFFFUL) {
-              set_current_to_destination();
-              NOLESS(raised_parked_position[Z_AXIS], destination[Z_AXIS]);
-              delayed_move_time = millis();
-              return true;
-            }
-          }
-          // unpark extruder: 1) raise, 2) move into starting XY position, 3) lower
-          #define CUR_X    current_position[X_AXIS]
-          #define CUR_Y    current_position[Y_AXIS]
-          #define CUR_Z    current_position[Z_AXIS]
-          #define CUR_E    current_position[E_AXIS]
-          #define RAISED_X raised_parked_position[X_AXIS]
-          #define RAISED_Y raised_parked_position[Y_AXIS]
-          #define RAISED_Z raised_parked_position[Z_AXIS]
-
-          if (  planner.buffer_line(RAISED_X, RAISED_Y, RAISED_Z, CUR_E, data.max_feedrate_mm_s[Z_AXIS], tools.active_extruder))
-            if (planner.buffer_line(   CUR_X,    CUR_Y, RAISED_Z, CUR_E, PLANNER_XY_FEEDRATE(),     tools.active_extruder))
-                planner.buffer_line(   CUR_X,    CUR_Y,    CUR_Z, CUR_E, data.max_feedrate_mm_s[Z_AXIS], tools.active_extruder);
-          delayed_move_time = 0;
-          active_extruder_parked = false;
-          #if ENABLED(DEBUG_FEATURE)
-            if (printer.debugFeature()) SERIAL_EM("Clear active_extruder_parked");
-          #endif
-          break;
-        case DXC_SCALED_DUPLICATION_MODE:
-        case DXC_DUPLICATION_MODE:
-          if (tools.active_extruder == 0) {
-            #if ENABLED(DEBUG_FEATURE)
-              if (printer.debugFeature()) {
-                SERIAL_MV("Set planner X", inactive_extruder_x_pos);
-                SERIAL_EMV(" ... Line to X", current_position[X_AXIS] + duplicate_extruder_x_offset);
-              }
-            #endif
-            // move duplicate extruder into correct duplication position.
-            planner.set_position_mm(inactive_extruder_x_pos, current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS]);
-
-            if (!planner.buffer_line(
-              dual_x_carriage_mode == DXC_DUPLICATION_MODE ? duplicate_extruder_x_offset + current_position[X_AXIS] : inactive_extruder_x_pos,
-              current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS],
-              data.max_feedrate_mm_s[X_AXIS], 1
-            )) break;
-            planner.synchronize();
-            sync_plan_position();
-            extruder_duplication_enabled = true;
-            active_extruder_parked = false;
-            #if ENABLED(DEBUG_FEATURE)
-              if (printer.debugFeature()) SERIAL_EM("Set extruder_duplication_enabled\nClear active_extruder_parked");
-            #endif
-          }
-          else {
-            #if ENABLED(DEBUG_FEATURE)
-              if (printer.debugFeature()) SERIAL_EM("Active extruder not 0");
-            #endif
-          }
-          break;
-      }
-    }
-    stepper.set_directions();
-    return false;
-  }
-
-#endif // ENABLED(DUAL_X_CARRIAGE)
-
 #if DISABLED(DISABLE_M503)
 
   void Cartesian_Mechanics::print_parameters() {
@@ -998,12 +823,7 @@ void Cartesian_Mechanics::homeaxis(const AxisEnum axis) {
     }
   #endif
 
-  const int axis_home_dir = (
-    #if ENABLED(DUAL_X_CARRIAGE)
-      axis == X_AXIS ? x_home_dir(tools.active_extruder) :
-    #endif
-    get_homedir(axis)
-  );
+  const int axis_home_dir = get_homedir(axis);
 
   // Homing Z towards the bed? Deploy the Z probe or endstop.
   #if HOMING_Z_WITH_PROBE
@@ -1195,11 +1015,7 @@ void Cartesian_Mechanics::homeaxis(const AxisEnum axis) {
     current_position[X_AXIS] = current_position[Y_AXIS] = 0;
     sync_plan_position();
 
-    #if ENABLED(DUAL_X_CARRIAGE)
-      const int x_axis_home_dir = x_home_dir(tools.active_extruder);
-    #else
-      const int x_axis_home_dir = home_dir.X;
-    #endif
+    const int x_axis_home_dir = home_dir.X;
 
     const float mlx = max_length[X_AXIS],
                 mly = max_length[Y_AXIS],
@@ -1248,11 +1064,6 @@ void Cartesian_Mechanics::homeaxis(const AxisEnum axis) {
 
       #if ENABLED(DEBUG_FEATURE)
         if (printer.debugFeature()) DEBUG_POS("Z_SAFE_HOMING", destination);
-      #endif
-
-      // This causes the carriage on Dual X to unpark
-      #if ENABLED(DUAL_X_CARRIAGE)
-        active_extruder_parked = false;
       #endif
 
       do_blocking_move_to_xy(destination[X_AXIS], destination[Y_AXIS]);

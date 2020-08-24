@@ -32,9 +32,6 @@ inline void gcode_M105(void) {
   #if HEATER_COUNT > 0
     SERIAL_STR(OK);
     thermalManager.report_temperatures(showRaw);
-    #if ENABLED(FLOWMETER_SENSOR)
-      flowmeter.print_flow_rate_state();
-    #endif
   #else
     SERIAL_LM(ER, MSG_ERR_NO_THERMISTORS);
   #endif

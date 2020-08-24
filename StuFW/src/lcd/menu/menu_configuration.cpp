@@ -80,35 +80,6 @@ static void lcd_reset_settings() { eeprom.reset(); }
 
 #endif
 
-#if ENABLED(DUAL_X_CARRIAGE)
-
-  void _recalc_DXC_settings() {
-    if (tools.active_extruder) {                // For the 2nd extruder re-home so the next tool-change gets the new offsets.
-      commands.enqueue_and_echo_P(PSTR("G28")); // In future, we can babystep the 2nd extruder (if active), making homing unnecessary.
-      tools.active_extruder = 0;
-    }
-  }
-
-  void menu_DXC() {
-    START_MENU();
-    MENU_BACK(MSG_MAIN);
-
-    MENU_ITEM(gcode, MSG_DXC_MODE_AUTOPARK, PSTR("M605 S1\nG28 X\nG1 X100"));
-    const bool need_g28 = !(mechanics.home_flag.YHomed && mechanics.home_flag.ZHomed);
-    MENU_ITEM(gcode, MSG_DXC_MODE_DUPLICATE, need_g28
-      ? PSTR("M605 S1\nT0\nG28\nM605 S2 X200\nG28 X\nG1 X100")                // If Y or Z is not homed, do a full G28 first
-      : PSTR("M605 S1\nT0\nM605 S2 X200\nG28 X\nG1 X100")
-    );
-    MENU_ITEM(gcode, MSG_DXC_MODE_FULL_CTRL, PSTR("M605 S0\nG28 X"));
-    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float52, MSG_DXC_X_OFFSET , &tools.hotend_offset[X_AXIS][1], MIN(X2_HOME_POS, X2_MAX_POS) - 25.0, MAX(X2_HOME_POS, X2_MAX_POS) + 25.0, _recalc_DXC_settings);
-    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float52, MSG_DXC_Y_OFFSET , &tools.hotend_offset[Y_AXIS][1], -10.0, 10.0, _recalc_DXC_settings);
-    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float52, MSG_DXC_Z_OFFSET , &tools.hotend_offset[Z_AXIS][1], -10.0, 10.0, _recalc_DXC_settings);
-    MENU_ITEM(gcode, MSG_DXC_SAVE_OFFSETS, PSTR("M500"));
-    END_MENU();
-  }
-
-#endif
-
 #if ENABLED(BLTOUCH)
 
   void menu_bltouch() {
@@ -213,10 +184,6 @@ void menu_configuration() {
 
   const bool busy = printer.isPrinting();
   if (!busy) {
-
-    #if ENABLED(DUAL_X_CARRIAGE)
-      MENU_ITEM(submenu, MSG_DXC_MENU, menu_DXC);
-    #endif
 
     #if ENABLED(BLTOUCH)
       MENU_ITEM(submenu, MSG_BLTOUCH, menu_bltouch);

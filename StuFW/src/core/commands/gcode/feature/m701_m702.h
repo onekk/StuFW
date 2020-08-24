@@ -3,7 +3,7 @@
  *
  * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
- * mcode
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
 #if ENABLED(FILAMENT_LOAD_UNLOAD_GCODES)
@@ -74,11 +68,7 @@
                                                           advancedpause.data[tools.target_extruder].load_length);
 
     advancedpause.load_filament(slow_load_length, fast_load_length, PAUSE_PARK_EXTRUDE_LENGTH, PAUSE_PARK_NUMBER_OF_ALERT_BEEPS,
-                                true, heaters[TARGET_EXTRUDER].wait_for_heating(), ADVANCED_PAUSE_MODE_LOAD_FILAMENT
-                                #if ENABLED(DUAL_X_CARRIAGE)
-                                  , tools.target_extruder
-                                #endif
-    );
+                                true, heaters[TARGET_EXTRUDER].wait_for_heating(), ADVANCED_PAUSE_MODE_LOAD_FILAMENT);
 
     // Restore Z axis
     if (park_point.z > 0)

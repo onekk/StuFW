@@ -3,7 +3,7 @@
  *
  * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
- * mcode
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
 #if FAN_COUNT > 0
@@ -80,12 +74,6 @@
     #endif
 
     fan->Speed = constrain(speed, fan->data.min_Speed, fan->data.max_Speed);
-
-    #if ENABLED(DUAL_X_CARRIAGE) && FAN_COUNT > 1
-      // Check for Clone fan
-      if (f == 0 && mechanics.dual_x_carriage_mode == DXC_DUPLICATION_MODE && TEST(fans[1].data.autoMonitored, 6))
-        fans[1].Speed = fan->Speed;
-    #endif
 
     #if DISABLED(DISABLE_M503)
       // No arguments? Show M106 report.

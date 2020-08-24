@@ -23,7 +23,6 @@
 /**
  * mcode
  *
- * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  */
 
 #define CODE_M78
@@ -46,14 +45,6 @@ inline void gcode_M78(void) {
     lcdui.reset_status();
     return;
   }
-
-  #if HAS_SERVICE_TIMES
-    if (parser.seenval('R')) {
-      print_job_counter.resetServiceTime(parser.value_int());
-      lcdui.reset_status();
-      return;
-    }
-  #endif
 
   print_job_counter.showStats();
 }

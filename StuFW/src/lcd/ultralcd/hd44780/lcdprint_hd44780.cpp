@@ -45,7 +45,7 @@ static const hd44780_charmap_t g_hd44780_charmap_device[] PROGMEM = {
   #if DISPLAY_CHARSET_HD44780 == JAPANESE
 
     {IV('¢'), 0xEC, 0}, // A2
-    {IV('°'), 0xDF, 0}, // B0, MK4duo special: '°'  LCD_STR_DEGREE (0x09)
+    {IV('°'), 0xDF, 0}, // B0, StuFW special: '°'  LCD_STR_DEGREE (0x09)
     {IV('ä'), 0xE1, 0}, // E4
     {IV('ö'), 0xEF, 0}, // F6
     {IV('÷'), 0xFD, 0}, // 00F7
@@ -71,7 +71,7 @@ static const hd44780_charmap_t g_hd44780_charmap_device[] PROGMEM = {
     {IV('σ'), 0xE5, 0}, // 03C3, sigma
 
     {IV('←'), 0x7F, 0}, // 2190
-    {IV('→'), 0x7E, 0}, // 2192, MK4duo special: '⮈⮉⮊⮋➤→' LCD_STR_ARROW_RIGHT (0x03)
+    {IV('→'), 0x7E, 0}, // 2192, StuFW special: '⮈⮉⮊⮋➤→' LCD_STR_ARROW_RIGHT (0x03)
     {IV('√'), 0xE8, 0}, // 221A
     {IV('∞'), 0xF3, 0}, // 221E
     {IV('█'), 0xFF, 0}, // 2588
@@ -273,7 +273,7 @@ static const hd44780_charmap_t g_hd44780_charmap_device[] PROGMEM = {
     {IV('«'), 0xBB, 0},
     {IV('®'), 0xCE, 0},
 
-    {IV('°'), 0xB2, 0}, // MK4duo special: '°'  LCD_STR_DEGREE (0x09)
+    {IV('°'), 0xB2, 0}, // StuFW special: '°'  LCD_STR_DEGREE (0x09)
     //{IV(''), 0xD1, 0},
     {IV('±'), 0x10, 0}, //∓±
     //{'='), 0x1C, 0}, // error
@@ -391,7 +391,7 @@ static const hd44780_charmap_t g_hd44780_charmap_device[] PROGMEM = {
     {IV('™'), 0xD0, 0},
     {IV('↤'), 0xF9, 0}, // ⟻
     {IV('↵'), 0xC4, 0},
-    {IV('↻'), 0x04, 0}, // MK4duo special: '↻↺⟳⟲'  LCD_STR_REFRESH (0x01)
+    {IV('↻'), 0x04, 0}, // StuFW special: '↻↺⟳⟲'  LCD_STR_REFRESH (0x01)
     {IV('⇥'), 0xFB, 0},
     {IV('√'), 0xBE, 0}, // √
     {IV('∞'), 0xC2, 0}, // infinity
@@ -416,7 +416,7 @@ static const hd44780_charmap_t g_hd44780_charmap_device[] PROGMEM = {
     {IV('⎲'), 0x12, 0},
     {IV('⎳'), 0x13, 0},
 
-    {IV('⏱'), 0x07, 0}, // MK4duo special: '???????????????????????? ⌚⌛⏰⏱⏳⧖⧗'  LCD_STR_CLOCK (0x05)
+    {IV('⏱'), 0x07, 0}, // StuFW special: '???????????????????????? ⌚⌛⏰⏱⏳⧖⧗'  LCD_STR_CLOCK (0x05)
     {IV('┌'), 0xC9, 0},
     {IV('┐'), 0xCA, 0},
     {IV('└'), 0xCB, 0},
@@ -442,7 +442,7 @@ static const hd44780_charmap_t g_hd44780_charmap_device[] PROGMEM = {
 
     {IV('¢'), 0x5C, 0}, // 00A2
     {IV('£'), 0xCF, 0}, // 00A3
-    {IV('°'), 0x01, 0}, // 00B0, MK4duo special: '°'  LCD_STR_DEGREE (0x09)
+    {IV('°'), 0x01, 0}, // 00B0, StuFW special: '°'  LCD_STR_DEGREE (0x09)
 
     //{IV(''), 0x80, 0},
     //{IV(''), 0x81, 0},
@@ -608,7 +608,7 @@ static const hd44780_charmap_t g_hd44780_charmap_device[] PROGMEM = {
 static const hd44780_charmap_t g_hd44780_charmap_common[] PROGMEM = {
   {IV('¡'), 'i', 0}, // A1
   {IV('¢'), 'c', 0}, // A2
-  {IV('°'), 0x09, 0}, // B0 MK4duo special: '°'  LCD_STR_DEGREE (0x09)
+  {IV('°'), 0x09, 0}, // B0 StuFW special: '°'  LCD_STR_DEGREE (0x09)
 
   // map WESTERN code to the plain ASCII
   {IV('Á'), 'A', 0}, // C1
@@ -840,26 +840,26 @@ static const hd44780_charmap_t g_hd44780_charmap_common[] PROGMEM = {
   {IV('℞'), 'P', 'x'}, // 211E ℞ Pt ASCII 158
   {IV('™'), 'T', 'M'}, // 2122
   {IV('←'), '<', '-'}, // 2190
-  {IV('→'), '-', '>'}, // 2192, MK4duo special: '⮈⮉⮊⮋➤→⏵➟➠➡' LCD_STR_ARROW_RIGHT (0x03)
-  //{IV('↰'), '<', 0}, // 21B0, MK4duo special: '⮥⮭⮉⇧↑↰⤴'  LCD_STR_UPLEVEL (0x04)
-  {IV('↰'), 0x03, 0}, // 21B0, MK4duo special: '⮥⮭⮉⇧↑↰⤴'  LCD_STR_UPLEVEL (0x04)
-  {IV('↻'), 0x04, 0}, // 21BB MK4duo special: '↻↺⟳⟲'  LCD_STR_REFRESH (0x01)
+  {IV('→'), '-', '>'}, // 2192, StuFW special: '⮈⮉⮊⮋➤→⏵➟➠➡' LCD_STR_ARROW_RIGHT (0x03)
+  //{IV('↰'), '<', 0}, // 21B0, StuFW special: '⮥⮭⮉⇧↑↰⤴'  LCD_STR_UPLEVEL (0x04)
+  {IV('↰'), 0x03, 0}, // 21B0, StuFW special: '⮥⮭⮉⇧↑↰⤴'  LCD_STR_UPLEVEL (0x04)
+  {IV('↻'), 0x04, 0}, // 21BB StuFW special: '↻↺⟳⟲'  LCD_STR_REFRESH (0x01)
   {IV('∼'), '~', 0}, // 223C
   {IV('≈'), '~', '='}, // 2248
   {IV('≠'), '!', '='}, // 2260
   {IV('≡'), '=', 0}, // 2261
   {IV('≤'), '<', '='},// 2264, ≤≥ ⩽⩾
   {IV('≥'), '>', '='}, // 2265
-  {IV('⏱'), 0x07, 0}, // 23F1, MK4duo special: '🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🕜🕝🕞🕟🕠🕡🕢🕣🕤🕥🕦🕧 ⌚⌛⏰⏱⏳⧖⧗'  LCD_STR_CLOCK (0x05)
+  {IV('⏱'), 0x07, 0}, // 23F1, StuFW special: '🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🕜🕝🕞🕟🕠🕡🕢🕣🕤🕥🕦🕧 ⌚⌛⏰⏱⏳⧖⧗'  LCD_STR_CLOCK (0x05)
 
   {IV('゠'), '=', 0}, // 30A0
 
   // ⏰⏱⏲⏳◴◵◶◷
   // ⏻⏼♁♂
-  //{IV(''), 0x00, 0}, // MK4duo special: ''  LCD_STR_BEDTEMP (0x07)
-  {IV('🌡'), 0x02, 0}, // D83CDF21 MK4duo special: '🌡'  LCD_STR_THERMOMETER (0x08)
-  {IV('📂'), 0x05, 0}, // D83DDCC2 MK4duo special: '📁📂'  LCD_STR_FOLDER (0x02)
-  //{IV(''), 0x06, 0}, // MK4duo special: ''  LCD_STR_FEEDRATE (0x06)
+  //{IV(''), 0x00, 0}, // StuFW special: ''  LCD_STR_BEDTEMP (0x07)
+  {IV('🌡'), 0x02, 0}, // D83CDF21 StuFW special: '🌡'  LCD_STR_THERMOMETER (0x08)
+  {IV('📂'), 0x05, 0}, // D83DDCC2 StuFW special: '📁📂'  LCD_STR_FOLDER (0x02)
+  //{IV(''), 0x06, 0}, // StuFW special: ''  LCD_STR_FEEDRATE (0x06)
 };
 
 /* return v1 - v2 */

@@ -24,8 +24,8 @@
 #define _CONFIGURATION_VERSION_H_
 
 #define FIRMWARE_NAME             "StuFW"
-#define SHORT_BUILD_VERSION       "0.0.3"
-#define FIRMWARE_REVISION         "20200519"
+#define SHORT_BUILD_VERSION       "0.0.6"
+#define FIRMWARE_REVISION         "20201128"
 #define BUILD_VERSION             FIRMWARE_NAME "_" SHORT_BUILD_VERSION
 #define STRING_DISTRIBUTION_DATE  __DATE__ " " __TIME__    // build date and time
 #define FIRMWARE_URL              "none"

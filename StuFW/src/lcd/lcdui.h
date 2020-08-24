@@ -55,11 +55,11 @@ class LcdUI {
 
   public: /** Public Parameters */
 
-    #if HAS_SPI_LCD || HAS_NEXTION_LCD
+    #if HAS_SPI_LCD
 
       static LCDViewActionEnum lcdDrawUpdate;
 
-      #if HAS_GRAPHICAL_LCD 
+      #if HAS_GRAPHICAL_LCD
 
         static bool drawing_screen,
                     first_page;
@@ -96,10 +96,10 @@ class LcdUI {
         #if ENABLED(FILAMENT_LCD_DISPLAY) && HAS_SD_SUPPORT
           static millis_t previous_status_ms;
         #endif
-        
+
       #endif
 
-    #endif // HAS_SPI_LCD || HAS_NEXTION_LCD
+    #endif // HAS_SPI_LCD
 
     #if HAS_LCD_MENU
 
@@ -152,12 +152,6 @@ class LcdUI {
       static uint32_t encoderPosition;
 
       static volatile uint8_t buttons;
-      #if ENABLED(REPRAPWORLD_KEYPAD)
-        static volatile uint8_t keypad_buttons;
-      #endif
-      #if HAS_SLOW_BUTTONS
-        static volatile uint8_t slow_buttons;
-      #endif
 
       #if ENABLED(REVERSE_MENU_DIRECTION)
         static int8_t encoderDirection;
@@ -169,7 +163,7 @@ class LcdUI {
 
   private: /** Private Parameters */
 
-    #if HAS_SPI_LCD || HAS_NEXTION_LCD
+    #if HAS_SPI_LCD
       #if HAS_LCD_MENU
         #if LCD_TIMEOUT_TO_STATUS > 0
           static bool defer_return_to_status;
@@ -182,8 +176,8 @@ class LcdUI {
   public: /** Public Function */
 
     static void clear_lcd();
-    
-    #if HAS_SPI_LCD || HAS_NEXTION_LCD
+
+    #if HAS_SPI_LCD
 
       static void init();
       static void update();
@@ -332,12 +326,6 @@ class LcdUI {
 
     #if HAS_ENCODER_ACTION
 
-      #if ENABLED(REPRAPWORLD_KEYPAD)
-        static bool handle_keypad();
-      #endif
-      #if HAS_SLOW_BUTTONS
-        static uint8_t read_slow_buttons();
-      #endif
       static void update_buttons();
       static bool button_pressed();
       #if ENABLED(AUTO_BED_LEVELING_UBL) || ENABLED(G26_MESH_VALIDATION)

@@ -75,7 +75,6 @@
  *   7 is 100k GE Sensing AL03006-58.2K-97-G1 (4.7k pullup)                                          *
  *   8 is 100k RS thermistor 198-961 (4.7k pullup)                                                   *
  *   9 User Sensor                                                                                   *
- *  11 DHT probe sensor DHT11, DHT21 or DHT22 (ENABLE DHT SENSOR below)                              *
  *  20 is the PT100 circuit amplifier found in Ultimainboard V2.x and Wanhao D6                      *
  *                                                                                                   *
  *       Use these for Testing or Development purposes. NEVER for production machine.                *
@@ -98,11 +97,6 @@
 #define T9_NAME   "User Sensor"
 #define T9_R25    100000.0  // Resistance in Ohms @ 25°C
 #define T9_BETA     4036.0  // Beta Value (K)
-
-// Enable this for support DHT sensor for temperature e Humidity DHT11, DHT21 or DHT22.
-//#define DHT_SENSOR
-// Set Type DHT 11 for DHT11, 21 for DHT21, 22 for DHT22
-#define DHT_TYPE 11
 
 //These 2 defines help to calibrate the AD595 sensor in case you get wrong temperature measurements.
 //The measured temperature is defined as "actualTemp = (measuredTemp * TEMP_SENSOR_AD595_GAIN) + TEMP_SENSOR_AD595_OFFSET"
@@ -355,7 +349,7 @@
  * falls out or temperature sensors fail in any way.                              *
  *                                                                                *
  * The issue: If a thermistor falls out or a temperature sensor fails,            *
- * MK4duo can no longer sense the actual temperature. Since a                     *
+ * StuFW can no longer sense the actual temperature. Since a                      *
  * disconnected thermistor reads as a low temperature, the firmware               *
  * will keep the heater/cooler on.                                                *
  *                                                                                *

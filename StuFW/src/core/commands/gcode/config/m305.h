@@ -3,7 +3,7 @@
  *
  * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
- * mcode
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
 #if HEATER_COUNT > 0
@@ -43,31 +37,9 @@
    *    O[int]    ADC high offset correction
    *    P[int]    Sensor Pin
    *    T[int]    Sensor Type
-   *
-   *  D DHT parameters
-   *    S[int]    Type Sensor
-   *    P[int]    Sensor Pin
-   *
    */
+
   inline void gcode_M305(void) {
-
-    #if ENABLED(DHT_SENSOR)
-      if (parser.seen('D')) {
-        #if DISABLED(DISABLE_M503)
-          // No arguments? Show M305 report.
-          if (!parser.seen("PS")) {
-            dhtsensor.print_M305();
-            return;
-          }
-        #endif
-        dhtsensor.data.pin = parser.intval('P', DHT_DATA_PIN);
-        if (parser.seen('S'))
-          dhtsensor.change_type(DHTEnum(parser.value_int()));
-        dhtsensor.init();
-        return;
-      }
-    #endif
-
     int8_t h = 0;
 
     if (!commands.get_target_heater(h)) return;

@@ -189,11 +189,7 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
 #elif DRIVER_EXTRUDERS > 2
   #define E_STEP_WRITE(E,V)     do{ switch (E) { case 0: E0_STEP_WRITE(V); break; case 1: E1_STEP_WRITE(V); break; case 2: E2_STEP_WRITE(V); } }while(0)
 #elif DRIVER_EXTRUDERS > 1
-  #if ENABLED(DUAL_X_CARRIAGE)
-    #define E_STEP_WRITE(E,V)   do{ if (mechanics.extruder_duplication_enabled) { E0_STEP_WRITE(V); E1_STEP_WRITE(V); } else if ((E) == 0) { E0_STEP_WRITE(V); } else { E1_STEP_WRITE(V); } }while(0)
-  #else
-    #define E_STEP_WRITE(E,V)   do{ if (E == 0) { E0_STEP_WRITE(V); } else { E1_STEP_WRITE(V); } }while(0)
-  #endif
+  #define E_STEP_WRITE(E,V)   do{ if (E == 0) { E0_STEP_WRITE(V); } else { E1_STEP_WRITE(V); } }while(0)
 #elif DRIVER_EXTRUDERS > 0
   #define E_STEP_WRITE(E,V)   E0_STEP_WRITE(V)
 #endif // DRIVER_EXTRUDERS

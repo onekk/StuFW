@@ -22,18 +22,12 @@
 
 #include "../../../StuFW.h"
 
-#if HAS_POWER_SWITCH || HAS_POWER_CONSUMPTION_SENSOR || HAS_POWER_CHECK
+#if HAS_POWER_SWITCH || HAS_POWER_CHECK
 
   Power powerManager;
 
   /** Public Parameters */
   flagpower_t Power::flag;
-
-  #if HAS_POWER_CONSUMPTION_SENSOR
-    int16_t   Power::current_raw_powconsumption = 0;    // Holds measured power consumption
-    float     Power::consumption_meas           = 0.0;
-    uint32_t  Power::startpower                 = 0;
-  #endif
 
   /** Private Parameters */
   #if HAS_POWER_SWITCH
@@ -145,41 +139,5 @@
 
   #endif // HAS_POWER_SWITCH
 
-  #if HAS_POWER_CONSUMPTION_SENSOR
 
-    // Convert raw Power Consumption to watt
-    float Power::raw_analog2voltage() {
-      return ((HAL_VOLTAGE_PIN) * current_raw_powconsumption) / (AD_RANGE);
-    }
-
-    float Power::analog2voltage() {
-      float power_zero_raw = (POWER_ZERO * AD_RANGE) / (HAL_VOLTAGE_PIN);
-      float rel_raw_power = (current_raw_powconsumption < power_zero_raw) ? (2 * power_zero_raw - current_raw_powconsumption) : current_raw_powconsumption;
-      return ((HAL_VOLTAGE_PIN) * rel_raw_power) / (AD_RANGE - POWER_ZERO);
-    }
-
-    float Power::analog2current() {
-      float temp = analog2voltage() / POWER_SENSITIVITY;
-      temp = (((100 - POWER_ERROR) / 100) * temp) - (POWER_OFFSET);
-      return temp > 0 ? temp : 0;
-    }
-
-    float Power::analog2power() {
-      return (analog2current() * POWER_VOLTAGE * 100) / (POWER_EFFICIENCY);
-    }
-
-    float Power::analog2error(float current) {
-      float temp1 = (analog2voltage() / POWER_SENSITIVITY - POWER_OFFSET) * (POWER_VOLTAGE);
-      if (temp1 <= 0) return 0.0;
-      float temp2 = current * (POWER_VOLTAGE);
-      if (temp2 <= 0) return 0.0;
-      return ((temp2 / temp1) - 1) * 100;
-    }
-
-    float Power::analog2efficiency(float watt) {
-      return (analog2current() * (POWER_VOLTAGE) * 100) / watt;
-    }
-
-  #endif // HAS_POWER_CONSUMPTION_SENSOR
-
-#endif // HAS_POWER_SWITCH || HAS_POWER_CONSUMPTION_SENSOR
+#endif // HAS_POWER_SWITCH || HAS_POWER_CHECK

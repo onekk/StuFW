@@ -1336,11 +1336,6 @@
 #endif // LCD_HEIGHT < 4
 
 
-#ifndef MSG_SERVICE_RESET
-  #define MSG_SERVICE_RESET                   _UxGT("Service Reset")
-#endif
-
-
 // Extra
 #ifndef MSG_RESTART_PRINT
   #define MSG_RESTART_PRINT                   _UxGT("Restart print")
@@ -1396,29 +1391,4 @@
 #endif
 #ifndef MSG_EEPROM_CHANGED_ALLERT_4
   #define MSG_EEPROM_CHANGED_ALLERT_4         _UxGT("to continue...")
-#endif
-
-// Nextion Allert
-#ifndef MSG_NEXTION_CHANGED_ALLERT_1
-  #define MSG_NEXTION_CHANGED_ALLERT_1         _UxGT("ATTENTION...")
-#endif
-#ifndef MSG_NEXTION_CHANGED_ALLERT_2
-  #define MSG_NEXTION_CHANGED_ALLERT_2         _UxGT("NEXTION FW changed.")
-#endif
-#ifndef MSG_NEXTION_CHANGED_ALLERT_3
-  #define MSG_NEXTION_CHANGED_ALLERT_3         _UxGT("Please upload new FW")
-#endif
-#ifndef MSG_NEXTION_CHANGED_ALLERT_4
-  #define MSG_NEXTION_CHANGED_ALLERT_4         _UxGT("Press button")
-#endif
-#ifndef MSG_NEXTION_CHANGED_ALLERT_5
-  #define MSG_NEXTION_CHANGED_ALLERT_5         _UxGT("to continue...")
-#endif
-
-// Nextion M0 M1
-#ifndef MSG_NEXTION_M0_M1_1
-  #define MSG_NEXTION_M0_M1_1                  _UxGT("Press button enter")
-#endif
-#ifndef MSG_NEXTION_M0_M1_2
-  #define MSG_NEXTION_M0_M1_2                  _UxGT("to resume print")
 #endif

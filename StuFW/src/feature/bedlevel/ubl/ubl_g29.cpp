@@ -292,9 +292,6 @@
     // Check for commands that require the printer to be homed
     if (may_move) {
       if (mechanics.axis_unhomed_error()) mechanics.home();
-      #if ENABLED(DUAL_X_CARRIAGE)
-        if (tools.active_extruder != 0) tools.change(0);
-      #endif
     }
 
     // Invalidate Mesh Points. This command is a little bit asymmetrical because

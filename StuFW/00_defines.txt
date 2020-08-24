@@ -1,0 +1,15 @@
+
+#define UI_VOLTAGE_LEVEL 1   // 5 V
+
+CODE_M3 M4 M5 M6 M350 M351 M450 451 452 453
+
+//#define ULTIPANEL
+//#define ULTRA_LCD
+//#define REPRAPWORLD_GRAPHICAL_LCD
+
+IS_KINEMATIC
+
+#define LV8729              0x004
+#define L6470               0x105
+#define TB6560              0x006
+#define TB6600              0x007

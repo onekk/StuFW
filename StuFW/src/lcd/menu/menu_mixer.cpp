@@ -26,7 +26,7 @@
 
 #include "../../../StuFW.h"
 
-#if HAS_LCD_MENU && ENABLED(COLOR_MIXING_EXTRUDER) && DISABLED(NEXTION)
+#if HAS_LCD_MENU && ENABLED(COLOR_MIXING_EXTRUDER)
 
 #include "../ultralcd/dogm/ultralcd_dogm.h"
 #include "../ultralcd/ultralcd.h"

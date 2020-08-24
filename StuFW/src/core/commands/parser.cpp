@@ -18,11 +18,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
+ *-----------------------------------
+ *
  * parser.cpp - Parser for a GCode line, providing a parameter interface.
  */
+
 
 #include "../../../StuFW.h"
 

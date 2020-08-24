@@ -18,9 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
+ *-------------------------------------
  * eeprom.cpp
  *
  * Configuration and EEPROM storage
@@ -50,13 +48,13 @@
  * Keep this data structure up to date so
  * EEPROM size is known at compile time!
  */
-#define EEPROM_VERSION "MKV61"
+#define EEPROM_VERSION "SFV10"
 #define EEPROM_OFFSET 100
 
 typedef struct EepromDataStruct {
 
-  char      version[6];                                 // MKVnn\0
-  uint16_t  crc;                                        // Data Checksum
+  char      version[6];            // SFVnn\0
+  uint16_t  crc;                   // Data Checksum
 
   //
   // Mechanics data
@@ -175,13 +173,6 @@ typedef struct EepromDataStruct {
   //
   #if ENABLED(PID_ADD_EXTRUSION_RATE)
     int16_t         lpq_len;
-  #endif
-
-  //
-  // DHT sensor
-  //
-  #if ENABLED(DHT_SENSOR)
-    dht_data_t      dht_data;
   #endif
 
   //
@@ -306,10 +297,6 @@ void EEPROM::post_process() {
     }
   #endif
 
-  #if ENABLED(DHT_SENSOR)
-    dhtsensor.init();
-  #endif
-
   #if FAN_COUNT > 0
     LOOP_FAN() {
       fans[f].init();
@@ -326,7 +313,7 @@ void EEPROM::post_process() {
       tools.refresh_e_factor(i);
   #endif
 
-  #if ENABLED(WORKSPACE_OFFSETS) || ENABLED(DUAL_X_CARRIAGE)
+  #if ENABLED(WORKSPACE_OFFSETS)
     // Software endstops depend on home_offset
     LOOP_XYZ(i) endstops.update_software_endstops((AxisEnum)i);
   #endif
@@ -561,13 +548,6 @@ void EEPROM::post_process() {
     #endif
 
     //
-    // DHT sensor
-    //
-    #if ENABLED(DHT_SENSOR)
-      EEPROM_WRITE(dhtsensor.data);
-    #endif
-
-    //
     // Fans
     //
     #if FAN_COUNT > 0
@@ -730,7 +710,7 @@ void EEPROM::post_process() {
       #if ENABLED(EEPROM_CHITCHAT)
         SERIAL_SM(ECHO, "EEPROM version mismatch ");
         SERIAL_MT("(EEPROM=", stored_ver);
-        SERIAL_EM(" MK4duo=" EEPROM_VERSION ")");
+        SERIAL_EM(" StuFW=" EEPROM_VERSION ")");
       #endif
       reset();
       eeprom_error = true;
@@ -885,13 +865,6 @@ void EEPROM::post_process() {
       //
       #if ENABLED(PID_ADD_EXTRUSION_RATE)
         EEPROM_READ(tools.lpq_len);
-      #endif
-
-      //
-      // DHT sensor
-      //
-      #if ENABLED(DHT_SENSOR)
-        EEPROM_READ(dhtsensor.data);
       #endif
 
       //
@@ -1256,12 +1229,6 @@ void EEPROM::reset() {
 
   #if HAS_SERVOS
 
-    #if HAS_DONDOLO
-      constexpr int16_t angles[] = { DONDOLO_SERVOPOS_E0, DONDOLO_SERVOPOS_E1 };
-      servo[DONDOLO_SERVO_INDEX].angle[0] = angles[0];
-      servo[DONDOLO_SERVO_INDEX].angle[0] = angles[1];
-    #endif
-
     #if HAS_Z_SERVO_PROBE
       constexpr uint8_t z_probe_angles[2] = Z_SERVO_ANGLES;
       servo[Z_PROBE_SERVO_NR].angle[0] = z_probe_angles[0];
@@ -1269,7 +1236,7 @@ void EEPROM::reset() {
     #endif
 
   #endif
-  
+
   #if ENABLED(PID_ADD_EXTRUSION_RATE)
     tools.lpq_len = 20; // default last-position-queue size
   #endif
@@ -1624,10 +1591,6 @@ void EEPROM::reset() {
     powerManager.factory_parameters();
   #endif
 
-  #if ENABLED(DHT_SENSOR)
-    dhtsensor.factory_parameters();
-  #endif
-
   #if ENABLED(FWRETRACT)
     fwretract.reset();
   #endif
@@ -1727,12 +1690,6 @@ void EEPROM::reset() {
       }
     #endif
 
-    /**
-     * Print dht parameters
-     */
-    #if ENABLED(DHT_SENSOR)
-      dhtsensor.print_M305();
-    #endif
 
     /**
      * Print AD595 parameters

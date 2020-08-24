@@ -39,9 +39,8 @@
   + ENABLED(Z_PROBE_FIX_MOUNTED)              \
   + (HAS_Z_SERVO_PROBE && DISABLED(BLTOUCH))  \
   + ENABLED(BLTOUCH)                          \
-  + ENABLED(Z_PROBE_ALLEN_KEY)                \
-  + ENABLED(Z_PROBE_SLED)
-  #error "DEPENDENCY ERROR: Please enable only one probe: PROBE_MANUALLY, Z_PROBE_FIX_MOUNTED, Z Servo, BLTOUCH, Z_PROBE_ALLEN_KEY, Z_PROBE_SLED."
+  + ENABLED(Z_PROBE_ALLEN_KEY)
+  #error "DEPENDENCY ERROR: Please enable only one probe: PROBE_MANUALLY, Z_PROBE_FIX_MOUNTED, Z Servo, BLTOUCH, Z_PROBE_ALLEN_KEY"
 #endif
 
 #if HAS_BED_PROBE
@@ -77,17 +76,13 @@
 
   // Require some kind of probe for bed leveling and probe testing
   #if OLD_ABL
-    #error "DEPENDENCY ERROR: Auto Bed Leveling requires a probe! Define a PROBE_MANUALLY, Z Servo, BLTOUCH, Z_PROBE_ALLEN_KEY, Z_PROBE_SLED, or Z_PROBE_FIX_MOUNTED."
+    #error "DEPENDENCY ERROR: Auto Bed Leveling requires a probe! Define a PROBE_MANUALLY, Z Servo, BLTOUCH, Z_PROBE_ALLEN_KEY, or Z_PROBE_FIX_MOUNTED."
   #endif
 
 #endif
 
 #if (!HAS_BED_PROBE || ENABLED(PROBE_MANUALLY)) && ENABLED(Z_MIN_PROBE_REPEATABILITY_TEST)
-  #error "DEPENDENCY ERROR: Z_MIN_PROBE_REPEATABILITY_TEST requires a probe! Define a Z Servo, BLTOUCH, Z_PROBE_ALLEN_KEY, Z_PROBE_SLED, or Z_PROBE_FIX_MOUNTED."
-#endif
-
-#if ENABLED(Z_PROBE_SLED) && !PIN_EXISTS(SLED)
-  #error "DEPENDENCY ERROR: You have to set SLED_PIN to a valid pin if you enable Z_PROBE_SLED."
+  #error "DEPENDENCY ERROR: Z_MIN_PROBE_REPEATABILITY_TEST requires a probe! Define a Z Servo, BLTOUCH, Z_PROBE_ALLEN_KEY, or Z_PROBE_FIX_MOUNTED."
 #endif
 
 // Check auto bed leveling sub-options, especially probe points

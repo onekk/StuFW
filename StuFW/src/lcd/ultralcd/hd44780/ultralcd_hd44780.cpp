@@ -18,18 +18,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-#include "../../../../StuFW.h"
-
-#if HAS_CHARACTER_LCD
-
-/**
+ *-------------------------------------
  * ultralcd_hd44780.cpp
  *
  * LCD display implementations for Hitachi HD44780.
  * These are the most common LCD character displays.
  */
+
+
+#include "../../../../StuFW.h"
+
+#if HAS_CHARACTER_LCD
 
 #include "ultralcd_hd44780.h"
 
@@ -37,43 +36,8 @@
 // Create LCD instance and chipset-specific information
 //
 
-#if ENABLED(LCD_I2C_TYPE_PCF8575)
-
-  LCD_CLASS lcd(LCD_I2C_ADDRESS, LCD_I2C_PIN_EN, LCD_I2C_PIN_RW, LCD_I2C_PIN_RS, LCD_I2C_PIN_D4, LCD_I2C_PIN_D5, LCD_I2C_PIN_D6, LCD_I2C_PIN_D7);
-
-#elif ENABLED(LCD_I2C_TYPE_MCP23017) || ENABLED(LCD_I2C_TYPE_MCP23008)
-
-  LCD_CLASS lcd(LCD_I2C_ADDRESS
-    #ifdef DETECT_DEVICE
-      , 1
-    #endif
-  );
-
-#elif ENABLED(LCD_I2C_TYPE_PCA8574)
-
-  LCD_CLASS lcd(LCD_I2C_ADDRESS, LCD_WIDTH, LCD_HEIGHT);
-
-#elif ENABLED(SR_LCD_2W_NL)
-
-  // 2 wire Non-latching LCD SR from:
-  // https://bitbucket.org/fmalpartida/new-liquidcrystal/wiki/schematics#!shiftregister-connection
-
-  LCD_CLASS lcd(SR_DATA_PIN, SR_CLK_PIN
-    #if PIN_EXISTS(SR_STROBE)
-      , SR_STROBE_PIN
-    #endif
-  );
-
-#elif ENABLED(LCM1602)
-
-  LCD_CLASS lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
-
-#else
-
-  // Standard direct-connected LCD implementations
-  LCD_CLASS lcd(LCD_PINS_RS, LCD_PINS_ENABLE, LCD_PINS_D4, LCD_PINS_D5, LCD_PINS_D6, LCD_PINS_D7);
-
-#endif
+// Standard direct-connected LCD implementations
+LCD_CLASS lcd(LCD_PINS_RS, LCD_PINS_ENABLE, LCD_PINS_D4, LCD_PINS_D5, LCD_PINS_D6, LCD_PINS_D7);
 
 static void createChar_P(const char c, const byte * const ptr) {
   byte temp[8];
@@ -290,11 +254,7 @@ void LcdUI::set_custom_characters(const HD44780CharSetEnum screen_charset/*=CHAR
     else
   #endif
     { // Info Screen uses 5 special characters
-      #if ENABLED(DHT_SENSOR)
-        createChar_P(LCD_STR_BEDTEMP[0], Humidity);
-      #else
-        createChar_P(LCD_STR_BEDTEMP[0], bedTemp);
-      #endif
+      createChar_P(LCD_STR_BEDTEMP[0], bedTemp);
       createChar_P(LCD_STR_DEGREE[0], degree);
       createChar_P(LCD_STR_THERMOMETER[0], thermometer);
       createChar_P(LCD_STR_FEEDRATE[0], feedrate);
@@ -321,34 +281,12 @@ void LcdUI::set_custom_characters(const HD44780CharSetEnum screen_charset/*=CHAR
 
 void LcdUI::init_lcd() {
 
-  #if ENABLED(LCD_I2C_TYPE_PCF8575)
-    lcd.begin(LCD_WIDTH, LCD_HEIGHT);
-    #ifdef LCD_I2C_PIN_BL
-      lcd.setBacklightPin(LCD_I2C_PIN_BL, POSITIVE);
-      lcd.setBacklight(HIGH);
-    #endif
-
-  #elif ENABLED(LCD_I2C_TYPE_MCP23017)
-    lcd.setMCPType(LTI_TYPE_MCP23017);
-    lcd.begin(LCD_WIDTH, LCD_HEIGHT);
-    update_indicators();
-
-  #elif ENABLED(LCD_I2C_TYPE_MCP23008)
-    lcd.setMCPType(LTI_TYPE_MCP23008);
-    lcd.begin(LCD_WIDTH, LCD_HEIGHT);
-
-  #elif ENABLED(LCD_I2C_TYPE_PCA8574)
-    lcd.init();
-    lcd.backlight();
-
-  #else
-    #if (LCD_PINS_RS != -1) && (LCD_PINS_ENABLE != -1)
-      // required for RAMPS-FD, but does no harm for other targets
-      SET_OUTPUT(LCD_PINS_RS);
-      SET_OUTPUT(LCD_PINS_ENABLE);
-    #endif
-    lcd.begin(LCD_WIDTH, LCD_HEIGHT);
+  #if (LCD_PINS_RS != -1) && (LCD_PINS_ENABLE != -1)
+    // required for RAMPS-FD, but does no harm for other targets
+    SET_OUTPUT(LCD_PINS_RS);
+    SET_OUTPUT(LCD_PINS_ENABLE);
   #endif
+  lcd.begin(LCD_WIDTH, LCD_HEIGHT);
 
   set_custom_characters(on_status_screen() ? CHARSET_INFO : CHARSET_MENU);
 
@@ -402,7 +340,7 @@ void LcdUI::clear_lcd() { lcd.clear(); }
   static void logo_lines(PGM_P const extra) {
     int16_t indent = (LCD_WIDTH - 8 - utf8_strlen_P(extra)) / 2;
     lcd_moveto(indent, 0); lcd_put_wchar('\x00'); lcd_put_u8str_P(PSTR( "------" ));  lcd_put_wchar('\x01');
-    lcd_moveto(indent, 1);                        lcd_put_u8str_P(PSTR("|MK4duo|"));  lcd_put_u8str_P(extra);
+    lcd_moveto(indent, 1);                        lcd_put_u8str_P(PSTR("|StuFW|"));  lcd_put_u8str_P(extra);
     lcd_moveto(indent, 2); lcd_put_wchar('\x02'); lcd_put_u8str_P(PSTR( "------" ));  lcd_put_wchar('\x03');
   }
 
@@ -425,11 +363,11 @@ void LcdUI::clear_lcd() { lcd.clear(); }
 
     #if ENABLED(STRING_SPLASH_LINE1)
       //
-      // Show the MK4duo logo with splash line 1
+      // Show the StuFW logo with splash line 1
       //
       if (LCD_EXTRA_SPACE >= utf8_strlen(STRING_SPLASH_LINE1) + 1) {
         //
-        // Show the MK4duo logo, splash line1, and splash line 2
+        // Show the StuFW logo, splash line1, and splash line 2
         //
         logo_lines(PSTR(STRING_SPLASH_LINE1));
         #if ENABLED(STRING_SPLASH_LINE2)
@@ -440,7 +378,7 @@ void LcdUI::clear_lcd() { lcd.clear(); }
       }
       else {
         //
-        // Show the MK4duo logo with splash line 1
+        // Show the StuFW logo with splash line 1
         // After a delay show splash line 2, if it exists
         //
         #if ENABLED(STRING_SPLASH_LINE2)
@@ -468,7 +406,7 @@ void LcdUI::clear_lcd() { lcd.clear(); }
       }
     #else
       //
-      // Show only the MK4duo logo
+      // Show only the StuFW logo
       //
       logo_lines(PSTR(""));
       printer.safe_delay(BOOTSCREEN_TIMEOUT);
@@ -511,12 +449,6 @@ FORCE_INLINE void _draw_axis_value(const AxisEnum axis, const char *value, const
   }
 }
 
-#if ENABLED(DHT_SENSOR)
-  FORCE_INLINE void _draw_humidity_status() {
-    lcd_put_wchar(LCD_STR_BEDTEMP[0]);
-    lcd_put_u8str(i16tostr3(dhtsensor.Humidity));
-  }
-#endif
 
 FORCE_INLINE void _draw_heater_status(const uint8_t heater, const char prefix, const bool blink) {
 
@@ -588,10 +520,10 @@ void LcdUI::draw_status_message(const bool blink) {
     if (printer.progress && (ELAPSED(millis(), progress_bar_ms + PROGRESS_BAR_MSG_TIME) || !has_status()))
       return lcd_draw_progress_bar(printer.progress);
 
-  #elif (HAS_LCD_FILAMENT_SENSOR && ENABLED(SDSUPPORT)) || HAS_LCD_POWER_SENSOR
+  #elif (HAS_LCD_FILAMENT_SENSOR && ENABLED(SDSUPPORT)) 
 
     #if HAS_LCD_FILAMENT_SENSOR && HAS_SD_SUPPORT
-      // Show Filament Diameter and Volumetric Multiplier % or Power Sensor
+      // Show Filament Diameter and Volumetric Multiplier
       // After allowing status_message to show for 5 seconds
       if (ELAPSED(millis(), previous_lcd_status_ms + 5000UL)) {
         lcd_put_u8str_P(PSTR("Dia "));
@@ -608,18 +540,7 @@ void LcdUI::draw_status_message(const bool blink) {
       }
     #endif
 
-    #if HAS_LCD_POWER_SENSOR
-      else if (ELAPSED(millis(), previous_lcd_status_ms + 10000UL)) {
-        lcd_put_u8str_P(PSTR("P:"));
-        lcd_put_u8str(ftostr43sign(powerManager.consumption_meas));
-        lcd_put_u8str_P(PSTR("W C:"));
-        lcd_put_u8str(ltostr7(print_job_counter.getConsumptionHour()));
-        lcd_put_u8str_P(PSTR("Wh"));
-        return;
-      }
-    #endif
-
-  #endif // FILAMENT_LCD_DISPLAY || POWER_SENSOR
+  #endif // FILAMENT_LCD_DISPLAY
 
   #if ENABLED(STATUS_MESSAGE_SCROLLING)
     static bool last_blink = false;
@@ -786,8 +707,6 @@ void LcdUI::draw_status_screen() {
           #endif
           LCD_STR_BEDTEMP[0]
         ), blink);
-      #elif ENABLED(DHT_SENSOR)
-        _draw_humidity_status();
       #endif
 
     #endif // LCD_WIDTH >= 20
@@ -883,19 +802,8 @@ void LcdUI::draw_status_screen() {
       uint8_t len = elapsed.toDigital(buffer);
 
       lcd_moveto(LCD_WIDTH - len - 1, 2);
-      #if HAS_LCD_POWER_SENSOR
-        if (millis() < print_millis + 1000) {
-          lcd_put_wchar(LCD_STR_CLOCK[0]);
-          lcd_put_u8str(buffer);
-        }
-        else {
-          lcd_put_u8str(itostr4(print_job_counter.getConsumptionHour() - powerManager.startpower));
-          lcd_put_u8str_P(PSTR("Wh"));
-        }
-      #else
-        lcd_put_wchar(LCD_STR_CLOCK[0]);
-        lcd_put_u8str(buffer);
-      #endif
+      lcd_put_wchar(LCD_STR_CLOCK[0]);
+      lcd_put_u8str(buffer);
 
     #endif // LCD_HEIGHT > 3
 

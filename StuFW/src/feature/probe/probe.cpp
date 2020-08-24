@@ -66,14 +66,7 @@ bool Probe::set_deployed(const bool deploy) {
   if (deploy_stow_condition)
     do_raise(MAX(Z_PROBE_BETWEEN_HEIGHT, Z_PROBE_DEPLOY_HEIGHT));
 
-  #if ENABLED(Z_PROBE_SLED)
-    if (mechanics.axis_unhomed_error(true, false, false)) {
-      SERIAL_LM(ER, MSG_STOP_UNHOMED);
-      sound.feedback(false);
-      printer.Stop();
-      return true;
-    }
-  #elif ENABLED(Z_PROBE_ALLEN_KEY)
+  #if ENABLED(Z_PROBE_ALLEN_KEY)
     if (mechanics.axis_unhomed_error(true, true,  true )) {
       SERIAL_LM(ER, MSG_STOP_UNHOMED);
       sound.feedback(false);
@@ -401,9 +394,7 @@ bool Probe::specific_action(const bool deploy) {
 
   #endif // PAUSE_BEFORE_DEPLOY_STOW
 
-  #if ENABLED(Z_PROBE_SLED)
-    dock_sled(!deploy);
-  #elif HAS_Z_SERVO_PROBE && DISABLED(BLTOUCH)
+  #if HAS_Z_SERVO_PROBE && DISABLED(BLTOUCH)
     MOVE_SERVO(Z_PROBE_SERVO_NR, servo[Z_PROBE_SERVO_NR].angle[(deploy ? 0 : 1)]);
   #elif ENABLED(Z_PROBE_ALLEN_KEY)
     deploy ? run_deploy_moves_script() : run_stow_moves_script();
@@ -584,29 +575,3 @@ float Probe::run_probing() {
 
 #endif
 
-#if HAS_Z_PROBE_SLED
-
-  #if DISABLED(SLED_DOCKING_OFFSET)
-    #define SLED_DOCKING_OFFSET 0
-  #endif
-
-  /**
-   * Method to dock/undock a sled designed by Charles Bell.
-   *
-   * stow[in]     If false, move to MAX_ and engage the solenoid
-   *              If true, move to MAX_X and release the solenoid
-   */
-  void Probe::dock_sled(bool stow) {
-    #if ENABLED(DEBUG_FEATURE)
-      if (printer.debugFeature()) {
-        SERIAL_MV("dock_sled(", stow);
-        SERIAL_CHR(')'); SERIAL_EOL();
-      }
-    #endif
-
-    // Dock sled a bit closer to ensure proper capturing
-    mechanics.do_blocking_move_to_x(X_MAX_POS + SLED_DOCKING_OFFSET - ((stow) ? 1 : 0));
-    WRITE(SLED_PIN, !stow); // switch solenoid
-  }
-
-#endif // Z_PROBE_SLED

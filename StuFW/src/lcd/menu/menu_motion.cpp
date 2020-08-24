@@ -307,15 +307,6 @@ void menu_move() {
   else
     MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28"));
 
-  #if ENABLED(DONDOLO_SINGLE_MOTOR) || ENABLED(DONDOLO_DUAL_MOTOR) || ENABLED(DUAL_X_CARRIAGE)
-
-    if (tools.active_extruder)
-      MENU_ITEM(gcode, MSG_SELECT MSG_E1, PSTR("T0"));
-    else
-      MENU_ITEM(gcode, MSG_SELECT MSG_E2, PSTR("T1"));
-
-  #endif
-
   #if E_MANUAL == 1
     MENU_ITEM(submenu, MSG_MOVE_E, lcd_move_get_e_amount);
   #elif E_MANUAL > 1

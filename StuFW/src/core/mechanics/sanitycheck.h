@@ -182,54 +182,6 @@
   #error "DEPENDENCY ERROR: Missing setting E_MIN_POS."
 #endif
 
-
-// Dual X carriage
-#if ENABLED(DUAL_X_CARRIAGE)
-  #if DISABLED(X2_MIN_POS)
-    #error "DEPENDENCY ERROR: Missing setting X2_MIN_POS."
-  #endif
-  #if DISABLED(X2_MAX_POS)
-    #error "DEPENDENCY ERROR: Missing setting X2_MAX_POS."
-  #endif
-  #if DISABLED(X2_HOME_DIR)
-    #error "DEPENDENCY ERROR: Missing setting X2_HOME_DIR."
-  #endif
-  #if DISABLED(X2_HOME_POS)
-    #error "DEPENDENCY ERROR: Missing setting X2_HOME_POS."
-  #endif
-  #if DISABLED(DEFAULT_DUAL_X_CARRIAGE_MODE)
-    #error "DEPENDENCY ERROR: Missing setting DEFAULT_DUAL_X_CARRIAGE_MODE."
-  #endif
-  #if DISABLED(TOOLCHANGE_PARK_ZLIFT)
-    #error "DEPENDENCY ERROR: Missing setting TOOLCHANGE_PARK_ZLIFT."
-  #endif
-  #if DISABLED(TOOLCHANGE_UNPARK_ZLIFT)
-    #error "DEPENDENCY ERROR: Missing setting TOOLCHANGE_UNPARK_ZLIFT."
-  #endif
-  #if DISABLED(DEFAULT_DUPLICATION_X_OFFSET)
-    #error "DEPENDENCY ERROR: Missing setting DEFAULT_DUPLICATION_X_OFFSET."
-  #endif
-
-  #if EXTRUDERS == 1
-    #error "DEPENDENCY ERROR: DUAL_X_CARRIAGE requires 2 (or more) extruders."
-  #elif MECH(COREXY) || MECH(COREXZ)
-    #error "DEPENDENCY ERROR: DUAL_X_CARRIAGE cannot be used with COREXY or COREXZ."
-  #elif !HAS_X2_ENABLE || !HAS_X2_STEP || !HAS_X2_DIR
-    #error "DEPENDENCY ERROR: DUAL_X_CARRIAGE requires X2 stepper pins to be defined."
-  #elif !HAS_X_MAX
-    #error "DEPENDENCY ERROR: DUAL_X_CARRIAGE requires use a X Max Endstop."
-  #elif DISABLED(X2_HOME_POS) || DISABLED(X2_MIN_POS) || DISABLED(X2_MAX_POS)
-    #error "DEPENDENCY ERROR: DUAL_X_CARRIAGE requires X2_HOME_POS, X2_MIN_POS, and X2_MAX_POS."
-  #elif X_HOME_DIR != -1 || X2_HOME_DIR != 1
-    #error "DEPENDENCY ERROR: DUAL_X_CARRIAGE requires X_HOME_DIR -1 and X2_HOME_DIR 1."
-  #endif
-
-  #if ENABLED(X_TWO_STEPPER_DRIVERS)
-    #error "DEPENDENCY ERROR: DUAL_X_CARRIAGE or X_TWO_STEPPER_DRIVERS can be set"
-  #endif
-#endif
-
-
 // Accuracy settings
 #if DISABLED(MIN_STEPS_PER_SEGMENT)
   #error "DEPENDENCY ERROR: Missing setting MIN_STEPS_PER_SEGMENT."

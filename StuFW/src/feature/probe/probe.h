@@ -3,7 +3,7 @@
  *
  * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +18,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
+ *-------------------------------------
+ * probe.h
  */
+
 #pragma once
 
-/**
- * probe.h
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
- */
 
 #if HAS_Z_SERVO_PROBE
   #define DEPLOY_Z_SERVO() MOVE_SERVO(Z_PROBE_SERVO_NR, servo[Z_PROBE_SERVO_NR].angle[0])
@@ -110,10 +108,6 @@ class Probe {
     #if ENABLED(Z_PROBE_ALLEN_KEY)
       static void run_deploy_moves_script();
       static void run_stow_moves_script();
-    #endif
-
-    #if HAS_Z_PROBE_SLED
-      static void dock_sled(bool stow);
     #endif
 
 };

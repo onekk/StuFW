@@ -64,7 +64,7 @@ enum InterruptEventEnum : uint8_t {
 
 /**
  * States for managing StuFW and host communication
- * MK4duo sends messages if blocked or busy
+ * StuFW sends messages if blocked or busy
  */
 enum BusyStateEnum : uint8_t {
   NotBusy,          // Not in a handler

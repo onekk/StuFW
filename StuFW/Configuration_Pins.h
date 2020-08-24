@@ -39,7 +39,7 @@
 #define X_CS_PIN             ORIG_X_CS_PIN
 
 // X2 axis pins
-#if ENABLED(DUAL_X_CARRIAGE) || ENABLED(X_TWO_STEPPER_DRIVERS)
+#if ENABLED(X_TWO_STEPPER_DRIVERS)
   #define X2_STEP_PIN        ORIG_E1_STEP_PIN
   #define X2_DIR_PIN         ORIG_E1_DIR_PIN
   #define X2_ENABLE_PIN      ORIG_E1_ENABLE_PIN
@@ -226,14 +226,6 @@
   #define FILWIDTH_PIN NoPin
 #endif
 
-#if ENABLED(FLOWMETER_SENSOR)
-  #define FLOWMETER_PIN NoPin
-#endif
-
-#if ENABLED(POWER_CONSUMPTION)
-  #define POWER_CONSUMPTION_PIN NoPin
-#endif
-
 #if ENABLED(PHOTOGRAPH)
   #define PHOTOGRAPH_PIN NoPin
 #endif
@@ -254,9 +246,6 @@
   #define POWER_CHECK_PIN NoPin
 #endif
 
-#if ENABLED(Z_PROBE_SLED)
-  #define SLED_PIN NoPin
-#endif
 
 #if ENABLED(RGB_LED) || ENABLED(RGBW_LED)
   #define RGB_LED_R_PIN NoPin
@@ -268,11 +257,6 @@
 #if ENABLED(NEOPIXEL_LED)
   #define NEOPIXEL_PIN NoPin
 #endif
-
-#if ENABLED(DHT_SENSOR)
-  #define DHT_DATA_PIN NoPin
-#endif
-
 
 //============================================================================
 

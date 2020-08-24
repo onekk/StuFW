@@ -61,21 +61,3 @@ public:
     : U8GLIB(&u8g_dev_st7920_128x64_rrd_sw_spi, (uint8_t)sck, (uint8_t)mosi, (uint8_t)cs, U8G_PIN_NONE, (uint8_t)reset)   // a0 = U8G_PIN_NONE
     { }
 };
-
-extern u8g_dev_t u8g_dev_sh1106_128x64_2x_i2c_2_wire;
-
-class U8GLIB_SH1106_128X64_2X_I2C_2_WIRE : public U8GLIB {
-public:
-  U8GLIB_SH1106_128X64_2X_I2C_2_WIRE(uint8_t options = U8G_I2C_OPT_NONE)
-  : U8GLIB(&u8g_dev_sh1106_128x64_2x_i2c_2_wire, options)
-  {  }
-};
-
-extern u8g_dev_t u8g_dev_ssd1306_128x64_2x_i2c_2_wire;
-
-class U8GLIB_SSD1306_128X64_2X_I2C_2_WIRE : public U8GLIB {
-public:
-  U8GLIB_SSD1306_128X64_2X_I2C_2_WIRE(uint8_t options = U8G_I2C_OPT_NONE)
-  : U8GLIB(&u8g_dev_ssd1306_128x64_2x_i2c_2_wire, options)
-  {  }
-};

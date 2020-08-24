@@ -84,10 +84,6 @@ void Temperature::set_current_temp_raw() {
     }
   #endif
 
-  #if HAS_POWER_CONSUMPTION_SENSOR
-    powerManager.current_raw_powconsumption = HAL::AnalogInputValues[POWER_CONSUMPTION_PIN];
-  #endif
-
   #if HAS_FILAMENT_SENSOR
     current_raw_filwidth = HAL::AnalogInputValues[FILWIDTH_PIN];
   #endif
@@ -174,26 +170,6 @@ void Temperature::spin() {
 
   #endif // FILAMENT_SENSOR
   
-  #if HAS_POWER_CONSUMPTION_SENSOR
-
-    static millis_t last_update = millis();
-    millis_t temp_last_update = millis();
-    millis_t from_last_update = temp_last_update - last_update;
-    static float watt_overflow = 0.0;
-    powerManager.consumption_meas = powerManager.analog2power();
-    /*SERIAL_MV("raw:", powerManager.raw_analog2voltage(), 5);
-    SERIAL_MV(" - V:", powerManager.analog2voltage(), 5);
-    SERIAL_MV(" - I:", powerManager.analog2current(), 5);
-    SERIAL_EMV(" - P:", powerManager.analog2power(), 5);*/
-    watt_overflow += (powerManager.consumption_meas * from_last_update) / 3600000.0;
-    if (watt_overflow >= 1.0) {
-      print_job_counter.incConsumptionHour();
-      watt_overflow--;
-    }
-    last_update = temp_last_update;
-
-  #endif
-
   // Reset the watchdog after we know we have a temperature measurement.
   watchdog.reset();
 
@@ -577,11 +553,6 @@ void Temperature::report_temperatures(const bool showRaw/*=false*/) {
     SERIAL_MV(", max:", mcu_highest_temperature, 2);
     if (showRaw)
       SERIAL_MV(" C->", mcu_current_temperature_raw);
-  #endif
-
-  #if ENABLED(DHT_SENSOR)
-    SERIAL_MV(" DHT Temp:", dhtsensor.Temperature, 0);
-    SERIAL_MV(", Humidity:", dhtsensor.Humidity, 0);
   #endif
 
 }

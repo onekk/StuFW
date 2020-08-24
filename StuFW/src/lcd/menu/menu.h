@@ -329,14 +329,6 @@ void menu_stop_print();
   void menu_eeprom();
 #endif
 
-#if HAS_NEXTION_LCD
-  void menu_nextion();
-  void menu_m0();
-  #if HAS_SD_SUPPORT
-    void menu_firmware();
-  #endif
-#endif
-
 // First Fan Speed title in "Tune" and "Control>Temperature" menus
 #if FAN_COUNT > 0 && HAS_FAN0
   #if FAN_COUNT > 1
@@ -388,7 +380,7 @@ void watch_temp_callback_cooler();
 #endif
 
 #if HAS_SOFTWARE_ENDSTOPS
-  void lcd_toggle_soft_endstops(); 
+  void lcd_toggle_soft_endstops();
 #endif
 
 #if ENABLED(BABYSTEPPING)

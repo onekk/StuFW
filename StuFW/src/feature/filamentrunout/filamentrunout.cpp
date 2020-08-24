@@ -157,34 +157,23 @@
     #if (PIN_EXISTS(FIL_RUNOUT_1))
 
       // Read the sensor for the active extruder
-      #if ENABLED(DUAL_X_CARRIAGE)
-        bool is_out;
-        const bool out1 = READ(FIL_RUNOUT_0_PIN) ^ isLogic(FIL_RUNOUT_0),
-                   out2 = READ(FIL_RUNOUT_1_PIN) ^ isLogic(FIL_RUNOUT_1);
-        if (mechanics.extruder_duplication_enabled)
-          is_out = out1 || out2;
-        else
-          is_out = tools.active_extruder ? out2 : out1;
-        return is_out;
-      #else
-        switch (tools.active_extruder) {
-          case 0: return READ(FIL_RUNOUT_0_PIN) ^ isLogic(FIL_RUNOUT_0);
-          case 1: return READ(FIL_RUNOUT_1_PIN) ^ isLogic(FIL_RUNOUT_1);
-          #if HAS_FIL_RUNOUT_2
-            case 2: return READ(FIL_RUNOUT_2_PIN) ^ isLogic(FIL_RUNOUT_2);
-            #if HAS_FIL_RUNOUT_3
-              case 3: return READ(FIL_RUNOUT_3_PIN) ^ isLogic(FIL_RUNOUT_3);
-              #if HAS_FIL_RUNOUT_4
-                case 4: return READ(FIL_RUNOUT_4_PIN) ^ isLogic(FIL_RUNOUT_4);
-                #if HAS_FIL_RUNOUT_5
-                  case 5: return READ(FIL_RUNOUT_5_PIN) ^ isLogic(FIL_RUNOUT_5);
-                #endif
+      switch (tools.active_extruder) {
+        case 0: return READ(FIL_RUNOUT_0_PIN) ^ isLogic(FIL_RUNOUT_0);
+        case 1: return READ(FIL_RUNOUT_1_PIN) ^ isLogic(FIL_RUNOUT_1);
+        #if HAS_FIL_RUNOUT_2
+          case 2: return READ(FIL_RUNOUT_2_PIN) ^ isLogic(FIL_RUNOUT_2);
+          #if HAS_FIL_RUNOUT_3
+            case 3: return READ(FIL_RUNOUT_3_PIN) ^ isLogic(FIL_RUNOUT_3);
+            #if HAS_FIL_RUNOUT_4
+              case 4: return READ(FIL_RUNOUT_4_PIN) ^ isLogic(FIL_RUNOUT_4);
+              #if HAS_FIL_RUNOUT_5
+                case 5: return READ(FIL_RUNOUT_5_PIN) ^ isLogic(FIL_RUNOUT_5);
               #endif
             #endif
           #endif
-          default: return false;
-        }
-      #endif
+        #endif
+        default: return false;
+      }
 
     #else
 

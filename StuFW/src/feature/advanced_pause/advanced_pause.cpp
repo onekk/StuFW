@@ -118,22 +118,9 @@ bool AdvancedPause::pause_print(const float &retract, const point_t &park_point,
   // Park the nozzle by moving up by z_lift and then moving to (x_pos, y_pos)
   Nozzle::park(2, park_point);
 
-  #if ENABLED(DUAL_X_CARRIAGE)
-    const int8_t saved_ext        = tools.active_extruder;
-    const bool saved_ext_dup_mode = mechanics.extruder_duplication_enabled;
-    tools.active_extruder = DXC_ext;
-    mechanics.extruder_duplication_enabled = false;
-  #endif
-
   // Unload the filament
   if (unload_length)
     unload_filament(unload_length, show_lcd);
-
-  #if ENABLED(DUAL_X_CARRIAGE)
-    tools.active_extruder = saved_ext;
-    mechanics.extruder_duplication_enabled = saved_ext_dup_mode;
-    stepper.set_directions();
-  #endif
 
   return true;
 }
@@ -166,13 +153,6 @@ void AdvancedPause::wait_for_confirmation(const bool is_reload/*=false*/, const 
 
   #if HAS_TEMP_BED && PAUSE_PARK_PRINTER_OFF > 0
     heaters[BED_INDEX].start_idle_timer(bed_timeout);
-  #endif
-
-  #if ENABLED(DUAL_X_CARRIAGE)
-    const int8_t saved_ext        = tools.active_extruder;
-    const bool saved_ext_dup_mode = mechanics.extruder_duplication_enabled;
-    tools.active_extruder = DXC_ext;
-    mechanics.extruder_duplication_enabled = false;
   #endif
 
   // Wait for filament insert by user and press button
@@ -212,7 +192,7 @@ void AdvancedPause::wait_for_confirmation(const bool is_reload/*=false*/, const 
 
         printer.idle(true);
       }
-      
+
       // Re-enable the bed if they timed out
       #if HAS_TEMP_BED && PAUSE_PARK_PRINTER_OFF > 0
         if (bed_timed_out)
@@ -246,12 +226,6 @@ void AdvancedPause::wait_for_confirmation(const bool is_reload/*=false*/, const 
 
     printer.idle(true);
   }
-
-  #if ENABLED(DUAL_X_CARRIAGE)
-    tools.active_extruder = saved_ext;
-    mechanics.extruder_duplication_enabled = saved_ext_dup_mode;
-    stepper.set_directions();
-  #endif
 
   printer.keepalive(InHandler);
 }
@@ -327,10 +301,6 @@ void AdvancedPause::resume_print(const float &slow_load_length/*=0*/, const floa
     lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_STATUS);
   #endif
 
-  #if HAS_NEXTION_LCD && ENABLED(NEXTION_GFX)
-    mechanics.Nextion_gfx_clear();
-  #endif
-
   SERIAL_L(ACTIONRESUME);
 
   --did_pause_print;
@@ -402,24 +372,11 @@ bool AdvancedPause::load_filament(const float &slow_load_length/*=0*/, const flo
     UNUSED(show_lcd);
   #endif
 
-  #if ENABLED(DUAL_X_CARRIAGE)
-    const int8_t saved_ext        = tools.active_extruder;
-    const bool saved_ext_dup_mode = mechanics.extruder_duplication_enabled;
-    tools.active_extruder = DXC_ext;
-    mechanics.extruder_duplication_enabled = false;
-  #endif
-
   // Slow Load filament
   if (slow_load_length) do_pause_e_move(slow_load_length, PAUSE_PARK_SLOW_LOAD_FEEDRATE);
 
   // Fast Load Filament
   if (fast_load_length) do_pause_e_move(fast_load_length, PAUSE_PARK_FAST_LOAD_FEEDRATE);
-
-  #if ENABLED(DUAL_X_CARRIAGE)
-    tools.active_extruder = saved_ext;
-    mechanics.extruder_duplication_enabled = saved_ext_dup_mode;
-    stepper.set_directions();
-  #endif
 
   do {
     if (purge_length > 0) {

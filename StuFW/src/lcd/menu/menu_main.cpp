@@ -51,48 +51,6 @@ void menu_stop_print() {
   }
 #endif
 
-#if HAS_NEXTION_LCD
-
-  void menu_nextion() {
-    lcdui.defer_status_screen(true);
-    if (lcdui.use_click()) return lcdui.return_to_status();
-    START_SCREEN();
-    STATIC_ITEM(MSG_NEXTION_CHANGED_ALLERT_1);
-    STATIC_ITEM(MSG_NEXTION_CHANGED_ALLERT_2);
-    STATIC_ITEM(MSG_NEXTION_CHANGED_ALLERT_3);
-    STATIC_ITEM(MSG_NEXTION_CHANGED_ALLERT_4);
-    STATIC_ITEM(MSG_NEXTION_CHANGED_ALLERT_5);
-    END_SCREEN();
-  }
-
-  void menu_m0() {
-    lcdui.defer_status_screen(true);
-    if (lcdui.use_click()) {
-      printer.setWaitForUser(false);
-      return;
-    }
-    START_SCREEN();
-    STATIC_ITEM(MSG_NEXTION_M0_M1_1);
-    STATIC_ITEM(MSG_NEXTION_M0_M1_2);
-    END_SCREEN();
-  }
-
-  #if HAS_SD_SUPPORT
-
-    void menu_firmware() {
-      lcdui.encoderPosition = 2 * ENCODER_STEPS_PER_MENU_ITEM;
-      START_MENU();
-      MENU_BACK(MSG_MAIN);
-      STATIC_ITEM(MSG_ARE_YOU_SURE);
-      MENU_ITEM(function, MSG_YES, UploadNewFirmware);
-      MENU_ITEM(submenu, MSG_NO, menu_main);
-      END_MENU();
-    }
-
-  #endif
-
-#endif // HAS_NEXTION_LCD
-
 void menu_tune();
 void menu_motion();
 void menu_temperature();
@@ -103,18 +61,8 @@ void menu_change_filament();
 void menu_info();
 void menu_led();
 
-#if ENABLED(COLOR_MIXING_EXTRUDER) && DISABLED(NEXTION)
+#if ENABLED(COLOR_MIXING_EXTRUDER)
   void menu_mixer();
-#endif
-
-#if ENABLED(SERVICE_TIME_1)
-  void menu_service1();
-#endif
-#if ENABLED(SERVICE_TIME_2)
-  void menu_service2();
-#endif
-#if ENABLED(SERVICE_TIME_3)
-  void menu_service3();
 #endif
 
 void menu_main() {
@@ -168,7 +116,7 @@ void menu_main() {
   #endif
 
   if (printer.mode == PRINTER_MODE_FFF) {
-    #if ENABLED(COLOR_MIXING_EXTRUDER) && DISABLED(NEXTION)
+    #if ENABLED(COLOR_MIXING_EXTRUDER)
       MENU_ITEM(submenu, MSG_MIXER, menu_mixer);
     #endif
     #if ENABLED(ADVANCED_PAUSE_FEATURE)
@@ -224,16 +172,6 @@ void menu_main() {
       MENU_ITEM(function, MSG_NO_CARD, NULL);
     }
   #endif // HAS_ENCODER_WHEEL && HAS_SD_SUPPORT
-
-  #if ENABLED(SERVICE_TIME_1)
-    MENU_ITEM(submenu, SERVICE_NAME_1, menu_service1);
-  #endif
-  #if ENABLED(SERVICE_TIME_2)
-    MENU_ITEM(submenu, SERVICE_NAME_2, menu_service2);
-  #endif
-  #if ENABLED(SERVICE_TIME_3)
-    MENU_ITEM(submenu, SERVICE_NAME_3, menu_service3);
-  #endif
 
   END_MENU();
 }

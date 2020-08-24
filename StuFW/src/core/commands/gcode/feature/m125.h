@@ -63,7 +63,7 @@ inline void gcode_M125(void) {
   // Lift Z axis
   if (parser.seenval('Z')) park_point.z = parser.linearval('Z');
 
-  #if HOTENDS > 1 && DISABLED(DUAL_X_CARRIAGE)
+  #if HOTENDS > 1
     park_point.x += (tools.active_extruder ? tools.hotend_offset[X_AXIS][tools.active_extruder] : 0);
     park_point.y += (tools.active_extruder ? tools.hotend_offset[Y_AXIS][tools.active_extruder] : 0);
   #endif

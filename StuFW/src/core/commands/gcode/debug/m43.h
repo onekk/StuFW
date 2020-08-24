@@ -3,7 +3,7 @@
  *
  * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
- * mcode
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
 #if ENABLED(PINS_DEBUGGING)
@@ -67,11 +61,11 @@
    *
    *  M43         - report name and state of pin(s)
    *                  P<pin>  Pin to read or watch. If omitted, reads all pins.
-   *                  I       Flag to ignore MK4duo's pin protection.
+   *                  I       Flag to ignore StuFW's pin protection.
    *
    *  M43 W       - Watch pins -reporting changes- until reset, click, or M108.
    *                  P<pin>  Pin to read or watch. If omitted, read/watch all pins.
-   *                  I       Flag to ignore MK4duo's pin protection.
+   *                  I       Flag to ignore StuFW's pin protection.
    *
    *  M43 E<bool> - Enable / disable background endstop monitoring
    *                  - Machine continues to operate
@@ -82,7 +76,7 @@
    *  M43 T       - Toggle pin(s) and report which pin is being toggled
    *                  S<pin>  - Start Pin number.   If not given, will default to 0
    *                  L<pin>  - End Pin number.   If not given, will default to last pin defined for this board
-   *                  I       - Flag to ignore MK4duo's pin protection.   Use with caution!!!!
+   *                  I       - Flag to ignore StuFW's pin protection.   Use with caution!!!!
    *                  R       - Repeat pulses on each pin this number of times before continueing to next pin
    *                  W       - Wait time (in miliseconds) between pulses.  If not given will default to 500
    *

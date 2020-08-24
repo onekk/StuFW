@@ -18,12 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
+ *_____________________________________
  * mechanics.cpp
- *
- * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  */
 
 #include "../../../StuFW.h"
@@ -50,7 +46,7 @@ int16_t Mechanics::feedrate_percentage                    = 100;
 
 uint32_t Mechanics::max_acceleration_steps_per_s2[XYZE_N] = { 0 };
 
-#if ENABLED(WORKSPACE_OFFSETS) || ENABLED(DUAL_X_CARRIAGE)
+#if ENABLED(WORKSPACE_OFFSETS)
   // The distance that XYZ has been offset by G92. Reset by G28.
   float Mechanics::position_shift[XYZ] = { 0.0 };
 
@@ -131,10 +127,6 @@ void Mechanics::line_to_destination(float fr_mm_s) {
  */
 void Mechanics::prepare_move_to_destination() {
   endstops.clamp_to_software(destination);
-
-  #if ENABLED(DUAL_X_CARRIAGE)
-    if (mechanics.dual_x_carriage_unpark()) return;
-  #endif
 
   if (!printer.debugSimulation()) { // Simulation Mode no movement
     if (mechanics.prepare_move_to_destination_mech_specific()) return;
@@ -289,8 +281,6 @@ bool Mechanics::axis_unhomed_error(const bool x/*=true*/, const bool y/*=true*/,
       SERIAL_EM("Z_PROBE_FIX_MOUNTED");
     #elif ENABLED(BLTOUCH)
       SERIAL_EM("BLTOUCH");
-    #elif ENABLED(Z_PROBE_SLED)
-      SERIAL_EM("Z_PROBE_SLED");
     #elif ENABLED(Z_PROBE_ALLEN_KEY)
       SERIAL_EM("ALLEN KEY");
     #elif HAS_Z_SERVO_PROBE

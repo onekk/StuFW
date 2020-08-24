@@ -39,6 +39,9 @@
 
 #if ENABLED(REPRAP_DISCOUNT_SMART_CONTROLLER)
   #define ULTIPANEL
+  #define NEWPANEL  // click-encoder panel
+  #define ULTRA_LCD
+
 #endif
 
 #ifndef STD_ENCODER_PULSES_PER_STEP
@@ -61,11 +64,6 @@
   #define ENCODER_FEEDRATE_DEADZONE 6
 #endif
 
-#if ENABLED(ULTIPANEL)
-  #define NEWPANEL  // click-encoder panel
-  #define ULTRA_LCD
-#endif
-
 // Aliases for LCD features
 #define HAS_SPI_LCD           ENABLED(ULTRA_LCD)
 #define HAS_GRAPHICAL_LCD     ENABLED(DOGLCD)
@@ -74,43 +72,8 @@
 #define HAS_LCD_MENU          ENABLED(ULTIPANEL)
 
 #define HAS_ENCODER_ACTION    (HAS_LCD_MENU || ENABLED(ULTIPANEL_FEEDMULTIPLY))
-#define HAS_ADC_BUTTONS       ENABLED(ADC_KEYPAD)
-#define HAS_DIGITAL_BUTTONS   (!HAS_ADC_BUTTONS && ENABLED(NEWPANEL))
-#define HAS_SHIFT_ENCODER     (!HAS_ADC_BUTTONS && (ENABLED(REPRAPWORLD_KEYPAD) || (HAS_SPI_LCD && DISABLED(NEWPANEL))))
-#define HAS_ENCODER_WHEEL     (!HAS_ADC_BUTTONS && ENABLED(NEWPANEL))
-
-// I2C buttons must be read in the main thread
-#define HAS_SLOW_BUTTONS      (ENABLED(LCD_I2C_VIKI) || ENABLED(LCD_I2C_PANELOLU2))
-
-#define LCD_HAS_DIRECTIONAL_BUTTONS (BUTTON_EXISTS(UP) || BUTTON_EXISTS(DWN) || BUTTON_EXISTS(LFT) || BUTTON_EXISTS(RT))
-
-#if HAS_GRAPHICAL_LCD
-
-  /**
-   * Default LCD contrast for Graphical LCD displays
-   */
-  #define HAS_LCD_CONTRAST (                \
-       ENABLED(MAKRPANEL)                   \
-    || ENABLED(CARTESIO_UI)                 \
-    || ENABLED(VIKI2)                       \
-    || ENABLED(AZSMZ_12864)                 \
-    || ENABLED(miniVIKI)                    \
-    || ENABLED(ELB_FULL_GRAPHIC_CONTROLLER) \
-  )
-
-  #if HAS_LCD_CONTRAST
-    #ifndef LCD_CONTRAST_MIN
-      #define LCD_CONTRAST_MIN 0
-    #endif
-    #ifndef LCD_CONTRAST_MAX
-      #define LCD_CONTRAST_MAX 63
-    #endif
-    #ifndef DEFAULT_LCD_CONTRAST
-      #define DEFAULT_LCD_CONTRAST 32
-    #endif
-  #endif
-
-#endif
+#define HAS_DIGITAL_BUTTONS   ENABLED(NEWPANEL)
+#define HAS_ENCODER_WHEEL     ENABLED(NEWPANEL)
 
 // Boot screens
 #if !HAS_SPI_LCD
@@ -129,21 +92,7 @@
  *  E_MANUAL          - Number of E steppers for LCD move options
  *
  */
-#if ENABLED(DONDOLO_SINGLE_MOTOR)        // One E stepper, unified E axis, two hotends
-  #undef  SINGLENOZZLE
-  #undef  EXTRUDERS
-  #undef  DRIVER_EXTRUDERS
-  #define EXTRUDERS         2
-  #define DRIVER_EXTRUDERS  1
-  #define E_MANUAL          2
-#elif ENABLED(DONDOLO_DUAL_MOTOR)         // Two E stepper, two hotends
-  #undef  SINGLENOZZLE
-  #undef  EXTRUDERS
-  #undef  DRIVER_EXTRUDERS
-  #define EXTRUDERS         2
-  #define DRIVER_EXTRUDERS  2
-  #define E_MANUAL          2
-#elif ENABLED(COLOR_MIXING_EXTRUDER)      // Multi-stepper, unified E axis, one hotend
+#if ENABLED(COLOR_MIXING_EXTRUDER)      // Multi-stepper, unified E axis, one hotend
   #define SINGLENOZZLE
   #undef  EXTRUDERS
   #undef  DRIVER_EXTRUDERS

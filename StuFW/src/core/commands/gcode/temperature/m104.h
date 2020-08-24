@@ -47,11 +47,6 @@
       const int16_t temp = parser.value_celsius();
       heaters[TARGET_HOTEND].setTarget(temp);
 
-      #if ENABLED(DUAL_X_CARRIAGE)
-        if (mechanics.dxc_is_duplicating() && TARGET_EXTRUDER == 0)
-          heaters[1].setTarget(temp ? temp + mechanics.duplicate_extruder_temp_offset : 0);
-      #endif
-
       if (temp > heaters[TARGET_HOTEND].current_temperature) {
         #if HOTENDS > 1
           lcdui.status_printf_P(0, PSTR("H%i " MSG_HEATING), TARGET_HOTEND);

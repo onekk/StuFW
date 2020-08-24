@@ -62,7 +62,7 @@
   #define MACHINE_TYPE                      "CoreYZ"
 #elif MECH(COREZY)
   #define MACHINE_TYPE                      "CoreZY"
-#endif  
+#endif
 
 #if HAS_GRAPHICAL_LCD
   //
@@ -100,18 +100,6 @@
   #define LCD_STR_CLOCK       "\x07"
   #define LCD_STR_ARROW_RIGHT ">"  /* from the default character set */
 
-#elif HAS_NEXTION_LCD
-
-  #define LCD_STR_BEDTEMP     ""
-  #define LCD_STR_DEGREE      "°"
-  #define LCD_STR_THERMOMETER ""
-  #define LCD_STR_UPLEVEL     ""
-  #define LCD_STR_REFRESH     ""
-  #define LCD_STR_FOLDER      "|^"
-  #define LCD_STR_FEEDRATE    ""
-  #define LCD_STR_CLOCK       ""
-  #define LCD_STR_ARROW_RIGHT ">"
-
 #endif
 
 #define MSG_ENQUEUEING                      "enqueueing \""
@@ -126,7 +114,6 @@
 #define MSG_FREE_MEMORY                     "Free Memory: "
 #define MSG_PLANNER_BUFFER_BYTES            " PlannerBufferBytes: "
 #define MSG_STATS                           "Stats: "
-#define MSG_SERVICE                         "Service: "
 #define MSG_ERR_LINE_NO                     "Line Number is not Last Line Number+1, Last Line: "
 #define MSG_ERR_CHECKSUM_MISMATCH           "checksum mismatch, Last Line: "
 #define MSG_ERR_NO_CHECKSUM                 "No Checksum with line number, Last Line: "

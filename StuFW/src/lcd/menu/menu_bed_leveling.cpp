@@ -132,7 +132,7 @@
     }
 
     //
-    // Encoder knob or keypad buttons adjust the Z position
+    // Encoder knob adjust the Z position
     //
     if (lcdui.encoderPosition) {
       const float z = mechanics.current_position[Z_AXIS] + float((int32_t)lcdui.encoderPosition) * (MESH_EDIT_Z_STEP);

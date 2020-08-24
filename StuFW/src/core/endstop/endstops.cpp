@@ -551,7 +551,7 @@ void Endstops::clamp_to_software(float target[XYZ]) {
   #endif
 }
 
-#if ENABLED(WORKSPACE_OFFSETS) || ENABLED(DUAL_X_CARRIAGE)
+#if ENABLED(WORKSPACE_OFFSETS)
 
   /**
    * Software endstops can be used to monitor the open end of
@@ -564,33 +564,8 @@ void Endstops::clamp_to_software(float target[XYZ]) {
    */
   void Endstops::update_software_endstops(const AxisEnum axis) {
 
-    #if ENABLED(DUAL_X_CARRIAGE)
-      if (axis == X_AXIS) {
-
-        // In Dual X mode tools.hotend_offset[X] is T1's home position
-        float dual_max_x = MAX(tools.hotend_offset[X_AXIS][1], X2_MAX_POS);
-
-        if (tools.active_extruder != 0) {
-          // T1 can move from X2_MIN_POS to X2_MAX_POS or X2 home position (whichever is larger)
-          soft_endstop_min[X_AXIS] = X2_MIN_POS;
-          soft_endstop_max[X_AXIS] = dual_max_x;
-        }
-        else if (mechanics.dxc_is_duplicating()) {
-          // In Duplication Mode, T0 can move as far left as X_MIN_POS
-          // but not so far to the right that T1 would move past the end
-          soft_endstop_min[X_AXIS] = mechanics.base_min_pos[X_AXIS];
-          soft_endstop_max[X_AXIS] = MIN(mechanics.base_max_pos[X_AXIS], dual_max_x - mechanics.duplicate_extruder_x_offset);
-        }
-        else {
-          // In other modes, T0 can move from X_MIN_POS to X_MAX_POS
-          soft_endstop_min[axis] = mechanics.base_min_pos[axis];
-          soft_endstop_max[axis] = mechanics.base_max_pos[axis];
-        }
-      }
-    #else
-      soft_endstop_min[axis] = mechanics.base_min_pos[axis];
-      soft_endstop_max[axis] = mechanics.base_max_pos[axis];
-    #endif
+    soft_endstop_min[axis] = mechanics.base_min_pos[axis];
+    soft_endstop_max[axis] = mechanics.base_max_pos[axis];
 
     #if ENABLED(DEBUG_FEATURE)
       if (printer.debugFeature()) {
@@ -608,7 +583,7 @@ void Endstops::clamp_to_software(float target[XYZ]) {
 
   }
 
-#endif // ENABLED(WORKSPACE_OFFSETS) || DUAL_X_CARRIAGE
+#endif // ENABLED(WORKSPACE_OFFSETS)
 
 #if ENABLED(PINS_DEBUGGING)
 
@@ -751,15 +726,8 @@ void Endstops::update() {
     if (printer.IsG38Move()) UPDATE_ENDSTOP_BIT(Z, PROBE);
   #endif
 
-  // With Dual X, endstops are only checked in the homing direction for the active extruder
-  #if ENABLED(DUAL_X_CARRIAGE)
-    #define E0_ACTIVE   stepper.movement_extruder() == 0
-    #define X_MIN_TEST  ((X_HOME_DIR < 0 && E0_ACTIVE) || (X2_HOME_DIR < 0 && !E0_ACTIVE))
-    #define X_MAX_TEST  ((X_HOME_DIR > 0 && E0_ACTIVE) || (X2_HOME_DIR > 0 && !E0_ACTIVE))
-  #else
-    #define X_MIN_TEST  true
-    #define X_MAX_TEST  true
-  #endif
+  #define X_MIN_TEST  true
+  #define X_MAX_TEST  true
 
   // Use HEAD for core axes, AXIS for others
   #if CORE_IS_XY || CORE_IS_XZ

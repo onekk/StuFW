@@ -65,15 +65,6 @@
       servo[3].detach();
     #endif
 
-    #if HAS_DONDOLO
-      servo[DONDOLO_SERVO_INDEX].attach(0);
-      servo[DONDOLO_SERVO_INDEX].write(DONDOLO_SERVOPOS_E0);
-      #if (DONDOLO_SERVO_DELAY > 0)
-        printer.safe_delay(DONDOLO_SERVO_DELAY);
-        servo[DONDOLO_SERVO_INDEX].detach();
-      #endif
-    #endif
-
     #if HAS_Z_SERVO_PROBE
       /**
        * Set position of Z Servo Endstop
@@ -270,7 +261,7 @@
       #endif
 
     #else // !WIRING
-    
+
       // Interrupt handlers for Wiring
       #if ENABLED(_useTimer1)
         void Timer1Service() { handle_interrupts(_timer1, &TCNT1, &OCR1A); }
@@ -278,7 +269,7 @@
       #if ENABLED(_useTimer3)
         void Timer3Service() { handle_interrupts(_timer3, &TCNT3, &OCR3A); }
       #endif
-    
+
     #endif // !WIRING
 
     static void initISR(timer16_Sequence_t timer) {
