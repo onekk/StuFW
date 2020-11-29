@@ -18,14 +18,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-#pragma once
-
-/**
+ *-------------------------------------
  * advanced_pause.h
  *
- * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  */
+#pragma once
 
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
 
@@ -53,16 +50,16 @@ class AdvancedPause {
     static void do_pause_e_move(const float &length, const float &fr);
 
     static bool pause_print(const float &retract, const point_t &park_point, const float &unload_length=0,
-                            const bool show_lcd=false DXC_PARAMS);
+                            const bool show_lcd=false);
 
-    static void wait_for_confirmation(const bool is_reload=false, const int8_t max_beep_count=0 DXC_PARAMS);
+    static void wait_for_confirmation(const bool is_reload=false, const int8_t max_beep_count=0);
 
     static void resume_print( const float &slow_load_length=0, const float &fast_load_length=0,
-                              const float &purge_length=PAUSE_PARK_EXTRUDE_LENGTH, const int8_t max_beep_count=0 DXC_PARAMS);
+                              const float &purge_length=PAUSE_PARK_EXTRUDE_LENGTH, const int8_t max_beep_count=0);
 
     static bool load_filament(const float &slow_load_length=0, const float &fast_load_length=0,
                               const float &purge_length=0, const int8_t max_beep_count=0, const bool show_lcd=false,
-                              const bool pause_for_user=false, const AdvancedPauseModeEnum mode=ADVANCED_PAUSE_MODE_PAUSE_PRINT DXC_PARAMS);
+                              const bool pause_for_user=false, const AdvancedPauseModeEnum mode=ADVANCED_PAUSE_MODE_PAUSE_PRINT);
 
     static bool unload_filament(const float &unload_length, const bool show_lcd=false, const AdvancedPauseModeEnum mode=ADVANCED_PAUSE_MODE_PAUSE_PRINT);
 

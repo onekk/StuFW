@@ -18,12 +18,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
+ *-------------------------------------
  * advanced_pause.h
  *
- * Copyright (C) 2019 Alberto Cotronei @MagoKimbra
  */
 
 #include "../../../StuFW.h"
@@ -67,7 +64,7 @@ void AdvancedPause::do_pause_e_move(const float &length, const float &fr) {
  *
  * Returns 'true' if pause was completed, 'false' for abort
  */
-bool AdvancedPause::pause_print(const float &retract, const point_t &park_point, const float &unload_length/*=0*/, const bool show_lcd/*=false*/ DXC_ARGS) {
+bool AdvancedPause::pause_print(const float &retract, const point_t &park_point, const float &unload_length/*=0*/, const bool show_lcd/*=false*/) {
 
   if (did_pause_print) return false; // already paused
 
@@ -132,7 +129,8 @@ bool AdvancedPause::pause_print(const float &retract, const point_t &park_point,
  *
  * Used by M125 and M600
  */
-void AdvancedPause::wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep_count/*=0*/ DXC_ARGS) {
+void AdvancedPause::wait_for_confirmation(
+    const bool is_reload/*=false*/, const int8_t max_beep_count/*=0*/) {
   bool  nozzle_timed_out = false,
         bed_timed_out = false;
 
@@ -248,7 +246,10 @@ void AdvancedPause::wait_for_confirmation(const bool is_reload/*=false*/, const 
  * - Send host action for resume, if configured
  * - Resume the current SD print job, if any
  */
-void AdvancedPause::resume_print(const float &slow_load_length/*=0*/, const float &fast_load_length/*=0*/, const float &purge_length/*=PAUSE_PARK_EXTRUDE_LENGTH*/, const int8_t max_beep_count/*=0*/ DXC_ARGS) {
+void AdvancedPause::resume_print(const float &slow_load_length/*=0*/,
+    const float &fast_load_length/*=0*/,
+    const float &purge_length/*=PAUSE_PARK_EXTRUDE_LENGTH*/,
+    const int8_t max_beep_count/*=0*/) {
 
   if (!did_pause_print) return;
 
@@ -268,11 +269,12 @@ void AdvancedPause::resume_print(const float &slow_load_length/*=0*/, const floa
 
   if (nozzle_timed_out || thermalManager.hotEnoughToExtrude(TARGET_EXTRUDER)) {
     // Load the new filament
-    load_filament(slow_load_length, fast_load_length, purge_length, max_beep_count, true, nozzle_timed_out, ADVANCED_PAUSE_MODE_PAUSE_PRINT DXC_PASS);
+    load_filament(slow_load_length, fast_load_length, purge_length, max_beep_count, true, nozzle_timed_out, ADVANCED_PAUSE_MODE_PAUSE_PRINT);
   }
 
   #if HAS_LCD_MENU
-    lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_RESUME); // "Wait for print to resume"
+    // "Wait for print to resume"
+    lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_RESUME); 
   #endif
 
   // Intelligent resuming
@@ -331,11 +333,15 @@ void AdvancedPause::resume_print(const float &slow_load_length/*=0*/, const floa
  *
  * Returns 'true' if load was completed, 'false' for abort
  */
-bool AdvancedPause::load_filament(const float &slow_load_length/*=0*/, const float &fast_load_length/*=0*/, const float &purge_length/*=0*/, const int8_t max_beep_count/*=0*/,
-                   const bool show_lcd/*=false*/, const bool pause_for_user/*=false*/,
-                   const AdvancedPauseModeEnum mode/*=ADVANCED_PAUSE_MODE_PAUSE_PRINT*/
-                   DXC_ARGS
-) {
+bool AdvancedPause::load_filament(
+        const float &slow_load_length/*=0*/, 
+        const float &fast_load_length/*=0*/,
+        const float &purge_length/*=0*/,
+        const int8_t max_beep_count/*=0*/,
+        const bool show_lcd/*=false*/,
+        const bool pause_for_user/*=false*/,
+        const AdvancedPauseModeEnum mode/*=ADVANCED_PAUSE_MODE_PAUSE_PRINT*/) {
+
   if (!ensure_safe_temperature(mode)) {
     #if HAS_LCD_MENU
       if (show_lcd) lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_STATUS, mode);
@@ -422,8 +428,9 @@ bool AdvancedPause::load_filament(const float &slow_load_length/*=0*/, const flo
  *
  * Returns 'true' if unload was completed, 'false' for abort
  */
-bool AdvancedPause::unload_filament(const float &unload_length, const bool show_lcd/*=false*/,
-                                    const AdvancedPauseModeEnum mode/*=ADVANCED_PAUSE_MODE_PAUSE_PRINT*/
+bool AdvancedPause::unload_filament(const float &unload_length,
+    const bool show_lcd/*=false*/,
+    const AdvancedPauseModeEnum mode/*=ADVANCED_PAUSE_MODE_PAUSE_PRINT*/
 ) {
   if (!ensure_safe_temperature(mode)) {
     #if HAS_LCD_MENU

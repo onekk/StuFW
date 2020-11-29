@@ -118,16 +118,6 @@ enum BlockFlagEnum : uint8_t {
 };
 
 /**
- * DUAL X CARRIAGE
- */
-enum DualXModeEnum : uint8_t {
-  DXC_FULL_CONTROL_MODE,
-  DXC_AUTO_PARK_MODE,
-  DXC_DUPLICATION_MODE,
-  DXC_SCALED_DUPLICATION_MODE
-};
-
-/**
  * Work Space Plane
  */
 enum WorkspacePlaneEnum : uint8_t {

@@ -18,9 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
+ *-------------------------------------
  * Configuration_Basic.h
  *
  * This configuration file contains basic settings.
@@ -30,7 +28,8 @@
  * - Mechanism type
  * - Extruders number
  *
- * Mechanisms-settings can be found in Configuration_Xxxxxx.h (where Xxxxxx can be: Cartesian - Delta - Core - Scara)
+ * Mechanisms-settings can be found in Configuration_Xxxxxx.h
+ * (where Xxxxxx can be: Cartesian - Core)
  * Temperature settings can be found in Configuration_Temperature.h
  * Feature-settings can be found in Configuration_Feature.h
  * Pins-settings can be found in "Configuration_Pins.h"
@@ -41,18 +40,20 @@
 
 /***********************************************************************
  ********************** Serial comunication type ***********************
- ***********************************************************************/
-/**
- * Select a primary serial port on the board will be used for communication with the host.
- * This allows the connection of wireless adapters (for instance) to non-default port pins.
- * Serial port 0 is always used by the Arduino bootloader regardless of this setting.
+ ***********************************************************************
+ * Select a primary serial port that will be used for communication
+ * with the host.
+ * Serial port 0 is always used by the Arduino bootloader
+ * regardless of this setting.
  *
- * Valid values are -1 to 3 for Serial, Serial1, Serial2, Serial3 and -1 for SerialUSB
+ * Valid values are:
+ * 0 for Serial, 1 for Serial1, 2 for Serial2, 3 for Serial3
+ * -1 for SerialUSB
  */
 #define SERIAL_PORT_1 0
 
 /**
- * This setting determines the communication speed of the printer on primary port.
+ * This determines primary port communication speed.
  *
  * 250000 works in most cases, but you might try a lower speed if
  * you commonly experience drop-outs during host printing.
@@ -63,35 +64,35 @@
 #define BAUDRATE_1 250000
 
 /**
- * Select a secondary serial port on the board to use for communication with the host.
- * This allows the connection of wireless adapters (for instance) to non-default port pins.
+ * Select secondary serial port to use for communication with the host.
+ * This allows the connection of wireless adapters (for instance) to
+ * non-default port pins.
  *
- * Valid values are -1 to 3 for Serial, Serial1, Serial2, Serial3 and -1 for SerialUSB
+ * Valid values are -1 to 3  same as in SERIAL_PORT_1
  * -2 not used
  */
 #define SERIAL_PORT_2 -2
 
 /**
- * This setting determines the communication speed of the printer on secondary port.
+ * This determines secondary port communication speed.
  *
- * 250000 works in most cases, but you might try a lower speed if
- * you commonly experience drop-outs during host printing.
- * You may try up to 1000000 to speed up SD file transfer.
- *
- * 2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000
+ * Same considerations as BAUDRATE_1
  */
 #define BAUDRATE_2 250000
 
 /**
- * User-specified version info of this build to display in [Pronterface, etc] terminal window during
- * startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
- * build by the user have been successfully uploaded into firmware.
+ * User-specified version info of this build to display in terminal window
+ * [Pronterface, etc] during startup. Implementation of an idea by
+ * Prof Braino to inform user that any changes made to this build by the user
+ * have been successfully uploaded into firmware.
  */
-#define STRING_CONFIG_H_AUTHOR "(none, default config)"   // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(none, default config)"
 
 /**
- * Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
- * You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
+ * Define this to set a unique identifier for this printer,
+ * (Used by some programs to differentiate between machines)
+ * You can use an online service to generate a random UUID.
+ * (eg http://www.uuidgenerator.net/version4)
  */
 #define MACHINE_UUID "00000000-0000-0000-0000-000000000000"
 
@@ -103,7 +104,8 @@
 #define KILL_METHOD 0
 
 /**
- * Some particular clients re-start sending commands only after receiving a 'wait' when there is a bad serial-connection.
+ * Some particular clients re-start sending commands only after receiving
+ * a 'wait' when there is a bad serial-connection.
  * Milliseconds
  */
 #define NO_TIMEOUTS 1000
@@ -140,15 +142,28 @@
 /***********************************************************************/
 
 
-/*****************************************************************************************
- *************************************** Board type **************************************
- *****************************************************************************************
- *                                                                                       *
- * Either an numeric ID or name defined in boards.h is valid.                            *
- *                                                                                       *
- *****************************************************************************************/
-#define MOTHERBOARD BOARD_RAMPS_13_HFB
-/*****************************************************************************************/
+/***********************************************************************
+ ****************************** Board type *****************************
+ ***********************************************************************
+ *                                                                     *
+ * Either a numeric ID or name defined in Boards.h is valid.           *
+ *                                                                     *
+ * abbreviations meaning  HE = HotEnd                                  *
+ * Valid values are:                                                   *
+ *                                                                     *
+ * BOARD_RAMPS_OLD           MEGA/RAMPS up to 1.2                      *
+ * BOARD_RAMPS_13_HFB        RAMPS 1.3 / 1.4 (OUT: HE, Fan, Bed)       *
+ * BOARD_RAMPS_13_HHB        RAMPS 1.3 / 1.4 (OUT: HE0, HE1, Bed)      *
+ * BOARD_RAMPS_13_HFF        RAMPS 1.3 / 1.4 (OUT: HE, Fan, Fan)       *
+ * BOARD_RAMPS_13_HHF        RAMPS 1.3 / 1.4 (OUT: HE0, HE1, Fan)      *
+ * BOARD_RAMPS_13_HHH        RAMPS 1.3 / 1.4 (OUT: HE0, HE1, HE2)      *
+ * BOARD_MKS_13              MKS GEN v1.3 or 1.4                       *
+ *                                                                     *
+ ***********************************************************************/
+
+ #define MOTHERBOARD BOARD_RAMPS_13_HFB
+
+/***********************************************************************/
 
 
 /***********************************************************************
@@ -171,30 +186,50 @@
 //#define MECHANISM MECH_COREZX
 //#define MECHANISM MECH_COREYZ
 //#define MECHANISM MECH_COREZY
-/***********************************************************************/
 
+/************************************* Core settings ******************
+***********************************************************************
+* This define the moltiplicator axis from X to Y or Z in              *
+* COREXY - COREYX or COREXZ - COREZX or COREYZ - COREZY               *
+* Example:                                                            *
+* COREXY set CORE_FACTOR 1                                            *
+* The result is:                                                      *
+* X = dX + CORE_FACTOR * dY = dX + 1 * dY = dX + dY                   *
+* Y = dX - CORE_FACTOR * dY = dX - 1 * dY = dX - dY                   *
+* Z = dZ                                                              *
+*                                                                     *
+* COREXZ set CORE_FACTOR 3                                            *
+* The result is:                                                      *
+* X = dX + CORE_FACTOR * dZ = dX + 3 * dZ = dX + 3dZ                  *
+* Y = dY                                                              *
+* Z = dX - CORE_FACTOR * dZ = dX - 3 * dZ = dX - 3dZ                  *
+************************************************************************/
+//#define CORE_FACTOR 1
 
-/*************************************************************************************
- ************************************ Power supply ***********************************
- *************************************************************************************
- *                                                                                   *
- * The following define selects which power supply you have.                         *
- * Please choose the one that matches your setup and set to POWER_SUPPLY:            *
- * 0 Normal power                                                                    *
- * 1 ATX                                                                             *
- * 2 X-Box 360 203 Watts (the blue wire connected to PS_ON and the red wire to VCC)  *
- *                                                                                   *
- *************************************************************************************/
+#define KNOWN_MECH
+
+/***********************************************************************
+ ************************************ Power supply *********************
+ ***********************************************************************
+ *                                                                     *
+ * The following define selects which power supply you have.           *
+ * Please choose the one that matches your setup.                      *
+ * Values:                                                             *
+ * 0 Normal power                                                      *
+ * 1 ATX                                                               *
+ * 2 X-Box 360 203 Watts (wires: blue -> PS_ON and red --> VCC)        *
+ *                                                                     *
+ ***********************************************************************/
 #define POWER_SUPPLY 0
 
-// Define this to have the electronics keep the power supply off on startup.
+// Define this to have electronics to keep power supply off on startup.
 // If you don't know what this is leave it.
 #define PS_DEFAULT_OFF false
 // Define delay after power on in seconds
 #define DELAY_AFTER_POWER_ON 5
 // Define time for automatic power off if not needed in second
 #define POWER_TIMEOUT 30
-/*************************************************************************************/
+/***********************************************************************/
 
 
 /***********************************************************************

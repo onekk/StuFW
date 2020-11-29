@@ -1,4 +1,4 @@
-/******************************************************************************************
+/************************************************************************
  * StuFW Firmware for 3D Printer
  *
  * Based on MK4duo, Marlin, Sprinter and grbl
@@ -18,15 +18,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * ----------------------------------------------------------------------------------------
+ * ----------------------------------------------------------------------
  *
  * StuFW - Main Include
- * This includes all the other include files in the right order and defines some globals.
- *
+ * This includes all the other include files in the right order and
+ * defines some globals.
  *
  * Licence: GPL
  *
- *******************************************************************************************/
+ ************************************************************************/
 #pragma once
 
 #define __STUFW_FIRMWARE__
@@ -61,24 +61,17 @@
 #include "src/lib/matrix.h"
 #include "Boards.h"
 
-// Configuration settings loading
+ /*****************************************************************************
+ * Configuration settings loading                                             *
+ ******************************************************************************/
 #include "Configuration_Overall.h"
 #include "Configuration_Version.h"
 
 #ifndef CONFIGURATION_OVERALL
   #include "Configuration_Basic.h"
-  #include "Configuration_Overall.h"
-
-  #if MECH(CARTESIAN)
-    #include "Configuration_Cartesian.h"
-  #elif IS_CORE
-    #include "Configuration_Core.h"
-  #endif
-
+  #include "Configuration_Mechanics.h"
   #include "Configuration_Temperature.h"
   #include "Configuration_Feature.h"
-  #include "Configuration_Motor_Driver.h"
-  #include "Configuration_Overall.h"
 #endif
 
 #include "src/inc/conditionals_pre.h"

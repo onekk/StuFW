@@ -17,12 +17,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-
-/**
+ *
+ *-------------------------------------
  * Configuration_Overall.h
- * Here you can define all your custom settings and they will overwrite configurations in the main configuration files.
- * Except for the configurations in Configurations_Pins.h where the default board pin configurations could be overriden.
+ * Here you can define all your custom settings and they will overwrite
+ * configurations in the main configuration files.
+ * Except for the configurations in Configurations_Pins.h where default
+ * board pin configurations could be overriden.
  */
 
 /*******************************
@@ -30,7 +31,6 @@
  *******************************/
 
 #define CONFIGURATION_OVERALL
-
 
 /***********************
  * Configuration_Basic *
@@ -50,7 +50,7 @@
 #define HOST_KEEPALIVE_FEATURE
 #define DEFAULT_KEEPALIVE_INTERVAL 2
 // see boards.h for the board names
-#define MOTHERBOARD BOARD_RAMPS_13_HFB  //BOARD_MKS_13 
+#define MOTHERBOARD BOARD_RAMPS_13_HFB  //BOARD_MKS_13
 #define MECHANISM MECH_CARTESIAN
 //#define MECHANISM MECH_COREXY
 //#define MECHANISM MECH_COREYX
@@ -179,10 +179,8 @@
 #define EXTRUDE_MAXLENGTH 400
 
 /***************************
- * Configuration_Cartesian *
+ * Configuration_Mechanics *
  ***************************/
-#define _CONFIGURATION_CARTESIAN_H_
-#define KNOWN_MECH
 #define CUSTOM_MACHINE_NAME "Generic"
 #define ENDSTOPPULLUP_XMIN true
 #define ENDSTOPPULLUP_YMIN true

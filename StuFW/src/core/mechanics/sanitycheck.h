@@ -28,10 +28,6 @@
 #if DISABLED(MECHANISM)
   #error "DEPENDENCY ERROR: Missing setting MECHANISM."
 #endif
-#if DISABLED(KNOWN_MECH)
-  #error "DEPENDENCY ERROR: You have to set a valid MECHANICS."
-#endif
-
 #if DISABLED(AXIS_RELATIVE_MODES)
   #error "DEPENDENCY ERROR: Missing setting AXIS_RELATIVE_MODES."
 #endif
