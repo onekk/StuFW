@@ -1,0 +1,63 @@
+Questo testo è solo una introduzione alla configurazione.
+
+Il firmware StuFW è derivato da MK4duo e MK4duo usava uno speciale meccanismo
+di configurazione, usava un configuratore online che produceva un file zip che
+conteneva oltre alla versione scelta del firmware un file speciale,
+Configuration_Overall.h che conteneva tutte le informazioni necessarie per
+configurare il firmware.
+
+Configuration_Overall.h è stato mantenuto in StuFW come un metodo molto veloce
+per unire in un unico file tutte le opzioni di configurazione.
+
+Un file Configuration_Overall.h prodotto da MK4duo NON DEVE essere usato in
+sostituzione di un file Configuration_Overall.h di StuFW.
+
+Può essere usato al massimo come traccia per ottenere un file
+Configuration_Overall.h funzionante per StuFW.
+
+La configurazione è fatta usando vari file di configurazione nominati
+Configuration_xxxxx.h li elenchiamo:
+
+- Configuration_Basic.h
+- Configuration_Cartesian.h
+- Configuration_Core.h
+- Configuration_Motor_Driver.h
+- Configuration_Temperature.h
+- Configuration_Feature.h
+
+Tutti i settaggi contenuti in questi file possono essere raggruppati in un
+corretto Configuration_Overall.h, creando una sorta di file centralizzato che
+li raccoglie tutti.
+
+Ci sono dunque vari modi per configurare StuFW:
+- Creare un file Configuration_Overall.h vuoto e modificare le opzioni ne vari
+  file Configuration_xxxx.h elencati sopra.
+- Creare un corretto Configuration_Overall.h che include tutte le informaizoni
+  importanti, cioè i vari #define necessari per configurare la propria stampante
+  copiando e incollando le opzioni non commentate presenti in quei file di
+  configurazione.
+- Usare un  file Configuration_Overall.h precompilato o fornito da qualche
+  sviluppatore, alcuni di questi file saranno presenti in futuro nel repository
+  principale e potrebbero esserte resi disponibili da qualche sviluppatore di
+  progetti di stampanti 3D.
+
+Sono stati fatti alcuni sforzi per rendere chiaro il funzionamento delle varie
+opzioni presenti nei file di configurazione.
+
+Esiste un altro file che non abbiamo citato sopra:
+
+- Configuration_Pins.h
+
+In questo file si possono ridefinire i vari pin che sono definiti nelle
+impostazioni delle varie schede madri, ridefinendo ad esempio il pin per l'HB
+in modo da usare un MOSFET esterno.
+
+Il file Configuration_Pins.h fornito contiene moltissimi valori chiamati
+ORIG_xxxx che possono essere ridefiniti per fare in modo che un pin sia
+assegnato correttamente alla funzione desiderata, questi ORIG_xxxx sono definiti
+appunto nelle varie configurazioni delle schede madri.
+
+In futuro esisterà una più completa documentazione su questo argomento e sul
+funzionamento di questo meccanismo.
+
+Se dovesse servire usate pure le Issues di GithHub e chiedete un aiuto.
