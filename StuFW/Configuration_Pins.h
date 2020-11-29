@@ -18,9 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
+ *-------------------------------------
  * Configuration_Pins.h
  *
  * This configuration file contains all Pins.

@@ -76,6 +76,8 @@
 
 #include "src/inc/conditionals_pre.h"
 // pin.h include Configuration_Pins.h after some checks
+// so Configuration_Pins.h has to be populated even if using
+// Configuration_Overall.h
 #include "src/inc/pins.h"
 #include "src/inc/conditionals_post.h"
 
