@@ -2,7 +2,7 @@
 
 # StuFW 3D Printer Firmware for simple Atmel AVR boards
 
-## Version 0.0.6 revision 20201128
+## Version 0.0.7 revision 20201207
 
 Maybe it is not functional Display code is very complicated due to big variants of display type and something may be broken
 
@@ -13,7 +13,7 @@ It is an hard question, after many request on the forum for help in setting up s
 
 -- Motherboards, RAMPS and cheap all in one derivative board.
 -- Mechanic Cartesian and CoreXY, no delta, scara and so on
--- Display 
+-- Display
   - RepRapDiscount Full Graphic Smart Controller
   - RepRapDiscount Smart Controller
 
@@ -28,4 +28,4 @@ Forked from MK4Duo 4.3.8 revisione 19042019
 
 ## License
 
-StuFW is published under the [GPL license](/Documentation/COPYING.md) 
+StuFW is published under the [GPL license](/Documentation/COPYING.md)

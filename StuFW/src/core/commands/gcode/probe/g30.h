@@ -33,7 +33,7 @@
   /**
    * G30: Do a single Z probe
    * Usage:
-   *    G30 <X#> <Y#> <S#> <Z#> <P#>
+   *    G30 <X#> <Y#> <S#>
    *      X   Probe X position (default=current probe position)
    *      Y   Probe Y position (default=current probe position)
    *      E   Engage the probe for each probe (default 1)

@@ -5,6 +5,16 @@ M605M218// without modifying the firmware (through the "M218 T1 X???" command
 See if this conditionals could be modified
 #define HAS_POSITION_FLOAT      (ENABLED(LIN_ADVANCE) || ENABLED(SCARA_FEEDRATE_SCALING))
 
+
+--
+Maybe a leftover from delta and scara.
+
+prepare_segmented_line_to
+
+Check in original MK4duo this define:
+UBL_DELTA
+--
+
 WHAT ARE THESE?
 
 #define X_TILT_FULCRUM Z_SAFE_HOMING_X_POINT

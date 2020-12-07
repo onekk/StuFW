@@ -624,7 +624,7 @@
  **************************************************************************/
 //#define BABYSTEPPING
 
-// Also enable X/Y Babystepping. Not supported on DELTA!
+// Also enable X/Y Babystepping.
 //#define BABYSTEP_XY
 
 // Change if Z babysteps should go the other way

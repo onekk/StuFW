@@ -315,13 +315,6 @@
   #define _E5_PINS
 #endif
 
-#if DISABLED(TEMP_COOLER_PIN)
-  #define TEMP_COOLER_PIN NoPin
-#endif
-
-#if DISABLED(COOLER_PIN)
-  #define COOLER_PIN NoPin
-#endif
 
 #define SENSITIVE_PINS { 0, 1, \
                         X_STEP_PIN, X_DIR_PIN, X_ENABLE_PIN, \

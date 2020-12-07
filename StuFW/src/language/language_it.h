@@ -185,7 +185,6 @@
 #define MSG_NOZZLE                          _UxGT("Ugello")
 #define MSG_BED                             _UxGT("Piatto")
 #define MSG_CHAMBER                         _UxGT("Camera")
-#define MSG_COOLER                          _UxGT("Raffreddamento")
 #define MSG_FAN_SPEED                       _UxGT("Vel. ventola")
 #define MSG_FLOW                            _UxGT("Flusso")
 #define MSG_CONTROL                         _UxGT("Controllo")
@@ -317,8 +316,6 @@
 #define MSG_ERR_MINTEMP_BED                 _UxGT("Err: TEMP MIN PIATTO")
 #define MSG_ERR_MAXTEMP_CHAMBER             _UxGT("Err: TEMP MAX CAMERA")
 #define MSG_ERR_MINTEMP_CHAMBER             _UxGT("Err: TEMP MIN CAMERA")
-#define MSG_ERR_MAXTEMP_COOLER              _UxGT("Err: TEMP MAX COOLER")
-#define MSG_ERR_MINTEMP_COOLER              _UxGT("Err: TEMP MIN COOLER")
 #define MSG_ERR_Z_HOMING                    MSG_HOME _UxGT(" ") MSG_X MSG_Y _UxGT(" ") MSG_FIRST
 #define MSG_HALTED                          _UxGT("STAMPANTE FERMATA")
 #define MSG_PLEASE_RESET                    _UxGT("Riavviare prego")
@@ -327,19 +324,6 @@
 #define MSG_LONG_MINUTE                      _UxGT("minuti")
 #define MSG_PRINT_TIME                      _UxGT("Print time ")
 
-// Calibrate Delta
-#define MSG_DELTA_CALIBRATE                 _UxGT("Calibraz. Delta")
-#define MSG_DELTA_CALIBRATE_X               _UxGT("Calibra X")
-#define MSG_DELTA_CALIBRATE_Y               _UxGT("Calibra Y")
-#define MSG_DELTA_CALIBRATE_Z               _UxGT("Calibra Z")
-#define MSG_DELTA_CALIBRATE_CENTER          _UxGT("Calibra centro")
-#define MSG_DELTA_SETTINGS                  _UxGT("Impostaz. Delta")
-#define MSG_DELTA_AUTO_CALIBRATE            _UxGT("Auto calibrazione")
-#define MSG_DELTA_HEIGHT_CALIBRATE          _UxGT("Imp. altezza Delta")
-#define MSG_DELTA_DIAG_ROD                  _UxGT("Barra Diagonale")
-#define MSG_DELTA_HEIGHT                    _UxGT("Altezza")
-#define MSG_DELTA_RADIUS                    _UxGT("Raggio")
-#define MSG_DELTA_AUTO_CALIBRATE_OK         _UxGT("Calibrazione OK")
 
 // Info printers
 #define MSG_INFO_MENU                       _UxGT("Info. stampante")
@@ -356,7 +340,6 @@
 #define MSG_INFO_HOTENDS                    _UxGT("Ugelli")
 #define MSG_INFO_BED                        _UxGT("Letto")
 #define MSG_INFO_CHAMBER                    _UxGT("Camera Calda")
-#define MSG_INFO_COOLER                     _UxGT("Raffreddamento")
 #define MSG_INFO_BAUDRATE                   _UxGT("Baud")
 #define MSG_INFO_PROTOCOL                   _UxGT("Protocollo")
 #define MSG_CASE_LIGHT                      _UxGT("Luci Case")
@@ -452,8 +435,6 @@
 #define MSG_BED_COOLING                     _UxGT("Raffr. piatto...")
 #define MSG_CHAMBER_HEATING                 _UxGT("Risc. camera.")
 #define MSG_CHAMBER_DONE                    _UxGT("Camera pronta.")
-#define MSG_COOLER_COOLING                  _UxGT("Raffreddamento...")
-#define MSG_COOLER_DONE                     _UxGT("Raffreddamento finito.")
 
 // Extra
 #define MSG_CONFIG                          _UxGT("Configurazione")
@@ -475,5 +456,3 @@
 #define MSG_EEPROM_CHANGED_ALLERT_2         _UxGT("EEPROM Cambiata.")
 #define MSG_EEPROM_CHANGED_ALLERT_3         _UxGT("Premere il bottone")
 #define MSG_EEPROM_CHANGED_ALLERT_4         _UxGT("per continuare...")
-
-

@@ -120,7 +120,6 @@
 #define ORIG_HEATER_3_PIN          NoPin
 #define ORIG_HEATER_BED_PIN         8
 #define ORIG_HEATER_CHAMBER_PIN    NoPin
-#define ORIG_COOLER_PIN            NoPin
 
 //###TEMPERATURE
 #define ORIG_TEMP_0_PIN            13
@@ -129,7 +128,6 @@
 #define ORIG_TEMP_3_PIN            NoPin
 #define ORIG_TEMP_BED_PIN          14
 #define ORIG_TEMP_CHAMBER_PIN      NoPin
-#define ORIG_TEMP_COOLER_PIN       NoPin
 
 //###FAN
 #define ORIG_FAN0_PIN               9
@@ -216,4 +214,3 @@
 
 #endif // ULTRA_LCD
 //@@@
-

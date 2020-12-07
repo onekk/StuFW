@@ -236,12 +236,6 @@ bool Commands::get_target_heater(int8_t &h, const bool only_hotend/*=false*/) {
         return true;
       }
     #endif
-    #if HAS_HEATER_COOLER
-      if (h == -3) {
-        h = COOLER_INDEX;
-        return true;
-      }
-    #endif
     SERIAL_LM(ER, MSG_INVALID_HEATER);
     return false;
   }

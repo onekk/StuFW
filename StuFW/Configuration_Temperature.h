@@ -34,7 +34,6 @@
  * - PID Settings - HOTEND
  * - PID Settings - BED
  * - PID Settings - CHAMBER
- * - PID Settings - COOLER
  * - Inverted PINS
  * - Thermal runaway protection
  * - Prevent cold extrusion
@@ -88,7 +87,6 @@
 #define TEMP_SENSOR_3 0
 #define TEMP_SENSOR_BED 0
 #define TEMP_SENSOR_CHAMBER 0
-#define TEMP_SENSOR_COOLER 0
 
 // Thermistor series resistor value in Ohms (see on your board)
 #define THERMISTOR_SERIES_RS 4700.0
@@ -118,7 +116,6 @@
 #define TEMP_WINDOW     1       // (degC) Window around target to start the residency timer x degC early.
 
 // When temperature exceeds max temp, your heater will be switched off.
-// When temperature exceeds max temp, your cooler cannot be activaed.
 // This feature exists to protect your hotend from overheating accidentally,
 // but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
@@ -128,10 +125,8 @@
 #define HEATER_3_MAXTEMP 275 // (degC)
 #define BED_MAXTEMP      150 // (degC)
 #define CHAMBER_MAXTEMP  100 // (degC)
-#define COOLER_MAXTEMP   35  // (degC) 
 
-// The minimal temperature defines the temperature below which the heater will not be enabled It is used
-// or, in case of cooler, it will switched off.
+// The minimal temperature defines temperature below which heater will not be enabled
 // to check that the wiring to the thermistor is not broken.
 // Otherwise this would lead to the heater being powered on all the time.
 #define HEATER_0_MINTEMP 5 // (degC)
@@ -140,7 +135,6 @@
 #define HEATER_3_MINTEMP 5 // (degC)
 #define BED_MINTEMP      5 // (degC)
 #define CHAMBER_MINTEMP  5 // (degC)
-#define COOLER_MINTEMP  10 // (degC) 
 
 // Preheat Constants
 #define PREHEAT_1_LABEL       "PLA"
@@ -191,8 +185,8 @@
  ***********************************************************************/
 //#define TEMP_STAT_LEDS
 /***********************************************************************/
- 
- 
+
+
 /***********************************************************************
  ********************** PID Settings - HOTEND **************************
  ***********************************************************************
@@ -291,54 +285,16 @@
 #define DEFAULT_chamberKd  300.0
 /***********************************************************************/
 
-
-/***********************************************************************
- ************************ PID Settings - COOLER ************************
- ***********************************************************************
- *                                                                     *
- * PID Tuning Guide here: http://reprap.org/wiki/PID_Tuning            *
- * Select PID or bang-bang with PIDTEMPCOOLER.                         *
- * If bang-bang, COOLER_LIMIT_SWITCHING will enable hysteresis         *
- *                                                                     *
- ***********************************************************************/
-// Put true to enable PID on the cooler. It uses the same frequency PWM as the hotend.
-// if you use a software PWM or the frequency you select if using an hardware PWM
-// This also works fine on a Fotek SSR-10DA Solid State Relay into a 250W cooler.
-// If your configuration is significantly different than this and you don't understand the issues involved, you probably
-// shouldn't use cooler PID until someone else verifies your hardware works.
-// If this is enabled, find your own PID constants below.
-#define PIDTEMPCOOLER false
-
-#define COOLER_HYSTERESIS        2 // only disable heating if T<target-COOLER_HYSTERESIS and enable heating if T>target+COOLER_HYSTERESIS
-#define COOLER_CHECK_INTERVAL 5000 // ms between checks in bang-bang control
-
-// This sets the max power delivered to the cooler.
-// all forms of cooler control obey this (PID, bang-bang, bang-bang with hysteresis)
-// setting this to anything other than 255 enables a form of PWM to the cooler,
-// so you shouldn't use it unless you are OK with PWM on your cooler.  (see the comment on enabling PIDTEMPCOOLER)
-#define COOLER_PID_MAX       255  // Limits current to cooler while in PID mode;        255 = full current
-#define COOLER_PID_DRIVE_MIN  80  // Limits min current to cooler while PID is active;    0 = no current
-#define COOLER_PID_DRIVE_MAX 255  // Limits max current to cooler while PID is active;  255 = full current
-
-// 120v 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
-// from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
-#define DEFAULT_coolerKp 10.00
-#define DEFAULT_coolerKi .023
-#define DEFAULT_coolerKd 305.4
-/***********************************************************************/
-
-
-/********************************************************************************
- **************************** Inverted PINS *************************************
- ********************************************************************************
- *                                                                              *
- * For inverted logical Heater, Bed, Chamber or Cooler pins                     *
- *                                                                              *
- ********************************************************************************/
+/*******************************************************************************
+ **************************** Inverted PINS ************************************
+ *******************************************************************************
+ *                                                                             *
+ * For inverted logical Heater, Bed, Chamber pins                              *
+ *                                                                             *
+ *******************************************************************************/
 #define INVERTED_HEATER_PINS false
 #define INVERTED_BED_PIN false
 #define INVERTED_CHAMBER_PIN false
-#define INVERTED_COOLER_PIN false
 
 
 /**********************************************************************************
@@ -351,7 +307,7 @@
  * The issue: If a thermistor falls out or a temperature sensor fails,            *
  * StuFW can no longer sense the actual temperature. Since a                      *
  * disconnected thermistor reads as a low temperature, the firmware               *
- * will keep the heater/cooler on.                                                *
+ * will keep the heater on.                                                *
  *                                                                                *
  * The solution: Once the temperature reaches the target, start                   *
  * observing. If the temperature stays too far below the                          *
@@ -361,13 +317,11 @@
  * Put THERMAL PROTECTION HOTENDS at true to enable this feature for all hotends. *
  * Put THERMAL PROTECTION BED at true to enable this feature for the heated bed.  *
  * Put THERMAL PROTECTION CHAMBER at true to enable this feature for the chamber. *
- * Put THERMAL PROTECTION COOLER at true to enable this feature for the cooler.   *
  *                                                                                *
  **********************************************************************************/
 #define THERMAL_PROTECTION_HOTENDS false
 #define THERMAL_PROTECTION_BED false
 #define THERMAL_PROTECTION_CHAMBER false
-#define THERMAL_PROTECTION_COOLER false
 
 #define THERMAL_PROTECTION_PERIOD    40     // Seconds
 #define THERMAL_PROTECTION_HYSTERESIS 4     // Degrees Celsius
@@ -392,8 +346,6 @@
 #define WATCH_CHAMBER_TEMP_PERIOD 60
 #define WATCH_CHAMBER_TEMP_INCREASE 2
 
-#define WATCH_COOLER_TEMP_PERIOD 60
-#define WATCH_COOLER_TEMP_INCREASE 2
 /***********************************************************************/
 
 

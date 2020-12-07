@@ -327,12 +327,8 @@ class unified_bed_leveling {
       return i < GRID_MAX_POINTS_Y ? pgm_read_float(&_mesh_index_to_ypos[i]) : MESH_MIN_Y + i * (MESH_Y_DIST);
     }
 
-    #if UBL_DELTA
-      static bool prepare_segmented_line_to(const float (&rtarget)[XYZE], const float &feedrate);
-    #else
-      static void line_to_destination_cartesian(const float &fr, const uint8_t e);
-    #endif
-
+    static void line_to_destination_cartesian(const float &fr, const uint8_t e);
+    
     static inline bool mesh_is_valid() {
       for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++) {
         for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++) {

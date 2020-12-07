@@ -372,9 +372,7 @@ void LcdUI::quick_feedback(const bool clear_buttons/*=true*/) {
         manual_move_offset = 0;
         manual_move_axis = (int8_t)NO_AXIS;
 
-        // DELTA and SCARA machines use segmented moves, which could fill the planner during the call to
-        // move_to_destination. This will cause idle() to be called, which can then call this function while the
-        // previous invocation is being blocked. Modifications to manual_move_offset shouldn't be made while
+        // Modifications to manual_move_offset shouldn't be made while
         // processing_manual_move is true or the planner will get out of sync.
         processing_manual_move = true;
         mechanics.prepare_move_to_destination(); // will call set_current_to_destination

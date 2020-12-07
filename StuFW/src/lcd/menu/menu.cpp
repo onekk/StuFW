@@ -391,12 +391,6 @@ void scroll_screen(const uint8_t limit, const bool is_menu) {
   }
 #endif
 
-#if HAS_TEMP_COOLER
-  void watch_temp_callback_cooler() {
-    heaters[COOLER_INDEX].setTarget(heaters[COOLER_INDEX].target_temperature);
-    heaters[COOLER_INDEX].start_watching();
-  }
-#endif
 
 #if ENABLED(AUTO_BED_LEVELING_UBL) || ENABLED(PID_AUTOTUNE_MENU) || ENABLED(ADVANCED_PAUSE_FEATURE)
 

@@ -105,13 +105,6 @@ void menu_info_thermistors() {
     STATIC_ITEM(MSG_INFO_MIN_TEMP ": " STRINGIFY(CHAMBER_MINTEMP), false);
     STATIC_ITEM(MSG_INFO_MAX_TEMP ": " STRINGIFY(CHAMBER_MAXTEMP), false);
   #endif
-
-  #if HAS_TEMP_COOLER
-    STATIC_ITEM("TCooler:" COOLER_NAME, false, true);
-    STATIC_ITEM(MSG_INFO_MIN_TEMP ": " STRINGIFY(COOLER_MINTEMP), false);
-    STATIC_ITEM(MSG_INFO_MAX_TEMP ": " STRINGIFY(COOLER_MAXTEMP), false);
-  #endif
-
   END_SCREEN();
 }
 

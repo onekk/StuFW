@@ -505,9 +505,6 @@
 #ifndef MSG_CHAMBER
   #define MSG_CHAMBER                         _UxGT("Chamber")
 #endif
-#ifndef MSG_COOLER
-  #define MSG_COOLER                          _UxGT("Cooler")
-#endif
 #ifndef MSG_FAN_SPEED
   #define MSG_FAN_SPEED                       _UxGT("Fan speed")
 #endif
@@ -910,12 +907,6 @@
 #ifndef MSG_ERR_MINTEMP_CHAMBER
   #define MSG_ERR_MINTEMP_CHAMBER             _UxGT("Err: MINTEMP CHAMBER")
 #endif
-#ifndef MSG_ERR_MAXTEMP_COOLER
-  #define MSG_ERR_MAXTEMP_COOLER              _UxGT("Err: MAXTEMP COOLER")
-#endif
-#ifndef MSG_ERR_MINTEMP_COOLER
-  #define MSG_ERR_MINTEMP_COOLER              _UxGT("Err: MINTEMP COOLER")
-#endif
 #ifndef MSG_ERR_Z_HOMING
   #define MSG_ERR_Z_HOMING                    MSG_HOME _UxGT(" ") MSG_X MSG_Y _UxGT(" ") MSG_FIRST
 #endif
@@ -973,48 +964,6 @@
 #ifndef MSG_CHAMBER_DONE
   #define MSG_CHAMBER_DONE                    _UxGT("Chamber done.")
 #endif
-#ifndef MSG_COOLER_COOLING
-  #define MSG_COOLER_COOLING                  _UxGT("Cooler cooling.")
-#endif
-#ifndef MSG_COOLER_DONE
-  #define MSG_COOLER_DONE                     _UxGT("Cooler done.")
-#endif
-#ifndef MSG_DELTA_CALIBRATE
-  #define MSG_DELTA_CALIBRATE                 _UxGT("Delta Calibration")
-#endif
-#ifndef MSG_DELTA_CALIBRATE_X
-  #define MSG_DELTA_CALIBRATE_X               _UxGT("Calibrate X")
-#endif
-#ifndef MSG_DELTA_CALIBRATE_Y
-  #define MSG_DELTA_CALIBRATE_Y               _UxGT("Calibrate Y")
-#endif
-#ifndef MSG_DELTA_CALIBRATE_Z
-  #define MSG_DELTA_CALIBRATE_Z               _UxGT("Calibrate Z")
-#endif
-#ifndef MSG_DELTA_CALIBRATE_CENTER
-  #define MSG_DELTA_CALIBRATE_CENTER          _UxGT("Calibrate Center")
-#endif
-#ifndef MSG_DELTA_SETTINGS
-  #define MSG_DELTA_SETTINGS                  _UxGT("Delta Settings")
-#endif
-#ifndef MSG_DELTA_AUTO_CALIBRATE
-  #define MSG_DELTA_AUTO_CALIBRATE            _UxGT("Auto Calibration")
-#endif
-#ifndef MSG_DELTA_HEIGHT_CALIBRATE
-  #define MSG_DELTA_HEIGHT_CALIBRATE          _UxGT("Set Delta Height")
-#endif
-#ifndef MSG_DELTA_DIAG_ROD
-  #define MSG_DELTA_DIAG_ROD                  _UxGT("Diag Rod")
-#endif
-#ifndef MSG_DELTA_HEIGHT
-  #define MSG_DELTA_HEIGHT                    _UxGT("Height")
-#endif
-#ifndef MSG_DELTA_RADIUS
-  #define MSG_DELTA_RADIUS                    _UxGT("Radius")
-#endif
-#ifndef MSG_DELTA_AUTO_CALIBRATE_OK
-  #define MSG_DELTA_AUTO_CALIBRATE_OK         _UxGT("Calibration OK")
-#endif
 #ifndef MSG_INFO_MENU
   #define MSG_INFO_MENU                       _UxGT("About Printer")
 #endif
@@ -1059,9 +1008,6 @@
 #endif
 #ifndef MSG_INFO_CHAMBER
   #define MSG_INFO_CHAMBER                    _UxGT("Hot Chamber")
-#endif
-#ifndef MSG_INFO_COOLER
-  #define MSG_INFO_COOLER                     _UxGT("Cooler")
 #endif
 #ifndef MSG_INFO_BAUDRATE
   #define MSG_INFO_BAUDRATE                   _UxGT("Baud")

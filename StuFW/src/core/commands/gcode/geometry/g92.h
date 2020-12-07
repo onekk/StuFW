@@ -48,9 +48,7 @@ inline void gcode_G92(void) {
         else
           didXYZ = true;
 
-        #if IS_SCARA
-          mechanics.current_position[i] = v;        // For SCARA just set the position directly
-        #elif ENABLED(WORKSPACE_OFFSETS)
+        #if ENABLED(WORKSPACE_OFFSETS)
           if (i == E_AXIS)
             mechanics.current_position[E_AXIS] = v; // When using coordinate spaces, only E is set directly
           else {

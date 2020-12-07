@@ -82,7 +82,7 @@ class Temperature {
     static void spin();
 
     /**
-     * Perform auto-tuning for hotend, bed, chamber or cooler in response to M303
+     * Perform auto-tuning for hotend, bed, chamber in response to M303
      */
     static void PID_autotune(Heater *act, const float target_temp, const uint8_t ncycles, const uint8_t method, const bool storeValues=false);
 
@@ -102,7 +102,7 @@ class Temperature {
 
     #if HAS_FILAMENT_SENSOR
       static int8_t widthFil_to_size_ratio(); // Convert Filament Width (mm) to an extrusion ratio
-    #endif    
+    #endif
 
     #if ENABLED(PROBING_HEATERS_OFF)
       static void pause(const bool p);

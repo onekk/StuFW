@@ -76,7 +76,6 @@
 // put this to 0 to disable hot bed
 #define TEMP_SENSOR_BED 0
 #define TEMP_SENSOR_CHAMBER 0
-#define TEMP_SENSOR_COOLER 0
 #define THERMISTOR_SERIES_RS 4700
 #define T9_NAME "User sensor"
 #define T9_R25 100000
@@ -94,14 +93,12 @@
 #define HEATER_3_MAXTEMP 275
 #define BED_MAXTEMP 150
 #define CHAMBER_MAXTEMP 150
-#define COOLER_MAXTEMP 150
 #define HEATER_0_MINTEMP 5
 #define HEATER_1_MINTEMP 5
 #define HEATER_2_MINTEMP 5
 #define HEATER_3_MINTEMP 5
 #define BED_MINTEMP 5
 #define CHAMBER_MINTEMP 5
-#define COOLER_MINTEMP 5
 #define PREHEAT_1_LABEL "PLA"
 #define PREHEAT_1_TEMP_HOTEND 190
 #define PREHEAT_1_TEMP_BED 60
@@ -145,23 +142,12 @@
 #define DEFAULT_chamberKp 10
 #define DEFAULT_chamberKi 1
 #define DEFAULT_chamberKd 305
-#define PIDTEMPCOOLER false
-#define COOLER_HYSTERESIS        2 // only disable heating if T<target-COOLER_HYSTERESIS and enable heating if T>target+COOLER_HYSTERESIS
-#define COOLER_CHECK_INTERVAL 5000 // ms between checks in bang-bang control
-#define COOLER_PID_MAX       255  // Limits current to cooler while in PID mode;        255 = full current
-#define COOLER_PID_DRIVE_MIN  80  // Limits min current to cooler while PID is active;    0 = no current
-#define COOLER_PID_DRIVE_MAX 255  // Limits max current to cooler while PID is active;  255 = full current
-#define DEFAULT_coolerKp 10
-#define DEFAULT_coolerKi 1
-#define DEFAULT_coolerKd 305
 #define INVERTED_HEATER_PINS false
 #define INVERTED_BED_PIN false
 #define INVERTED_CHAMBER_PIN false
-#define INVERTED_COOLER_PIN false
 #define THERMAL_PROTECTION_HOTENDS false
 #define THERMAL_PROTECTION_BED false
 #define THERMAL_PROTECTION_CHAMBER false
-#define THERMAL_PROTECTION_COOLER false
 #define THERMAL_PROTECTION_PERIOD 40
 #define THERMAL_PROTECTION_HYSTERESIS 4
 //#define ADAPTIVE_FAN_SPEED
@@ -171,8 +157,6 @@
 #define WATCH_BED_TEMP_INCREASE 2
 #define WATCH_CHAMBER_TEMP_PERIOD 60
 #define WATCH_CHAMBER_TEMP_INCREASE 2
-#define WATCH_COOLER_TEMP_PERIOD 60
-#define WATCH_COOLER_TEMP_INCREASE 2
 #define PREVENT_COLD_EXTRUSION
 #define EXTRUDE_MINTEMP 170
 //#define PREVENT_LENGTHY_EXTRUDE

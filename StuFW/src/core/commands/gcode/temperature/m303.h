@@ -32,7 +32,7 @@
  * M303: PID relay autotune
  *
  *       S<temperature> sets the target temperature. (default target temperature = 150C)
- *       H<hotend> (-1 for the bed, -2 for chamber, -3 for cooler) (default 0)
+ *       H<hotend> (-1 for the bed, -2 for chamber) (default 0)
  *       C<cycles> minimum 3 (default 5)
  *       R<method> (0 - 3)
  *       U<bool> with a non-zero value will apply the result to current settings
@@ -66,10 +66,6 @@ inline void gcode_M303(void) {
   #if HAS_TEMP_CHAMBER
     else if(heaters[h].data.type == IS_CHAMBER)
       SERIAL_MSG("CHAMBER");
-  #endif
-  #if HAS_TEMP_COOLER
-    else if(heaters[h].data.type == IS_COOLER)
-      SERIAL_MSG("COOLER");
   #endif
 
   NOLESS(cycle, 3);

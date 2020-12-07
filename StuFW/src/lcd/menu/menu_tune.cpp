@@ -131,13 +131,6 @@ void menu_tune() {
   #endif
 
   //
-  // Cooler:
-  //
-  #if HAS_TEMP_COOLER
-    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_COOLER, &heaters[COOLER_INDEX].target_temperature, 0, heaters[COOLER_INDEX].data.maxtemp - 15, watch_temp_callback_cooler);
-  #endif
-
-  //
   // Fan Speed:
   //
   #if FAN_COUNT > 0

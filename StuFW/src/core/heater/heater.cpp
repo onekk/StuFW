@@ -99,7 +99,7 @@ void Heater::waitForTarget(bool no_wait_for_cooling/*=true*/) {
             next_cool_check_ms  = 0;
 
   const bool oldReport = printer.isAutoreportTemp();
-  
+
   printer.setWaitForHeatUp(true);
   printer.setAutoreportTemp(true);
 
@@ -255,9 +255,6 @@ void Heater::print_M301() {
     #endif
     #if HAS_TEMP_CHAMBER
       if (data.type == IS_CHAMBER) SERIAL_VAL(-2);
-    #endif
-    #if HAS_TEMP_COOLER
-      if (data.type == IS_COOLER) SERIAL_VAL(-3);
     #endif
     SERIAL_MV(" P", pid.Kp);
     SERIAL_MV(" I", pid.Ki);

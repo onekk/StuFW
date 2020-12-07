@@ -48,9 +48,6 @@
 #if DISABLED(TEMP_SENSOR_CHAMBER)
   #error "DEPENDENCY_ERROR: Missing setting TEMP_SENSOR_CHAMBER."
 #endif
-#if DISABLED(TEMP_SENSOR_COOLER)
-  #error "DEPENDENCY_ERROR: Missing setting TEMP_SENSOR_COOLER."
-#endif
 
 #if TEMP_SENSOR_BED <= -3
   #error "MAX6675 / MAX31855 Thermocouples not supported for TEMP_SENSOR_BED"
@@ -58,10 +55,6 @@
 
 #if TEMP_SENSOR_CHAMBER <= -3
   #error "MAX6675 / MAX31855 Thermocouples not supported for TEMP_SENSOR_CHAMBER"
-#endif
-
-#if TEMP_SENSOR_COOLER <= -3
-  #error "MAX6675 / MAX31855 Thermocouples not supported for TEMP_SENSOR_COOLER"
 #endif
 
 // Every hotend needs a temp sensor

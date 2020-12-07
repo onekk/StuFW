@@ -313,12 +313,6 @@ void menu_temperature() {
     MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_CHAMBER, &heaters[CHAMBER_INDEX].target_temperature, 0, heaters[CHAMBER_INDEX].data.maxtemp - 15, watch_temp_callback_chamber);
   #endif
 
-  //
-  // Cooler:
-  //
-  #if HAS_TEMP_COOLER
-    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_COOLER, &heaters[COOLER_INDEX].target_temperature, 0, heaters[COOLER_INDEX].data.maxtemp - 15, watch_temp_callback_cooler);
-  #endif
 
   //
   // Fan Speed:

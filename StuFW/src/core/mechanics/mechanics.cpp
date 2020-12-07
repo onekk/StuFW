@@ -123,7 +123,7 @@ void Mechanics::line_to_destination(float fr_mm_s) {
  * Prepare a single move and get ready for the next one
  *
  * This may result in several calls to planner.buffer_line to
- * do smaller moves for DELTA, SCARA, mesh moves, etc.
+ * do smaller moves for mesh moves, etc.
  */
 void Mechanics::prepare_move_to_destination() {
   endstops.clamp_to_software(destination);
@@ -436,4 +436,3 @@ bool Mechanics::axis_unhomed_error(const bool x/*=true*/, const bool y/*=true*/,
   }
 
 #endif // BABYSTEPPING
-

@@ -1920,7 +1920,7 @@ bool Planner::buffer_line(const float &rx, const float &ry, const float &rz, con
 
 /**
  * Directly set the planner ABC position (and stepper positions)
- * converting mm (or angles for SCARA) into steps.
+ * converting mm into steps.
  *
  * The provided ABC position is in machine units.
  */

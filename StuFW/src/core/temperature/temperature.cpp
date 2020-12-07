@@ -91,7 +91,7 @@ void Temperature::set_current_temp_raw() {
 }
 
 /**
- * Spin Manage heating activities for heaters, bed, chamber and cooler
+ * Spin Manage heating activities for heaters, bed, chamber
  *  - Is called every 100ms.
  *  - Acquire updated temperature readings
  *  - Also resets the watchdog timer
@@ -169,7 +169,7 @@ void Temperature::spin() {
     }
 
   #endif // FILAMENT_SENSOR
-  
+
   // Reset the watchdog after we know we have a temperature measurement.
   watchdog.reset();
 
@@ -243,11 +243,6 @@ void Temperature::PID_autotune(Heater *act, const float target_temp, const uint8
         t1 = time;
         t_high = t1 - t2;
 
-        #if HAS_TEMP_COOLER
-          if (act->data.type == IS_COOLER)
-            minTemp = target_temp;
-          else
-        #endif
           maxTemp = target_temp;
       }
     }
@@ -316,36 +311,19 @@ void Temperature::PID_autotune(Heater *act, const float target_temp, const uint8
 
         cycles++;
 
-        #if HAS_TEMP_COOLER
-          if (act->data.type == IS_COOLER)
-            maxTemp = target_temp;
-          else
-        #endif
-          minTemp = target_temp;
+        minTemp = target_temp;
       }
     }
 
     #if DISABLED(MAX_OVERSHOOT_PID_AUTOTUNE)
       #define MAX_OVERSHOOT_PID_AUTOTUNE 20
     #endif
-    if (current_temp > target_temp + MAX_OVERSHOOT_PID_AUTOTUNE
-      #if HAS_TEMP_COOLER
-        && act->data.type != IS_COOLER
-      #endif
-    ) {
+    if (current_temp > target_temp + MAX_OVERSHOOT_PID_AUTOTUNE) {
       SERIAL_LM(ER, MSG_PID_TEMP_TOO_HIGH);
       LCD_ALERTMESSAGEPGM(MSG_PID_TEMP_TOO_HIGH);
       pid_pointer = 255;
       break;
     }
-    #if HAS_TEMP_COOLER
-      else if (current_temp < target_temp + MAX_OVERSHOOT_PID_AUTOTUNE && act->data.type == IS_COOLER) {
-        SERIAL_LM(ER, MSG_PID_TEMP_TOO_LOW);
-        LCD_ALERTMESSAGEPGM(MSG_PID_TEMP_TOO_LOW);
-        pid_pointer = 255;
-        break;
-      }
-    #endif
 
     // Timeout after MAX_CYCLE_TIME_PID_AUTOTUNE minutes since the last undershoot/overshoot cycle
     #if DISABLED(MAX_CYCLE_TIME_PID_AUTOTUNE)
@@ -385,13 +363,6 @@ void Temperature::PID_autotune(Heater *act, const float target_temp, const uint8
         }
       #endif
 
-      #if HAS_TEMP_COOLER
-        if (act->data.type == IS_COOLER) {
-          SERIAL_EMV("#define DEFAULT_coolerKp ", tune_pid.Kp);
-          SERIAL_EMV("#define DEFAULT_coolerKi ", tune_pid.Ki);
-          SERIAL_EMV("#define DEFAULT_coolerKd ", tune_pid.Kd);
-        }
-      #endif
 
       act->pid.Kp = tune_pid.Kp;
       act->pid.Ki = tune_pid.Ki;
@@ -530,10 +501,6 @@ void Temperature::report_temperatures(const bool showRaw/*=false*/) {
     SERIAL_MV(MSG_CAT, (int)heaters[CHAMBER_INDEX].pwm_value);
   #endif
 
-  #if HAS_TEMP_COOLER
-    print_heater_state(&heaters[COOLER_INDEX], false, showRaw);
-  #endif
-
   #if HAS_TEMP_HOTEND
     SERIAL_MV(" @:", (int)heaters[ACTIVE_HOTEND].pwm_value);
   #endif
@@ -584,11 +551,6 @@ void Temperature::_temp_error(const uint8_t h, PGM_P const serial_msg, PGM_P con
       #if HAS_TEMP_CHAMBER
         case IS_CHAMBER:
           SERIAL_EM(MSG_HEATER_CHAMBER);
-          break;
-      #endif
-      #if HAS_TEMP_COOLER
-        case IS_COOLER:
-          SERIAL_EM(MSG_HEATER_COOLER);
           break;
       #endif
       default: break;
@@ -657,10 +619,6 @@ void Temperature::print_heater_state(Heater *act, const bool print_ID, const boo
 
   #if HAS_TEMP_CHAMBER
     if (act->data.type == IS_CHAMBER) SERIAL_CHR('C');
-  #endif
-
-  #if HAS_TEMP_COOLER
-    if (act->data.type == IS_COOLER) SERIAL_CHR('C');
   #endif
 
   const int16_t targetTemperature = act->isIdle() ? act->idle_temperature : act->target_temperature;

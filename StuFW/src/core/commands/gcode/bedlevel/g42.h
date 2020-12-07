@@ -56,13 +56,7 @@
       const float fval = parser.linearval('F');
       if (fval > 0.0) mechanics.feedrate_mm_s = MMM_TO_MMS(fval);
 
-      // SCARA kinematic has "safe" XY raw moves
-      #if IS_SCARA
-        mechanics.prepare_uninterpolated_move_to_destination();
-      #else
-        mechanics.prepare_move_to_destination();
-      #endif
-
+      mechanics.prepare_move_to_destination();
     }
   }
 

@@ -27,7 +27,7 @@
   /**
    * M305: Set thermistor and ADC parameters
    *
-   *  H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER, H = -3 COOLER
+   *  H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER
    *
    *    A[float]  Thermistor resistance at 25°C
    *    B[float]  BetaK

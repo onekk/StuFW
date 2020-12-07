@@ -262,7 +262,7 @@ class Mechanics {
      * Prepare a single move and get ready for the next one
      *
      * This may result in several calls to planner.buffer_line to
-     * do smaller moves for DELTA, SCARA, mesh moves, etc.
+     * do smaller moves for mesh moves, etc.
      */
     static void prepare_move_to_destination();
 

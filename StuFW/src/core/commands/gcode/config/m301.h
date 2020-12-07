@@ -3,7 +3,7 @@
  *
  * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
  * mcode
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
 #define CODE_M301
@@ -31,7 +26,7 @@
 /**
  * M301: Set PID parameters P I D (and optionally C, L)
  *
- *   H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER, H = -3 COOLER
+ *   H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER
  *
  *   P[float] Kp term
  *   I[float] Ki term

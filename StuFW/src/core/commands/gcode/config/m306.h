@@ -33,7 +33,7 @@
   /**
    * M306: Set Heaters parameters
    *
-   *  H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER, H = -3 COOLER
+   *  H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER
    *
    *    A[int]    Pid Drive Min
    *    B[int]    Pid Drive Max

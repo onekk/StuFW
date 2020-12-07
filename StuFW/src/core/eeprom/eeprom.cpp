@@ -1499,48 +1499,6 @@ void EEPROM::reset() {
       #endif
     #endif // HAS_HEATER_BED
 
-    #if HAS_HEATER_COOLER
-      // COOLER
-      heat  = &heaters[COOLER_INDEX];
-      data  = &heat->data;
-      sens  = &heat->sensor;
-      pid   = &heat->pid;
-      data->type            = IS_COOLER;
-      data->pin             = HEATER_COOLER_PIN;
-      data->ID              = COOLER_INDEX;
-      data->mintemp         = COOLER_MINTEMP;
-      data->maxtemp         = COOLER_MAXTEMP;
-      // Pid
-      pid->DriveMin         = PID_DRIVE_MIN;
-      pid->DriveMax         = PID_DRIVE_MAX;
-      pid->Max              = PID_MAX;
-      pid->Kp               = DEFAULT_coolerKp;
-      pid->Ki               = DEFAULT_coolerKi;
-      pid->Kd               = DEFAULT_coolerKd;
-      // Sensor
-      sens->pin             = TEMP_COOLER_PIN;
-      sens->type            = TEMP_SENSOR_COOLER;
-      sens->r25             = COOLER_R25;
-      sens->beta            = COOLER_BETA;
-      sens->pullupR         = THERMISTOR_SERIES_RS;
-      sens->shC             = 0;
-      sens->adcLowOffset    = 0;
-      sens->adcHighOffset   = 0;
-      #if ENABLED(SUPPORT_AD8495) || ENABLED(SUPPORT_AD595)
-        sens->ad595_offset  = TEMP_SENSOR_AD595_OFFSET;
-        sens->ad595_gain    = TEMP_SENSOR_AD595_GAIN;
-      #endif
-      heat->resetFlag();
-      heat->setUsePid(PIDTEMPCOOLER);
-      heat->setHWInverted(INVERTED_COOLER_PIN);
-      heat->setThermalProtection(THERMAL_PROTECTION_COOLER);
-      #if HAS_EEPROM
-        heat->setTuning(false);
-      #else
-        heat->setTuning(true);
-      #endif
-    #endif // HAS_HEATER_BED
-
   #endif // HEATER_COUNT > 0
 
   // Fans && Tachometric

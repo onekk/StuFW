@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// development-github version 
+// development-github version
 // to distinguish versions in arduino IDE that don't expose the path
 /**
  *
@@ -40,19 +40,17 @@
  * G12  - Clean tool
  * G20  - Set input units to inches
  * G21  - Set input units to millimeters
- * G26  - Mesh Validation Pattern (Requires G26_MESH_VALIDATION) 
+ * G26  - Mesh Validation Pattern (Requires G26_MESH_VALIDATION)
  * G27  - Park Nozzle (Requires NOZZLE_PARK_FEATURE)
  * G28  - X Y Z Home all Axis. M for bed manual setting with LCD. B return to back point. O Home only if position is unknown.
  * G29  - Detailed Z-Probe, probes the bed at 3 or more points. Will fail if you haven't homed yet.
  *          Fyyy Lxxx Rxxx Byyy for customer grid.
  * G30  - Single Z probe, probes bed at X Y location (defaults to current XY location)
- *          G30 [X#] [Y#] [S#] [Z#] [P#]
+ *          G30 [X#] [Y#] [E#]
  *          X = Probe X position (default=current probe position)
  *          Y = Probe Y position (default=current probe position)
- *          S = [bool] Stows the probe if 1 (default=1)
- *          Z = [bool] with a non-zero value will apply the result to current delta_height (ONLY DELTA)
- *          P = [bool] with a non-zero value will apply the result to current probe_offset_Z (ONLY DELTA)
- * G38  - Probe target - similar to G28 except it uses the Z_MIN endstop for all three axes
+ *          E = [bool] Stows the probe if 1 (default=1)
+* G38  - Probe target - similar to G28 except it uses the Z_MIN endstop for all three axes
  * G42  - Coordinated move to a mesh point. (Requires MESH_BED_LEVELING or AUTO_BED_LEVELING_BILINEAR)
  * G60  - Save current position coordinates (all axes, for active extruder).
  *          S[SLOT] - specifies memory slot # (0-based) to save into (default 0).
@@ -77,7 +75,7 @@
  * M24  - Start/resume SD print. (Requires SDSUPPORT)
  * M25  - Pause SD print. (Requires SDSUPPORT)
  * M26  - Set SD position in bytes (M26 S12345). (Requires SDSUPPORT)
- * M27  - Report SD print status. With S[bool] set the SD status auto-report. (Requires SDSUPPORT) 
+ * M27  - Report SD print status. With S[bool] set the SD status auto-report. (Requires SDSUPPORT)
  * M28  - Start SD write (M28 filename.g). (Requires SDSUPPORT)
  * M29  - Stop SD write. (Requires SDSUPPORT)
  * M30  - Delete file from SD (M30 filename.g). (Requires SDSUPPORT)
@@ -120,7 +118,7 @@
  * M76  - Pause the print job timer
  * M77  - Stop the print job timer
  * M78  - Show statistical information about the print jobs
- *        S78 reset statistics 
+ *        S78 reset statistics
  * M80  - Turn on Power Supply
  * M81  - Turn off Power Supply
  * M82  - Set E codes absolute (default)
@@ -156,7 +154,6 @@
  * M125 - Save current position and move to pause park position. (Requires PARK_HEAD_ON_PAUSE)
  * M140 - Set hot bed target temp
  * M141 - Set hot chamber target temp
- * M142 - Set cooler target temp
  * M145 - Set the heatup state H[hotend] B[bed] F[fan speed] for S[material] (0=PLA, 1=ABS)
  * M149 - Set temperature units
  * M155 - S[1/0] Enable/disable auto report temperatures.
@@ -168,9 +165,7 @@
  *        Rxxx Wait for bed current temp to reach target temp. Waits when heating and cooling
  * M191 - Sxxx Wait for chamber current temp to reach target temp. Waits only when heating
  *        Rxxx Wait for chamber current temp to reach target temp. Waits when heating and cooling
- * M192 - Sxxx Wait for cooler current temp to reach target temp. Waits only when heating
- *        Rxxx Wait for cooler current temp to reach target temp. Waits when heating and cooling
- * M200 - set filament diameter and set E axis units to cubic millimeters (use S0 to set back to millimeters).:D[millimeters]- 
+ * M200 - set filament diameter and set E axis units to cubic millimeters (use S0 to set back to millimeters).:D[millimeters]-
  * M201 - Set max acceleration in units/s^2 for print moves (M201 X1000 Y1000)
  * M203 - Set maximum feedrate that your machine can sustain (M203 X200 Y200 Z300 E10000) in mm/sec
  * M204 - Set default acceleration: P for Printing moves, R for Retract only (no X, Y, Z) moves and V for Travel (non printing) moves (ex. M204 P800 T3000 R9000) in mm/sec^2
@@ -192,17 +187,17 @@
  * M281 - Set servo low|up angles position. P<index> L<low> U<up>. (Requires servos)
  * M290 - Babystepping (Requires BABYSTEPPING)
  * M300 - Play beep sound S[frequency Hz] P[duration ms]
- * M301 - Set PID parameters P I D and C. H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER, H = -3 COOLER,
+ * M301 - Set PID parameters P I D and C. H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER,
  *          P[float] Kp term, I[float] Ki term, D[float] Kd term
  *          With PID_ADD_EXTRUSION_RATE: C[float] Kc term, L[int] LPQ length
  * M302 - Allow cold extrudes, or set the minimum extrude S[temperature].
- * M303 - PID relay autotune: H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER, H = -3 COOLER,
+ * M303 - PID relay autotune: H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER,
  *        S[temperature] sets the target temperature (default target temperature = 150C), C[cycles], U[Apply result],
  *        R[Method] 0 = Classic Pid, 1 = Some overshoot, 2 = No Overshoot, 3 = Pessen Pid
- * M305 - Set thermistor and ADC parameters: H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER, H = -3 COOLER,
+ * M305 - Set thermistor and ADC parameters: H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER,
  *          A[float] Thermistor resistance at 25°C, B[float] BetaK, C[float] Steinhart-Hart C coefficien, R[float] Pullup resistor value,
  *          L[int] ADC low offset correction, O[int] ADC high offset correction, P[int] Sensor Pin
- * M306 - Set Heaters parameters: H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER, H = -3 COOLER,
+ * M306 - Set Heaters parameters: H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER,
  *          A[int] Pid Drive Min, B[int] Pid Drive Max, C[int] Pid Max,
  *          L[int] Min temperature, O[int] Max temperature, U[bool] Use Pid/bang bang,
  *          I[bool] Hardware Inverted, T[bool] Thermal Protection, P[int] Pin

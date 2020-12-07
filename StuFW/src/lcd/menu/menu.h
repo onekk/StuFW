@@ -353,7 +353,6 @@ void watch_temp_callback_E4();
 void watch_temp_callback_E5();
 void watch_temp_callback_bed();
 void watch_temp_callback_chamber();
-void watch_temp_callback_cooler();
 
 #define HAS_LINE_TO_Z (ENABLED(PROBE_MANUALLY) || ENABLED(MESH_BED_LEVELING) || ENABLED(LEVEL_BED_CORNERS))
 

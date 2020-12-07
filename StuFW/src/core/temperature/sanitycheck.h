@@ -87,17 +87,6 @@
     #error "DEPENDENCY ERROR: Cannot enable TEMP_SENSOR_CHAMBER without HEATER_CHAMBER_PIN."
   #endif
 #endif
-#if TEMP_SENSOR_COOLER != 0
-  #if DISABLED(COOLER_MAXTEMP)
-    #error "DEPENDENCY ERROR: Missing setting COOLER_MAXTEMP."
-  #endif
-  #if DISABLED(COOLER_MINTEMP)
-    #error "DEPENDENCY ERROR: Missing setting COOLER_MINTEMP."
-  #endif
-  #if !HAS_HEATER_COOLER
-    #error "DEPENDENCY ERROR: Cannot enable TEMP_SENSOR_COOLER without HEATER_COOLER_PIN."
-  #endif
-#endif
 #if DISABLED(PREHEAT_1_TEMP_HOTEND)
   #error "DEPENDENCY ERROR: Missing setting PREHEAT_1_TEMP_HOTEND."
 #endif
@@ -187,29 +176,6 @@
   #endif
 
 #endif
-#if (PIDTEMPCOOLER)
-  #if !HAS_TEMP_COOLER
-    #error "DEPENDENCY ERROR: Missing setting TEMP_SENSOR_COOLER."
-  #endif
-  #if DISABLED(COOLER_PID_MAX)
-    #error "DEPENDENCY ERROR: Missing setting COOLER_PID_MAX."
-  #endif
-  #if DISABLED(COOLER_PID_DRIVE_MIN)
-    #error "DEPENDENCY ERROR: Missing setting COOLER_PID_DRIVE_MIN."
-  #endif
-  #if DISABLED(COOLER_PID_DRIVE_MAX)
-    #error "DEPENDENCY ERROR: Missing setting COOLER_PID_DRIVE_MAX."
-  #endif
-  #if DISABLED(DEFAULT_coolerKp)
-    #error "DEPENDENCY ERROR: Missing setting DEFAULT_coolerKp."
-  #endif
-  #if DISABLED(DEFAULT_coolerKi)
-    #error "DEPENDENCY ERROR: Missing setting DEFAULT_coolerKi."
-  #endif
-  #if DISABLED(DEFAULT_coolerKd)
-    #error "DEPENDENCY ERROR: Missing setting DEFAULT_coolerKd."
-  #endif
-#endif
 #if ENABLED(BED_LIMIT_SWITCHING)
   #if DISABLED(BED_HYSTERESIS)
     #error "DEPENDENCY ERROR: Missing setting BED_HYSTERESIS."
@@ -226,15 +192,7 @@
     #error "DEPENDENCY ERROR: Missing setting CHAMBER_CHECK_INTERVAL."
   #endif
 #endif
-#if ENABLED(COOLER_LIMIT_SWITCHING)
-  #if DISABLED(COOLER_HYSTERESIS)
-    #error "DEPENDENCY ERROR: Missing setting COOLER_HYSTERESIS."
-  #endif
-  #if DISABLED(COOLER_CHECK_INTERVAL)
-    #error "DEPENDENCY ERROR: Missing setting COOLER_CHECK_INTERVAL."
-  #endif
-#endif
-#if THERMAL_PROTECTION_HOTENDS || THERMAL_PROTECTION_BED || THERMAL_PROTECTION_CHAMBER || THERMAL_PROTECTION_COOLER
+#if THERMAL_PROTECTION_HOTENDS || THERMAL_PROTECTION_BED || THERMAL_PROTECTION_CHAMBER
   #if DISABLED(THERMAL_PROTECTION_PERIOD)
     #error "DEPENDENCY ERROR: Missing setting THERMAL_PROTECTION_PERIOD."
   #endif
@@ -248,4 +206,3 @@
     #error "DEPENDENCY ERROR: Missing setting WATCH_TEMP_INCREASE."
   #endif
 #endif
-

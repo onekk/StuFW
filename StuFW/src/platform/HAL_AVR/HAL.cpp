@@ -3,7 +3,7 @@
  *
  * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2016 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -248,12 +248,6 @@ void HAL::showStartReason() {
 #if ANALOG_INPUTS > 0
 
   void HAL::analogStart() {
-
-    #if MB(RUMBA) && ((TEMP_SENSOR_0==-1) || (TEMP_SENSOR_1==-1) || (TEMP_SENSOR_2==-1) || (TEMP_SENSOR_BED==-1) || (TEMP_SENSOR_CHAMBER==-1) || (TEMP_SENSOR_COOLER==-1))
-      // disable RUMBA JTAG in case the thermocouple extension is plugged on top of JTAG connector
-      MCUCR = _BV(JTD);
-      MCUCR = _BV(JTD);
-    #endif
 
     ADMUX = ANALOG_REF; // refernce voltage
     for (uint8_t i = 0; i < ANALOG_INPUTS; i++) {

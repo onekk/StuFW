@@ -43,13 +43,13 @@ union flagheater_t {
   flagheater_t() { all = false; }
 };
 
-enum HeaterEnum : uint8_t { IS_HOTEND, IS_BED, IS_CHAMBER, IS_COOLER };
+enum HeaterEnum : uint8_t { IS_HOTEND, IS_BED, IS_CHAMBER};
 enum TRState    : uint8_t { TRInactive, TRFirstHeating, TRStable, TRRunaway };
 
-constexpr uint16_t  temp_check_interval[HEATER_TYPE]  = { 0, BED_CHECK_INTERVAL, CHAMBER_CHECK_INTERVAL, COOLER_CHECK_INTERVAL };
-constexpr uint8_t   temp_hysteresis[HEATER_TYPE]      = { 0, BED_HYSTERESIS, CHAMBER_HYSTERESIS, COOLER_HYSTERESIS };
-constexpr uint8_t   watch_temp_period[HEATER_TYPE]    = { WATCH_TEMP_PERIOD, WATCH_BED_TEMP_PERIOD, WATCH_CHAMBER_TEMP_PERIOD, WATCH_COOLER_TEMP_PERIOD };
-constexpr uint8_t   watch_temp_increase[HEATER_TYPE]  = { WATCH_TEMP_INCREASE, WATCH_BED_TEMP_INCREASE, WATCH_CHAMBER_TEMP_INCREASE, WATCH_COOLER_TEMP_INCREASE };
+constexpr uint16_t  temp_check_interval[HEATER_TYPE]  = { 0, BED_CHECK_INTERVAL, CHAMBER_CHECK_INTERVAL };
+constexpr uint8_t   temp_hysteresis[HEATER_TYPE]      = { 0, BED_HYSTERESIS, CHAMBER_HYSTERESIS };
+constexpr uint8_t   watch_temp_period[HEATER_TYPE]    = { WATCH_TEMP_PERIOD, WATCH_BED_TEMP_PERIOD, WATCH_CHAMBER_TEMP_PERIOD };
+constexpr uint8_t   watch_temp_increase[HEATER_TYPE]  = { WATCH_TEMP_INCREASE, WATCH_BED_TEMP_INCREASE, WATCH_CHAMBER_TEMP_INCREASE };
 
 // Struct Heater data
 typedef struct {
@@ -165,7 +165,7 @@ class Heater {
       data.flag.Fault = true;
     }
     FORCE_INLINE void ResetFault() {
-      data.flag.Fault = false; 
+      data.flag.Fault = false;
       SwitchOff();
     }
     FORCE_INLINE bool isFault() { return data.flag.Fault; }
