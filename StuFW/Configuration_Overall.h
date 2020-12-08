@@ -73,20 +73,34 @@
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 9
-// put this to 0 to disable hot bed
 #define TEMP_SENSOR_BED 0
 #define TEMP_SENSOR_CHAMBER 0
 #define THERMISTOR_SERIES_RS 4700
-#define T9_NAME "User sensor"
-#define T9_R25 100000
-#define T9_BETA 4036
+#define T1_NAME   "SENSOR1"
+#define T1_R25    100000.0
+#define T1_BETA     4092.0
+#define T2_NAME   "SENSOR2"
+#define T2_R25    100000.0
+#define T2_BETA     3950.0
+#define T3_NAME   "SENSOR3"
+#define T3_R25    100000.0
+#define T3_BETA     3950.0
+#define T4_NAME   "SENSOR4"
+#define T4_R25    100000.0
+#define T4_BETA     3950.0
+#define T5_NAME   "SENSOR5"
+#define T5_R25    100000.0
+#define T5_BETA     3950.0
+#define T6_NAME   "SENSOR6"
+#define T6_R25    100000.0
+#define T6_BETA     3950.0
 #define TEMP_SENSOR_AD595_OFFSET 0
 #define TEMP_SENSOR_AD595_GAIN 1
 #define DUMMY_THERMISTOR_998_VALUE 25
 #define DUMMY_THERMISTOR_999_VALUE 100
-#define TEMP_RESIDENCY_TIME 10  // (seconds)
-#define TEMP_HYSTERESIS 3       // (degC) range of +/- temperatures considered "close" to the target one
-#define TEMP_WINDOW     1       // (degC) Window around target to start the residency timer x degC early.
+#define TEMP_RESIDENCY_TIME 10
+#define TEMP_HYSTERESIS 3
+#define TEMP_WINDOW     1
 #define HEATER_0_MAXTEMP 275
 #define HEATER_1_MAXTEMP 275
 #define HEATER_2_MAXTEMP 275

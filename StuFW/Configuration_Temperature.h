@@ -54,33 +54,83 @@
 /************************************************************************************/
 
 
-/*****************************************************************************************************
- ************************************** Thermistor type **********************************************
- *****************************************************************************************************
- *                                                                                                   *
- * Please choose the one that matches your setup and set to TEMP SENSOR.                             *
- *                                                                                                   *
- *  -4 is thermocouple with MAX31855                                                                 *
- *  -3 is thermocouple with MAX6675                                                                  *
- *  -2 is thermocouple with AD8495                                                                   *
- *  -1 is thermocouple with AD595 or AD597                                                           *
- *   0 is not used                                                                                   *
- *   1 is 100k thermistor - best choice for EPCOS 100k (4.7k pullup)                                 *
- *   2 is 100k thermistor - NTC3950 (4.7k pullup)                                                    *
- *   3 is 200k thermistor - ATC Semitec 204GT-2 (4.7k pullup)                                        *
- *   4 is 100K thermistor - ATC Semitec 104GT-2 (Used in ParCan & J-Head) (4.7k pullup)              *
- *   5 is 100k Honeywell thermistor 135-104LAG-J01 (4.7k pullup)                                     *
- *   6 is 100k 0603 SMD Vishay NTCS0603E3104FXT (4.7k pullup)                                        *
- *   7 is 100k GE Sensing AL03006-58.2K-97-G1 (4.7k pullup)                                          *
- *   8 is 100k RS thermistor 198-961 (4.7k pullup)                                                   *
- *   9 User Sensor                                                                                   *
- *  20 is the PT100 circuit amplifier found in Ultimainboard V2.x and Wanhao D6                      *
- *                                                                                                   *
- *       Use these for Testing or Development purposes. NEVER for production machine.                *
- * 998 : Dummy Table that ALWAYS reads  25 degC or the temperature defined below.                     *
- * 999 : Dummy Table that ALWAYS reads 100 degC or the temperature defined below.                    *
- *                                                                                                   *
- *****************************************************************************************************/
+/******************************************************************************
+ ************************************** Thermistor type ***********************
+ ******************************************************************************
+ *                                                                            *
+ * Please choose the one that matches your setup and set to TEMP SENSOR.      *
+ *                                                                            *
+ *  -4 is thermocouple with MAX31855                                          *
+ *  -3 is thermocouple with MAX6675                                           *
+ *  -2 is thermocouple with AD8495                                            *
+ *  -1 is thermocouple with AD595 or AD597                                    *
+ *   0 means sensor not used                                                  *
+ *   1 - 9   NTC Thermistors, put the apprpropriate values                    *
+ *                                                                            *
+ *   THIS PART OF SETTING IS DIFFERENT FROM ORIGINAL MK4duo WAY               *
+ *                                                                            *
+ *   Mk4duo permits only ONE user sensor settings here, T9                    *
+ *   StuFW could use a different NTC setting for each sensor                  *
+ *   Some spare places reamins due to the way the original MK4duo code        *
+ *   was taylored, no change in code, for semplicity and has it didn't make   *
+ *   no harm to memory or to code flow readability                            *
+ *                                                                            *
+ *   You have to choose a number and put the appropriate values from the      *
+ *   table below.                                                             *
+ *                                                                            *
+ *   According from this data obtained from original data in MK4Duo           *
+ *   NAME         RS     R25      BETA       NTC Type                         *
+ *   EPCOS 100k   4700   100000    4092.0                                     *
+ *   NTC3950      4700   100000    3950.0  - Good start for a generic sensor  *
+ *   ATC 204GT-2  4700   200000    4338.0  - ATC Semitec 204GT-2              *
+ *   ATC 104GT-2  4700   100000    4725.0  - ATC Semitec 104GT-2              *
+ *                                          (Used in ParCan & J-Head)         *
+ *   HW 104LAG    4700   100000    3974.0  - Honeywell 135-104LAG-J01         *
+ *   E3104FXT     4700   100000    4100.0  - Vishay NTCS0603E3104FXT          *
+ *   GE AL03006   4700   100000    3952.0  - GE Sensing AL03006-58.2K-97-G1   *
+ *   RS 198-961   4700   100000    3960.0  - RS thermistor 198-961            *
+ *                                                                            *
+ *  20 is the PT100 circ. amplif. found in Ultimainboard V2.x and Wanhao D6   *
+ *                                                                            *
+ *       Use these for Testing or Development purposes. chine.                *
+ * 998 : Dummy Table that ALWAYS reads  25 degC or temperature defined below. *
+ * 999 : Dummy Table that ALWAYS reads 100 degC or temperature defined below. *
+ *                                                                            *
+ *  Example:                                                                  *
+ *                                                                            *
+ *  Suppose you have two extruder and a bed and three different sensors       *
+ *  with MK4duo you are limited to choose one sensor from the first 8         *
+ *  standard values, and use T9 values for on of the remaining sensors.       *
+ *                                                                            *
+ *  with StuFW you are not limited, it is sufficient to choose a number       *
+ *  from 1 to 9 and assign it to the input pin                                *
+ *  and assign proper values                                                  *
+ *                                                                            *
+ *    You have say an ATC Semitec 204GT-2     for HE0                         *
+ *    #define TEMP_SENSOR_0 1                                                 *
+ *    #define T1_NAME   "ATC 204GT-2"                                         *
+ *    #define T1_R25    200000.0                                              *
+ *    #define T1_BETA     4338.0                                              *
+ *                                                                            *
+ *    You have an EPCOS 100k  on HE1                                          *
+ *    #define TEMP_SENSOR_0 2                                                 *
+ *    #define T2_NAME   "EPCOS 100k"                                          *
+ *    #define T2_R25    100000.0                                              *
+ *    #define T2_BETA     4092.0                                              *
+ *                                                                            *
+ *    You have a generic 3950 sensor for bed                                  *
+ *    #define TEMP_SENSOR_BED 3                                               *
+ *    #define T3_NAME   "BED SENSOR"                                          *
+ *    #define T3_R25    100000.0                                              *
+ *    #define T3_BETA     3950.0                                              *
+ *                                                                            *
+ * As you have 6 different thermal sensors defined in firmware                *
+ * only Tx_NAME, Tx_R25, Tx_BETA are defined here.                            *
+ * for future development (if there where enough ADC pins left on the Mega)   *
+ * spares defines from 7 to 9 are left in the original place:                 *
+ *     src/core/heater/sensor/thermistor.h                                    *
+ *                                                                            *
+ ******************************************************************************/
 #define TEMP_SENSOR_0 1
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
@@ -91,20 +141,41 @@
 // Thermistor series resistor value in Ohms (see on your board)
 #define THERMISTOR_SERIES_RS 4700.0
 
-// User Sensor
-#define T9_NAME   "User Sensor"
-#define T9_R25    100000.0  // Resistance in Ohms @ 25°C
-#define T9_BETA     4036.0  // Beta Value (K)
+#define T1_NAME   "SENSOR1"
+#define T1_R25    100000.0
+#define T1_BETA     4092.0
 
-//These 2 defines help to calibrate the AD595 sensor in case you get wrong temperature measurements.
-//The measured temperature is defined as "actualTemp = (measuredTemp * TEMP_SENSOR_AD595_GAIN) + TEMP_SENSOR_AD595_OFFSET"
+#define T2_NAME   "SENSOR2"
+#define T2_R25    100000.0
+#define T2_BETA     3950.0
+
+#define T3_NAME   "SENSOR3"
+#define T3_R25    100000.0
+#define T3_BETA     3950.0
+
+#define T4_NAME   "SENSOR4"
+#define T4_R25    100000.0
+#define T4_BETA     3950.0
+
+#define T5_NAME   "SENSOR5"
+#define T5_R25    100000.0
+#define T5_BETA     3950.0
+
+#define T6_NAME   "SENSOR6"
+#define T6_R25    100000.0
+#define T6_BETA     3950.0
+
+// These 2 defines help to calibrate the AD595 sensor in case you get wrong
+// temperature measurements.
+// Measured temperature is defined as:
+// actualTemp = (measuredTemp * TEMP_SENSOR_AD595_GAIN) + TEMP_SENSOR_AD595_OFFSET
 #define TEMP_SENSOR_AD595_OFFSET 0.0
 #define TEMP_SENSOR_AD595_GAIN   1.0
 
 // Use it for Testing or Development purposes. NEVER for production machine.
 #define DUMMY_THERMISTOR_998_VALUE  25
 #define DUMMY_THERMISTOR_999_VALUE 100
-/*****************************************************************************************/
+/*******************************************************************************/
 
 
 /******************************************************************************************************

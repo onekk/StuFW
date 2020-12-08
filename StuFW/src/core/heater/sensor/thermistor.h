@@ -23,49 +23,20 @@
 #ifndef _THERMISTOR_H_
 #define _THERMISTOR_H_
 
-/**
- * Standard thermistors
- */
+// leftovers from MK4duo, for now not needed as there are only 6 sensors
+// from temp_0 to temp_3 (4) bed and chamber
 
-// 1 - EPCOS 100k
-#define T1_NAME   "EPCOS 100K"
-#define T1_R25    100000.0  // Resistance in Ohms @ 25°C
-#define T1_BETA     4092.0  // Beta Value (K)
+#define T7_NAME   "SENSOR7"
+#define T7_R25    100000.0
+#define T7_BETA     3950.0
 
-// 2 - NTC3950
-#define T2_NAME   "NTC3950"
-#define T2_R25    100000.0  // Resistance in Ohms @ 25°C
-#define T2_BETA     3950.0  // Beta Value (K)
+#define T8_NAME   "SENSOR8"
+#define T8_R25    100000.0
+#define T8_BETA     3960.0
 
-// 3 - ATC Semitec 204GT-2
-#define T3_NAME   "ATC 204GT-2"
-#define T3_R25    200000.0  // Resistance in Ohms @ 25°C
-#define T3_BETA     4338.0  // Beta Value (K)
-
-// 4 - ATC Semitec 104GT-2
-#define T4_NAME   "ATC 104GT-2"
-#define T4_R25    100000.0  // Resistance in Ohms @ 25°C
-#define T4_BETA     4725.0  // Beta Value (K)
-
-// 5 - Honeywell thermistor 135-104LAG-J01
-#define T5_NAME   "HW 104LAG"
-#define T5_R25    100000.0  // Resistance in Ohms @ 25°C
-#define T5_BETA     3974.0  // Beta Value (K)
-
-// 6 - Vishay NTCS0603E3104FXT
-#define T6_NAME   "E3104FXT"
-#define T6_R25    100000.0  // Resistance in Ohms @ 25°C
-#define T6_BETA     4100.0  // Beta Value (K)
-
-// 7 - GE Sensing AL03006-58.2K-97-G1
-#define T7_NAME   "GE AL03006"
-#define T7_R25    100000.0  // Resistance in Ohms @ 25°C
-#define T7_BETA     3952.0  // Beta Value (K)
-
-// 8 - RS Pro Thermistor 198-961
-#define T8_NAME   "RS 198-961"
-#define T8_R25    100000.0  // Resistance in Ohms @ 25°C
-#define T8_BETA     3960.0  // Beta Value (K)
+#define T9_NAME   "SENSOR9"
+#define T9_R25    100000.0
+#define T9_BETA     4036.0
 
 #define _THERMISTOR_NAME_IS(n)  T ## n ## _NAME
 #define _THERMISTOR_R25_IS(n)   T ## n ## _R25
@@ -266,4 +237,4 @@
   #include "thermistoramplifier.h"
 #endif
 
-#endif /* _THERMISTORTABLES_H_ */
+#endif
