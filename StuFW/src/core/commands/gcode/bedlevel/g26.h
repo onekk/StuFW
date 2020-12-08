@@ -543,7 +543,7 @@ inline void gcode_G26(void) {
   g26_prime_flag              = 0;
 
   float g26_nozzle            = MESH_TEST_NOZZLE_SIZE,
-        g26_filament_diameter = DEFAULT_NOMINAL_FILAMENT_DIA,
+        g26_filament_diameter = NOMINAL_FILAMENT_DIA,
         g26_ooze_amount       = parser.linearval('O', OOZE_AMOUNT);
 
   bool  g26_continue_with_closest = parser.boolval('C'),

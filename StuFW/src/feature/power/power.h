@@ -36,7 +36,7 @@ union flagpower_t {
   flagpower_t() { all = false; }
 };
 
-#if HAS_POWER_SWITCH || HAS_POWER_CHECK
+#if HAS_POWER_SWITCH
 
   class Power {
 
@@ -50,67 +50,27 @@ union flagpower_t {
 
     private: /** Private Parameters */
 
-      #if HAS_POWER_SWITCH
-        static bool powersupply_on;
-        #if (POWER_TIMEOUT > 0)
-          static watch_t watch_lastPowerOn;
-        #endif
+      static bool powersupply_on;
+      #if (POWER_TIMEOUT > 0)
+        static watch_t watch_lastPowerOn;
       #endif
 
     public: /** Public Function */
 
-      #if HAS_POWER_SWITCH || HAS_POWER_CHECK
+      /**
+      * Initialize the Power switch
+      */
+      static void init();
 
-        /**
-         * Initialize the Power switch and Power Check pins
-         */
-        static void init();
+      static void spin();
+      static void power_on();
+      static void power_off();
 
-      #endif
-
-      #if HAS_POWER_CHECK
-
-        /**
-         * Initialize Factory parameters
-         */
-        static void factory_parameters();
-
-        /**
-         * Setup Pullup
-         */
-        static void setup_pullup();
-
-        /**
-         * Print logical and pullup
-         */
-        static void report();
-
-      #endif
-
-      #if HAS_POWER_SWITCH
-
-        static void spin();
-        static void power_on();
-        static void power_off();
-
-        FORCE_INLINE static bool is_on() { return powersupply_on; }
-
-      #endif
-
-      // Flag bit 0 Set power check logic
-      FORCE_INLINE static void setLogic(const bool logic) { flag.Logic = logic; }
-      FORCE_INLINE static bool isLogic() { return flag.Logic; }
-
-      // Flag bit 1 Set power check pullup
-      FORCE_INLINE static void setPullup(const bool pullup) { flag.Pullup = pullup; }
-      FORCE_INLINE static bool isPullup() { return flag.Pullup; }
+      FORCE_INLINE static bool is_on() { return powersupply_on; }
 
     private: /** Private Function */
 
-      #if HAS_POWER_SWITCH
-        static bool is_power_needed();
-      #endif
-
+      static bool is_power_needed();
   };
 
   extern Power powerManager;

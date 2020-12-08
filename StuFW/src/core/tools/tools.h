@@ -18,14 +18,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-#pragma once
-
-/**
+ *-------------------------------------
  * tools.h
  *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
+
+#pragma once
 
 #if EXTRUDERS > 0
 
@@ -89,7 +87,7 @@
           filament_size[e] = v;
           // make sure all extruders have some sane value for the filament size
           for (uint8_t i = 0; i < COUNT(filament_size); i++)
-            if (!filament_size[i]) filament_size[i] = DEFAULT_NOMINAL_FILAMENT_DIA;
+            if (!filament_size[i]) filament_size[i] = NOMINAL_FILAMENT_DIA;
         }
 
       #endif

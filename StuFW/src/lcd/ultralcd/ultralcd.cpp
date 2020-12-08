@@ -64,10 +64,6 @@ LcdUI lcdui;
 
 uint8_t LcdUI::status_update_delay = 1; // First update one loop delayed
 
-#if (HAS_LCD_FILAMENT_SENSOR && HAS_SD_SUPPORT)
-  millis_t LcdUI::previous_status_ms = 0;
-#endif
-
 millis_t next_button_update_ms;
 
 #if HAS_GRAPHICAL_LCD
@@ -254,9 +250,6 @@ void LcdUI::status_screen() {
   #if HAS_LCD_MENU
 
     if (use_click()) {
-      #if (HAS_LCD_FILAMENT_SENSOR && ENABLED(SDSUPPORT))
-        previous_status_ms = millis();  // Show status message for 5s
-      #endif
       goto_screen(menu_main);
       init_lcd(); // May revive the LCD if static electricity killed it
       return;
@@ -757,10 +750,6 @@ void LcdUI::finishstatus(const bool persist) {
     #if PROGRESS_MSG_EXPIRE > 0
       expire_status_ms = persist ? 0 : progress_bar_ms + PROGRESS_MSG_EXPIRE;
     #endif
-  #endif
-
-  #if (HAS_LCD_FILAMENT_SENSOR && ENABLED(SDSUPPORT))
-    previous_status_ms = millis(); // Show status message for 5s
   #endif
 
   #if ENABLED(STATUS_MESSAGE_SCROLLING)

@@ -3,7 +3,7 @@
  *
  * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +18,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
+  *------------------------------------
+  * gcode.h
+  */
+
 #pragma once
 
-/**
- * gcode.h
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
- */
+
 
 // Bedlevel Commands
 #include "bedlevel/g26.h"                 // Mesh Validation
@@ -165,7 +164,6 @@
 #include "sdcard/sdcard.h"
 
 // Sensor Commands
-#include "sensor/m404_m407.h"             // Filament Sensor
 #include "sensor/m512.h"                  // Extruder Encoder read pin
 #include "sensor/m602_m604.h"             // Extruder Encoder settings (M602 still TODO)
 

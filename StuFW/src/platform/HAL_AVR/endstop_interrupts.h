@@ -40,6 +40,7 @@
  * So we extend them here because these are the normal pins for Y_MIN and Y_MAX on RAMPS.
  * There are more PCI-enabled processor pins on Port J, but they are not connected to Arduino MEGA.
  */
+
 #if ENABLED(ARDUINO_AVR_MEGA2560) || ENABLED(ARDUINO_AVR_MEGA)
   #undef  digitalPinToPCICR
   #define digitalPinToPCICR(p)    ( (((p) >= 10) && ((p) <= 15)) || \
@@ -170,26 +171,6 @@ void Endstops::setup_interrupts(void) {
       // Not all used endstop/probe -pins can raise interrupts. Please deactivate ENDSTOP_INTERRUPTS or change the pin configuration!
       static_assert(digitalPinToPCICR(Z2_MIN_PIN) != NULL, "Z2_MIN_PIN is not interrupt-capable");
       pciSetup(Z2_MIN_PIN);
-    #endif
-  #endif
-
-  #if HAS_Z3_MAX
-    #if (digitalPinToInterrupt(Z3_MAX_PIN) != NOT_AN_INTERRUPT)
-      attachInterrupt(digitalPinToInterrupt(Z3_MAX_PIN), endstop_ISR, CHANGE);
-    #else
-      // Not all used endstop/probe -pins can raise interrupts. Please deactivate ENDSTOP_INTERRUPTS or change the pin configuration!
-      static_assert(digitalPinToPCICR(Z3_MAX_PIN) != NULL, "Z3_MAX_PIN is not interrupt-capable");
-      pciSetup(Z3_MAX_PIN);
-    #endif
-  #endif
-
-  #if HAS_Z3_MIN
-    #if (digitalPinToInterrupt(Z3_MIN_PIN) != NOT_AN_INTERRUPT)
-      attachInterrupt(digitalPinToInterrupt(Z3_MIN_PIN), endstop_ISR, CHANGE);
-    #else
-      // Not all used endstop/probe -pins can raise interrupts. Please deactivate ENDSTOP_INTERRUPTS or change the pin configuration!
-      static_assert(digitalPinToPCICR(Z3_MIN_PIN) != NULL, "Z3_MIN_PIN is not interrupt-capable");
-      pciSetup(Z3_MIN_PIN);
     #endif
   #endif
 

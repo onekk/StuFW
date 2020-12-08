@@ -74,17 +74,11 @@ inline void gcode_M119(void) {
   #if HAS_Z2_MIN
     ES_REPORT(Z2_MIN);
   #endif
-  #if HAS_Z3_MIN
-    ES_REPORT(Z3_MIN);
-  #endif
   #if HAS_Z_MAX
     ES_REPORT(Z_MAX);
   #endif
   #if HAS_Z2_MAX
     ES_REPORT(Z2_MAX);
-  #endif
-  #if HAS_Z3_MAX
-    ES_REPORT(Z3_MAX);
   #endif
   #if HAS_Z_PROBE_PIN
     ES_REPORT(Z_PROBE);
@@ -109,8 +103,5 @@ inline void gcode_M119(void) {
   #endif
   #if HAS_DOOR_OPEN
     ES_REPORT(DOOR_OPEN);
-  #endif
-  #if HAS_POWER_CHECK
-    print_state(READ(POWER_CHECK_PIN) ^ powerManager.isLogic(), PSTR(MSG_POWER_CHECK));
   #endif
 }

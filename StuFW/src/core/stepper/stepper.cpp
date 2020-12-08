@@ -39,8 +39,8 @@
  */
 
 /**
- * The timer calculations of this module informed by the 'RepRap cartesian firmware' by Zack Smith
- * and Philipp Tiefenbacher.
+ * The timer calculations of this module informed by
+ * 'RepRap cartesian firmware' by Zack Smith and Philipp Tiefenbacher.
  */
 
 /**
@@ -55,10 +55,13 @@
  *
  *                           time ----->
  *
- *  The trapezoid is the shape the speed curve over time. It starts at block->initial_rate, accelerates
- *  first block->accelerate_until step_events_completed, then keeps going at constant speed until
- *  step_events_completed reaches block->decelerate_after after which it decelerates until the trapezoid generator is reset.
- *  The slope of acceleration is calculated using v = u + at where t is the accumulated timer values of the steps so far.
+ *  The trapezoid is the shape the speed curve over time.
+ * It starts at block->initial_rate, accelerates first block->accelerate_until
+ * step_events_completed, then keeps going at constant speed until
+ * step_events_completed reaches block->decelerate_after after which it
+ *  decelerates until the trapezoid generator is reset.
+ *  The slope of acceleration is calculated using v = u + at
+ * where t is the accumulated timer values of the steps so far.
  *
  * StuFW uses the Bresenham algorithm. For a detailed explanation of theory and
  * method see https://www.cs.helsinki.fi/group/goa/mallinnus/lines/bresenh.html
@@ -105,7 +108,7 @@ bool    Stepper::abort_current_block  = false;
   bool Stepper::locked_Y_motor = false, Stepper::locked_Y2_motor = false;
 #endif
 #if ENABLED(Z_THREE_ENDSTOPS)
-  bool Stepper::locked_Z_motor = false, Stepper::locked_Z2_motor = false, Stepper::locked_Z3_motor = false;
+  bool Stepper::locked_Z_motor = false, Stepper::locked_Z2_motor = false;
 #elif ENABLED(Z_TWO_ENDSTOPS)
   bool Stepper::locked_Z_motor = false, Stepper::locked_Z2_motor = false;
 #endif
@@ -773,16 +776,7 @@ void Stepper::disable_Y() {
 }
 
 void Stepper::enable_Z() {
-  #if HAS_Z4_ENABLE
-    Z_ENABLE_WRITE( Z_ENABLE_ON);
-    Z2_ENABLE_WRITE(Z_ENABLE_ON);
-    Z3_ENABLE_WRITE(Z_ENABLE_ON);
-    Z4_ENABLE_WRITE(Z_ENABLE_ON);
-  #elif HAS_Z3_ENABLE
-    Z_ENABLE_WRITE( Z_ENABLE_ON);
-    Z2_ENABLE_WRITE(Z_ENABLE_ON);
-    Z3_ENABLE_WRITE(Z_ENABLE_ON);
-  #elif HAS_Z2_ENABLE
+  #if HAS_Z2_ENABLE
     Z_ENABLE_WRITE( Z_ENABLE_ON);
     Z2_ENABLE_WRITE(Z_ENABLE_ON);
   #elif HAS_Z_ENABLE
@@ -790,16 +784,7 @@ void Stepper::enable_Z() {
   #endif
 }
 void Stepper::disable_Z() {
-  #if HAS_Z4_ENABLE
-    Z_ENABLE_WRITE( !Z_ENABLE_ON);
-    Z2_ENABLE_WRITE(!Z_ENABLE_ON);
-    Z3_ENABLE_WRITE(!Z_ENABLE_ON);
-    Z4_ENABLE_WRITE(!Z_ENABLE_ON);
-  #elif HAS_Z3_ENABLE
-    Z_ENABLE_WRITE( !Z_ENABLE_ON);
-    Z2_ENABLE_WRITE(!Z_ENABLE_ON);
-    Z3_ENABLE_WRITE(!Z_ENABLE_ON);
-  #elif HAS_Z2_ENABLE
+  #if HAS_Z2_ENABLE
     Z_ENABLE_WRITE( !Z_ENABLE_ON);
     Z2_ENABLE_WRITE(!Z_ENABLE_ON);
   #elif HAS_Z_ENABLE
@@ -1606,31 +1591,7 @@ FORCE_INLINE void Stepper::start_Y_step() {
 }
 FORCE_INLINE void Stepper::start_Z_step() {
 
-  #if ENABLED(Z_THREE_STEPPER_DRIVERS)
-    #if ENABLED(Z_THREE_ENDSTOPS)
-      if (separate_multi_axis) {
-        if (Z_HOME_DIR < 0) {
-          if (!(TEST(endstops.live_state, Z_MIN)  && count_direction[Z_AXIS] < 0) && !locked_Z_motor) Z_STEP_WRITE(!INVERT_Z_STEP_PIN);
-          if (!(TEST(endstops.live_state, Z2_MIN) && count_direction[Z_AXIS] < 0) && !locked_Z2_motor) Z2_STEP_WRITE(!INVERT_Z_STEP_PIN);
-          if (!(TEST(endstops.live_state, Z3_MIN) && count_direction[Z_AXIS] < 0) && !locked_Z3_motor) Z3_STEP_WRITE(!INVERT_Z_STEP_PIN);
-        }
-        else {
-          if (!(TEST(endstops.live_state, Z_MAX)  && count_direction[Z_AXIS] > 0) && !locked_Z_motor) Z_STEP_WRITE(!INVERT_Z_STEP_PIN);
-          if (!(TEST(endstops.live_state, Z2_MAX) && count_direction[Z_AXIS] > 0) && !locked_Z2_motor) Z2_STEP_WRITE(!INVERT_Z_STEP_PIN);
-          if (!(TEST(endstops.live_state, Z3_MAX) && count_direction[Z_AXIS] > 0) && !locked_Z3_motor) Z3_STEP_WRITE(!INVERT_Z_STEP_PIN);
-        }
-      }
-      else {
-        Z_STEP_WRITE(!INVERT_Z_STEP_PIN);
-        Z2_STEP_WRITE(!INVERT_Z_STEP_PIN);
-        Z3_STEP_WRITE(!INVERT_Z_STEP_PIN);
-      }
-    #else
-      Z_STEP_WRITE(!INVERT_Z_STEP_PIN);
-      Z2_STEP_WRITE(!INVERT_Z_STEP_PIN);
-      Z3_STEP_WRITE(!INVERT_Z_STEP_PIN);
-    #endif
-  #elif ENABLED(Z_TWO_STEPPER_DRIVERS)
+  #if ENABLED(Z_TWO_STEPPER_DRIVERS)
     #if ENABLED(Z_TWO_ENDSTOPS)
       if (separate_multi_axis) {
         if (Z_HOME_DIR < 0) {
@@ -1653,7 +1614,6 @@ FORCE_INLINE void Stepper::start_Z_step() {
   #else
     Z_STEP_WRITE(!INVERT_Z_STEP_PIN);
   #endif
-
 }
 
 /**
@@ -1673,10 +1633,7 @@ FORCE_INLINE void Stepper::stop_Y_step() {
 }
 FORCE_INLINE void Stepper::stop_Z_step() {
   Z_STEP_WRITE(INVERT_Z_STEP_PIN);
-  #if ENABLED(Z_THREE_STEPPER_DRIVERS)
-    Z2_STEP_WRITE(INVERT_Z_STEP_PIN);
-    Z3_STEP_WRITE(INVERT_Z_STEP_PIN);
-  #elif ENABLED(Z_TWO_STEPPER_DRIVERS)
+  #if ENABLED(Z_TWO_STEPPER_DRIVERS)
     Z2_STEP_WRITE(INVERT_Z_STEP_PIN);
   #endif
 }
@@ -1700,10 +1657,7 @@ FORCE_INLINE void Stepper::set_Y_dir(const bool dir) {
 }
 FORCE_INLINE void Stepper::set_Z_dir(const bool dir) {
   Z_DIR_WRITE(dir);
-  #if ENABLED(Z_THREE_STEPPER_DRIVERS)
-    Z2_DIR_WRITE((dir) != INVERT_Z2_VS_Z_DIR);
-    Z3_DIR_WRITE((dir) != INVERT_Z3_VS_Z_DIR);
-  #elif ENABLED(Z_TWO_STEPPER_DRIVERS)
+  #if ENABLED(Z_TWO_STEPPER_DRIVERS)
     Z2_DIR_WRITE((dir) != INVERT_Z2_VS_Z_DIR);
   #endif
 }

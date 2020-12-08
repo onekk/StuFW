@@ -41,8 +41,8 @@
   float   Tools::e_factor[EXTRUDERS]              = ARRAY_BY_EXTRUDERS(1.0);
 
   #if ENABLED(VOLUMETRIC_EXTRUSION)
-    float Tools::filament_size[EXTRUDERS]         = ARRAY_BY_EXTRUDERS(DEFAULT_NOMINAL_FILAMENT_DIA),
-          Tools::volumetric_area_nominal          = CIRCLE_AREA(float(DEFAULT_NOMINAL_FILAMENT_DIA) * 0.5f),
+    float Tools::filament_size[EXTRUDERS]         = ARRAY_BY_EXTRUDERS(NOMINAL_FILAMENT_DIA),
+          Tools::volumetric_area_nominal          = CIRCLE_AREA(float(NOMINAL_FILAMENT_DIA) * 0.5f),
           Tools::volumetric_multiplier[EXTRUDERS] = ARRAY_BY_EXTRUDERS(1.0);
   #endif
 
@@ -408,4 +408,3 @@
     }
   #endif
 #endif // EXTRUDERS > 0
-

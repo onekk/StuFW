@@ -3,7 +3,7 @@
  *
  * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
+ *-------------------------------------
  * fan.cpp
- *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
 #include "../../../StuFW.h"
@@ -53,7 +49,7 @@ void Fan::init() {
 void Fan::setAutoMonitored(const int8_t h) {
   if (WITHIN(h, 0, HOTENDS - 1) || h == 7)
     SBI(data.autoMonitored, (uint8_t)h);
-  else      
+  else
     data.autoMonitored = 0;
   spin();
 }
@@ -153,22 +149,3 @@ void Fan::print_M106() {
   }
   SERIAL_EOL();
 }
-
-#if ENABLED(TACHOMETRIC)
-  void tacho_interrupt0() { fans[0].tacho.interrupt(); }
-  #if FAN_COUNT > 1
-    void tacho_interrupt1() { fans[1].tacho.interrupt(); }
-    #if FAN_COUNT > 2
-      void tacho_interrupt2() { fans[2].tacho.interrupt(); }
-      #if FAN_COUNT > 3
-        void tacho_interrupt3() { fans[3].tacho.interrupt(); }
-        #if FAN_COUNT > 4
-          void tacho_interrupt4() { fans[4].tacho.interrupt(); }
-          #if FAN_COUNT > 5
-            void tacho_interrupt5() { fans[5].tacho.interrupt(); }
-          #endif
-        #endif
-      #endif
-    #endif
-  #endif
-#endif

@@ -234,9 +234,7 @@ class Stepper {
     #if ENABLED(Y_TWO_ENDSTOPS)
       static bool locked_Y_motor, locked_Y2_motor;
     #endif
-    #if ENABLED(Z_THREE_ENDSTOPS)
-      static bool locked_Z_motor, locked_Z2_motor, locked_Z3_motor;
-    #elif ENABLED(Z_TWO_ENDSTOPS)
+    #if ENABLED(Z_TWO_ENDSTOPS)
       static bool locked_Z_motor, locked_Z2_motor;
     #endif
 
@@ -261,15 +259,15 @@ class Stepper {
     #endif
 
     #if ENABLED(BEZIER_JERK_CONTROL)
-      static int32_t  bezier_A,     // A coefficient in Bézier speed curve
-                      bezier_B,     // B coefficient in Bézier speed curve
-                      bezier_C;     // C coefficient in Bézier speed curve
-      static uint32_t bezier_F,     // F coefficient in Bézier speed curve
-                      bezier_AV;    // AV coefficient in Bézier speed curve
+      static int32_t  bezier_A,     // A coefficient in Bï¿½zier speed curve
+                      bezier_B,     // B coefficient in Bï¿½zier speed curve
+                      bezier_C;     // C coefficient in Bï¿½zier speed curve
+      static uint32_t bezier_F,     // F coefficient in Bï¿½zier speed curve
+                      bezier_AV;    // AV coefficient in Bï¿½zier speed curve
       #if ENABLED(__AVR__)
         static bool A_negative;     // If A coefficient was negative
       #endif
-      static bool bezier_2nd_half;  // If Bézier curve has been initialized or not
+      static bool bezier_2nd_half;  // If Bï¿½zier curve has been initialized or not
     #endif
 
     static uint32_t nextMainISR;    // time remaining for the next Step ISR
@@ -434,11 +432,7 @@ class Stepper {
       FORCE_INLINE static void set_y_lock(const bool state) { locked_Y_motor = state; }
       FORCE_INLINE static void set_y2_lock(const bool state) { locked_Y2_motor = state; }
     #endif
-    #if ENABLED(Z_THREE_ENDSTOPS)
-      FORCE_INLINE static void set_z_lock(const bool state) { locked_Z_motor = state; }
-      FORCE_INLINE static void set_z2_lock(const bool state) { locked_Z2_motor = state; }
-      FORCE_INLINE static void set_z3_lock(const bool state) { locked_Z3_motor = state; }
-    #elif ENABLED(Z_TWO_ENDSTOPS)
+    #if ENABLED(Z_TWO_ENDSTOPS)
       FORCE_INLINE static void set_z_lock(const bool state) { locked_Z_motor = state; }
       FORCE_INLINE static void set_z2_lock(const bool state) { locked_Z2_motor = state; }
     #endif
@@ -505,7 +499,7 @@ class Stepper {
      * Set current position in steps
      */
     static void _set_position(const int32_t &a, const int32_t &b, const int32_t &c, const int32_t &e);
-    
+
     #if DISABLED(COLOR_MIXING_EXTRUDER)
       // Get active driver
       static uint8_t get_active_extruder_driver();

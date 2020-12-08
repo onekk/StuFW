@@ -204,9 +204,6 @@ FORCE_INLINE void _draw_axis_value(const AxisEnum axis, PGM_P value, const bool 
 void LcdUI::draw_status_screen() {
 
   static char xstring[5], ystring[5], zstring[8];
-  #if HAS_LCD_FILAMENT_SENSOR
-    static char wstring[5], mstring[4];
-  #endif
 
   // At the first page, regenerate the XYZ strings
   if (first_page) {
@@ -223,15 +220,6 @@ void LcdUI::draw_status_screen() {
     strcpy(xstring, ftostr4sign(LOGICAL_X_POSITION(mechanics.current_position[X_AXIS])));
     strcpy(ystring, ftostr4sign(LOGICAL_Y_POSITION(mechanics.current_position[Y_AXIS])));
     strcpy(zstring, ftostr52sp (LOGICAL_Z_POSITION(mechanics.current_position[Z_AXIS])));
-    #if HAS_LCD_FILAMENT_SENSOR
-      strcpy(wstring, ftostr12ns(filament_width_meas));
-      strcpy(mstring, i16tostr3(100.0 * (
-          printer.isVolumetric()
-            ? tools.volumetric_area_nominal / tools.volumetric_multiplier[FILAMENT_SENSOR_EXTRUDER_NUM]
-            : tools.volumetric_multiplier[FILAMENT_SENSOR_EXTRUDER_NUM]
-        )
-      ));
-    #endif
   }
 
   const bool blink = get_blink();
@@ -457,21 +445,6 @@ void LcdUI::draw_status_screen() {
     lcd_put_u8str(i16tostr3(mechanics.feedrate_percentage));
     lcd_put_wchar('%');
 
-    //
-    // Filament sensor display if SD is disabled
-    //
-    #if HAS_LCD_FILAMENT_SENSOR && DISABLED(SDSUPPORT)
-      lcd_moveto(56, EXTRAS_2_BASELINE);
-      lcd_put_u8str(wstring);
-      lcd_moveto(102, EXTRAS_2_BASELINE);
-      lcd_put_u8str(mstring);
-      lcd_put_wchar('%');
-      set_font(FONT_MENU);
-      lcd_moveto(47, EXTRAS_2_BASELINE);
-      lcd_put_wchar(LCD_STR_FILAM_DIA[0]); // lcd_put_u8str_P(PSTR(LCD_STR_FILAM_DIA));
-      lcd_moveto(93, EXTRAS_2_BASELINE);
-      lcd_put_wchar(LCD_STR_FILAM_MUL[0]);
-    #endif
   }
 
   //
@@ -480,24 +453,7 @@ void LcdUI::draw_status_screen() {
 
   if (PAGE_CONTAINS(STATUS_BASELINE - INFO_FONT_ASCENT, STATUS_BASELINE + INFO_FONT_DESCENT)) {
     lcd_moveto(0, STATUS_BASELINE);
-
-    #if (HAS_LCD_FILAMENT_SENSOR && ENABLED(SDSUPPORT))
-      if (PENDING(millis(), previous_status_ms + 5000UL)) { // Display both Status message line and Filament display on the last line
-        lcd_implementation_status_message(blink);
-      }
-
-      else {
-        lcd_put_u8str_P(PSTR(LCD_STR_FILAM_DIA));
-        lcd_put_wchar(':');
-        lcd_put_u8str(wstring);
-        lcd_put_u8str_P(PSTR("  " LCD_STR_FILAM_MUL));
-        lcd_put_wchar(':');
-        lcd_put_u8str(mstring);
-        lcd_put_wchar('%');
-      }
-    #else
-      draw_status_message(blink);
-    #endif
+    draw_status_message(blink);
   }
 }
 

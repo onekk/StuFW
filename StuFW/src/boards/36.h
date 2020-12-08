@@ -102,10 +102,6 @@
 #define ORIG_Z_MAX_PIN             19
 #define ORIG_Z2_MIN_PIN            NoPin
 #define ORIG_Z2_MAX_PIN            NoPin
-#define ORIG_Z3_MIN_PIN            NoPin
-#define ORIG_Z3_MAX_PIN            NoPin
-#define ORIG_Z4_MIN_PIN            NoPin
-#define ORIG_Z4_MAX_PIN            NoPin
 #define ORIG_Z_PROBE_PIN           NoPin
 
 //###SINGLE_ENDSTOP

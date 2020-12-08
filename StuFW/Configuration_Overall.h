@@ -27,7 +27,7 @@
  */
 
 /*******************************
- *   Firmware Version V0.0.3   *
+ *   Firmware Version V0.0.7   *
  *******************************/
 
 #define CONFIGURATION_OVERALL
@@ -175,11 +175,9 @@
 #define ENDSTOPPULLUP_X2MIN true
 #define ENDSTOPPULLUP_Y2MIN true
 #define ENDSTOPPULLUP_Z2MIN true
-#define ENDSTOPPULLUP_Z3MIN true
 #define ENDSTOPPULLUP_X2MAX true
 #define ENDSTOPPULLUP_Y2MAX true
 #define ENDSTOPPULLUP_Z2MAX true
-#define ENDSTOPPULLUP_Z3MAX true
 #define ENDSTOPPULLUP_ZPROBE true
 #define X_MIN_ENDSTOP_LOGIC false
 #define Y_MIN_ENDSTOP_LOGIC false
@@ -190,11 +188,9 @@
 #define X2_MIN_ENDSTOP_LOGIC false
 #define Y2_MIN_ENDSTOP_LOGIC false
 #define Z2_MIN_ENDSTOP_LOGIC false
-#define Z3_MIN_ENDSTOP_LOGIC false
 #define X2_MAX_ENDSTOP_LOGIC false
 #define Y2_MAX_ENDSTOP_LOGIC false
 #define Z2_MAX_ENDSTOP_LOGIC false
-#define Z3_MAX_ENDSTOP_LOGIC false
 #define Z_PROBE_ENDSTOP_LOGIC false
 //#define ENDSTOP_INTERRUPTS_FEATURE
 #define Z_PROBE_SERVO_NR -1
@@ -342,7 +338,6 @@
 #define X2_DRIVER_TYPE A4988
 #define Y2_DRIVER_TYPE A4988
 #define Z2_DRIVER_TYPE A4988
-#define Z3_DRIVER_TYPE A4988
 #define E0_DRIVER_TYPE DRV8825
 #define E1_DRIVER_TYPE A4988
 #define E2_DRIVER_TYPE A4988
@@ -362,10 +357,9 @@
 #define CONTROLLERFAN_SECS 60
 #define CONTROLLERFAN_SPEED 255
 #define CONTROLLERFAN_MIN_SPEED 0
-//#define TACHOMETRIC
 //#define VOLUMETRIC_EXTRUSION
 //#define VOLUMETRIC_DEFAULT_ON
-#define DEFAULT_NOMINAL_FILAMENT_DIA 1.75
+#define NOMINAL_FILAMENT_DIA 1.75
 //#define SINGLENOZZLE
 //#define COLOR_MIXING_EXTRUDER
 #define MIXING_STEPPERS 2
@@ -445,7 +439,6 @@
 #define RETRACT_RECOVER_FEEDRATE_SWAP 8   // Default feedrate for recovering from swap retraction (mm/s)
 #define TOOLCHANGE_PARK_ZLIFT   0.2      // the distance to raise Z axis when parking an extruder
 #define TOOLCHANGE_UNPARK_ZLIFT 1        // the distance to raise Z axis when unparking an extruder
-#define DEFAULT_DUPLICATION_X_OFFSET 100
 //#define X_TWO_STEPPER_DRIVERS
 #define INVERT_X2_VS_X_DIR false
 //#define X_TWO_ENDSTOPS
@@ -455,25 +448,13 @@
 //#define Z_TWO_STEPPER_DRIVERS
 #define INVERT_Z2_VS_Z_DIR false
 //#define Z_TWO_ENDSTOPS
-//#define Z_THREE_STEPPER_DRIVERS
-#define INVERT_Z2_VS_Z_DIR false
-#define INVERT_Z3_VS_Z_DIR false
-//#define Z_THREE_ENDSTOPS
 //#define XY_FREQUENCY_LIMIT  15
 //#define SF_ARC_FIX
 //#define EXTRUDER_ENCODER_CONTROL
 #define ENC_ERROR_STEPS 500
 #define ENC_MIN_STEPS 10
 //#define INVERTED_ENCODER_PINS
-//#define FILAMENT_SENSOR
-#define FILAMENT_SENSOR_EXTRUDER_NUM 0
-#define MEASUREMENT_DELAY_CM         14   // (cm) The distance from the filament sensor to the melting chamber
-#define FILWIDTH_ERROR_MARGIN        1.0  // (mm) If a measurement differs too much from nominal width ignore it
-#define MAX_MEASUREMENT_DELAY        20   // (bytes) Buffer size for stored measurements (1 byte per cm). Must be larger than MEASUREMENT_DELAY_CM.
-#define DEFAULT_MEASURED_FILAMENT_DIA  DEFAULT_NOMINAL_FILAMENT_DIA  //set measured to nominal initially
-//#define FILAMENT_LCD_DISPLAY
 //#define FILAMENT_RUNOUT_SENSOR
-//#define FILAMENT_RUNOUT_DAV_SYSTEM
 #define FIL_RUNOUT_0_LOGIC false
 #define FIL_RUNOUT_1_LOGIC false
 #define FIL_RUNOUT_2_LOGIC false
@@ -491,9 +472,6 @@
 //#define DOOR_OPEN_FEATURE
 #define DOOR_OPEN_LOGIC false
 #define PULLUP_DOOR_OPEN true
-//#define POWER_CHECK
-#define POWER_CHECK_LOGIC false
-#define PULLUP_POWER_CHECK true
 #define EEPROM_SETTINGS
 #define EEPROM_CHITCHAT
 //#define EEPROM_I2C

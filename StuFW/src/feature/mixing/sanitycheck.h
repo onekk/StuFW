@@ -36,9 +36,6 @@
   #if MIXING_STEPPERS < 2
     #error "DEPENDENCY ERROR: You must set MIXING_STEPPERS >= 2 for a mixing extruder."
   #endif
-  #if ENABLED(FILAMENT_SENSOR)
-    #error "DEPENDENCY ERROR: COLOR_MIXING_EXTRUDER is incompatible with FILAMENT_SENSOR. Comment out this line to use it anyway."
-  #endif
 #endif
 
 #endif /* _COLOR_MIXING_SANITYCHECK_H_ */

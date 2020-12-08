@@ -2,7 +2,7 @@
 
 # StuFW 3D Printer Firmware for simple Atmel AVR boards
 
-## Version 0.0.7 revision 20201207
+## Version 0.0.8 revision 20201208
 
 Maybe it is not functional Display code is very complicated due to big variants of display type and something may be broken
 

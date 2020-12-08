@@ -55,11 +55,6 @@ class Temperature {
 
     static millis_t next_check_ms[HEATER_COUNT];
 
-    #if ENABLED(FILAMENT_SENSOR)
-      static int8_t   meas_shift_index;     // Index of a delayed sample in buffer
-      static uint16_t current_raw_filwidth; // Measured filament diameter - one extruder only
-    #endif
-
     #if ENABLED(PROBING_HEATERS_OFF)
       static bool paused;
     #endif
@@ -100,10 +95,6 @@ class Temperature {
       static void getTemperature_SPI();
     #endif
 
-    #if HAS_FILAMENT_SENSOR
-      static int8_t widthFil_to_size_ratio(); // Convert Filament Width (mm) to an extrusion ratio
-    #endif
-
     #if ENABLED(PROBING_HEATERS_OFF)
       static void pause(const bool p);
       static bool is_paused() { return paused; }
@@ -136,10 +127,6 @@ class Temperature {
     FORCE_INLINE static bool targetHotEnoughToExtrude(const uint8_t h) { return !targetTooColdToExtrude(h); }
 
   private:
-
-    #if HAS_FILAMENT_SENSOR
-      static float analog2widthFil(); // Convert raw Filament Width to millimeters
-    #endif
 
     #if HAS_MCU_TEMPERATURE
       static float analog2tempMCU(const int raw);

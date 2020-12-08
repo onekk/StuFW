@@ -93,10 +93,6 @@ class LcdUI {
           static uint8_t contrast;
         #endif
 
-        #if ENABLED(FILAMENT_LCD_DISPLAY) && HAS_SD_SUPPORT
-          static millis_t previous_status_ms;
-        #endif
-
       #endif
 
     #endif // HAS_SPI_LCD

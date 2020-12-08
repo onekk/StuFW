@@ -65,19 +65,11 @@
 #define Z_CS_PIN             ORIG_Z_CS_PIN
 
 // Z2 axis pins
-#if (ENABLED(Z_TWO_STEPPER_DRIVERS) || ENABLED(Z_THREE_STEPPER_DRIVERS))
+#if ENABLED(Z_TWO_STEPPER_DRIVERS)
   #define Z2_STEP_PIN        ORIG_E1_STEP_PIN
   #define Z2_DIR_PIN         ORIG_E1_DIR_PIN
   #define Z2_ENABLE_PIN      ORIG_E1_ENABLE_PIN
   #define Z2_CS_PIN          ORIG_E1_CS_PIN
-#endif
-
-// Z3 axis pins
-#if ENABLED(Z_THREE_STEPPER_DRIVERS)
-  #define Z3_STEP_PIN        ORIG_E2_STEP_PIN
-  #define Z3_DIR_PIN         ORIG_E2_DIR_PIN
-  #define Z3_ENABLE_PIN      ORIG_E2_ENABLE_PIN
-  #define Z3_CS_PIN          ORIG_E2_CS_PIN
 #endif
 
 // E axis pins
@@ -139,11 +131,9 @@
 #define X2_MIN_PIN           NoPin
 #define Y2_MIN_PIN           NoPin
 #define Z2_MIN_PIN           NoPin
-#define Z3_MIN_PIN           NoPin
 #define X2_MAX_PIN           NoPin
 #define Y2_MAX_PIN           NoPin
 #define Z2_MAX_PIN           NoPin
-#define Z3_MAX_PIN           NoPin
 #define Z_PROBE_PIN          NoPin
 
 // HEATER pins
@@ -180,15 +170,6 @@
 
 //================================= FEATURE ==================================
 
-#if ENABLED(TACHOMETRIC)
-  #define TACHO0_PIN    NoPin
-  #define TACHO1_PIN    NoPin
-  #define TACHO2_PIN    NoPin
-  #define TACHO3_PIN    NoPin
-  #define TACHO4_PIN    NoPin
-  #define TACHO5_PIN    NoPin
-#endif
-
 #if ENABLED(MKR4)
   #define E0E1_CHOICE_PIN    -1
   #define E0E2_CHOICE_PIN    -1
@@ -215,11 +196,6 @@
   #define FIL_RUNOUT_3_PIN NoPin
   #define FIL_RUNOUT_4_PIN NoPin
   #define FIL_RUNOUT_5_PIN NoPin
-  #define FIL_RUNOUT_DAV_PIN NoPin
-#endif
-
-#if ENABLED(FILAMENT_SENSOR)
-  #define FILWIDTH_PIN NoPin
 #endif
 
 #if ENABLED(PHOTOGRAPH)
@@ -237,11 +213,6 @@
 #if ENABLED(DOOR_OPEN_FEATURE)
   #define DOOR_OPEN_PIN NoPin
 #endif
-
-#if ENABLED(POWER_CHECK)
-  #define POWER_CHECK_PIN NoPin
-#endif
-
 
 #if ENABLED(RGB_LED) || ENABLED(RGBW_LED)
   #define RGB_LED_R_PIN NoPin

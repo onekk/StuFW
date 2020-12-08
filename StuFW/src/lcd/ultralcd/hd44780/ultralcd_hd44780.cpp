@@ -520,27 +520,7 @@ void LcdUI::draw_status_message(const bool blink) {
     if (printer.progress && (ELAPSED(millis(), progress_bar_ms + PROGRESS_BAR_MSG_TIME) || !has_status()))
       return lcd_draw_progress_bar(printer.progress);
 
-  #elif (HAS_LCD_FILAMENT_SENSOR && ENABLED(SDSUPPORT)) 
-
-    #if HAS_LCD_FILAMENT_SENSOR && HAS_SD_SUPPORT
-      // Show Filament Diameter and Volumetric Multiplier
-      // After allowing status_message to show for 5 seconds
-      if (ELAPSED(millis(), previous_lcd_status_ms + 5000UL)) {
-        lcd_put_u8str_P(PSTR("Dia "));
-        lcd_put_u8str(ftostr12ns(filament_width_meas));
-        lcd_put_u8str_P(PSTR(" V"));
-        lcd_put_u8str(i8tostr3(100.0 * (
-          printer.isVolumetric()
-            ? tools.volumetric_area_nominal / tools.volumetric_multiplier[FILAMENT_SENSOR_EXTRUDER_NUM]
-            : tools.volumetric_multiplier[FILAMENT_SENSOR_EXTRUDER_NUM]
-        )
-      ));
-      lcd_put_wchar('%');
-      return;
-      }
-    #endif
-
-  #endif // FILAMENT_LCD_DISPLAY
+  #endif // LCD_PROGRESS_BAR
 
   #if ENABLED(STATUS_MESSAGE_SCROLLING)
     static bool last_blink = false;
@@ -880,7 +860,7 @@ void LcdUI::draw_status_screen() {
   // ========= Last Line ========
 
   //
-  // Status Message (which may be a Progress Bar or Filament display)
+  // Status Message (which may be a Progress Bar)
   //
   draw_status_message(blink);
 }

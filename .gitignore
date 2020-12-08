@@ -5,3 +5,5 @@ applet/
 *.rej
 *.bak
 *.gch
+00_defines.txt
+00_Todo.txt

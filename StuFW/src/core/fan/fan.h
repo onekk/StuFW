@@ -28,9 +28,6 @@
 
 #pragma once
 
-#if ENABLED(TACHOMETRIC)
-  #include "tachometric.h"
-#endif
 
 union flagfan_t {
   bool all;
@@ -73,10 +70,6 @@ class Fan {
   public: /** Public Parameters */
 
     fan_data_t  data;
-
-    #if ENABLED(TACHOMETRIC)
-      tacho_data_t tacho;
-    #endif
 
     uint8_t     Speed,
                 paused_Speed,

@@ -135,7 +135,6 @@
 #include "src/feature/bltouch/bltouch.h"
 #include "src/feature/power/power.h"
 #include "src/feature/mixing/mixing.h"
-#include "src/feature/filament/filament.h"
 #include "src/feature/filamentrunout/filamentrunout.h"
 #include "src/feature/fwretract/fwretract.h"
 #include "src/feature/advanced_pause/advanced_pause.h"

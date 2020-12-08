@@ -101,7 +101,6 @@
 #include "../feature/advanced_pause/sanitycheck.h"
 #include "../feature/bedlevel/sanitycheck.h"
 #include "../feature/caselight/sanitycheck.h"
-#include "../feature/filament/sanitycheck.h"
 #include "../feature/filamentrunout/sanitycheck.h"
 #include "../feature/fwretract/sanitycheck.h"
 #include "../feature/mixing/sanitycheck.h"

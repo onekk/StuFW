@@ -50,9 +50,7 @@
  #define ENDSTOPPULLUP_YMAX    false
  #define ENDSTOPPULLUP_ZMAX    false
  #define ENDSTOPPULLUP_Z2MIN   false
- #define ENDSTOPPULLUP_Z3MIN   false
  #define ENDSTOPPULLUP_Z2MAX   false
- #define ENDSTOPPULLUP_Z3MAX   false
  #define ENDSTOPPULLUP_ZPROBE  false
 
  #if MECH(CARTESIAN)
@@ -81,9 +79,7 @@
  #define Y_MAX_ENDSTOP_LOGIC   false
  #define Z_MAX_ENDSTOP_LOGIC   false
  #define Z2_MIN_ENDSTOP_LOGIC  false
- #define Z3_MIN_ENDSTOP_LOGIC  false
  #define Z2_MAX_ENDSTOP_LOGIC  false
- #define Z3_MAX_ENDSTOP_LOGIC  false
  #define Z_PROBE_ENDSTOP_LOGIC false
 
  #if MECH(CARTESIAN)

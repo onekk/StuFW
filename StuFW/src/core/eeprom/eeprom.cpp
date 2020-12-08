@@ -94,13 +94,6 @@ typedef struct EepromDataStruct {
   #endif
 
   //
-  // Power Check
-  //
-  #if HAS_POWER_CHECK
-    flagbyte_t      power_flag;
-  #endif
-
-  //
   // Z fade height
   //
   #if ENABLED(ENABLE_LEVELING_FADE_HEIGHT)
@@ -180,9 +173,6 @@ typedef struct EepromDataStruct {
   //
   #if FAN_COUNT > 0
     fan_data_t      fans_data[FAN_COUNT];
-    #if ENABLED(TACHOMETRIC)
-      tacho_data_t  tacho_data[FAN_COUNT];
-    #endif
   #endif
 
   //
@@ -300,9 +290,6 @@ void EEPROM::post_process() {
   #if FAN_COUNT > 0
     LOOP_FAN() {
       fans[f].init();
-      #if ENABLED(TACHOMETRIC)
-        fans[f].tacho.init(f);
-      #endif
     }
   #endif
 
@@ -340,11 +327,6 @@ void EEPROM::post_process() {
   // Setup FilRunout pullup
   #if ENABLED(FILAMENT_RUNOUT_SENSOR)
     filamentrunout.setup_pullup();
-  #endif
-
-  // Setup power check pullup
-  #if HAS_POWER_CHECK
-    powerManager.setup_pullup();
   #endif
 
   // Refresh steps_to_mm with the reciprocal of axis_steps_per_mm
@@ -453,13 +435,6 @@ void EEPROM::post_process() {
     #endif
 
     //
-    // Power Check
-    //
-    #if HAS_POWER_CHECK
-      EEPROM_WRITE(powerManager.flag);
-    #endif
-
-    //
     // Z fade height
     //
     #if ENABLED(ENABLE_LEVELING_FADE_HEIGHT)
@@ -553,9 +528,6 @@ void EEPROM::post_process() {
     #if FAN_COUNT > 0
       LOOP_FAN() {
         EEPROM_WRITE(fans[f].data);
-        #if ENABLED(TACHOMETRIC)
-          EEPROM_WRITE(fans[f].tacho);
-        #endif
       }
     #endif
 
@@ -762,13 +734,6 @@ void EEPROM::post_process() {
       #endif
 
       //
-      // Power Check
-      //
-      #if HAS_POWER_CHECK
-        EEPROM_READ(powerManager.flag);
-      #endif
-
-      //
       // General Leveling
       //
       #if ENABLED(ENABLE_LEVELING_FADE_HEIGHT)
@@ -873,9 +838,6 @@ void EEPROM::post_process() {
       #if FAN_COUNT > 0
         LOOP_FAN() {
           EEPROM_READ(fans[f].data);
-          #if ENABLED(TACHOMETRIC)
-            EEPROM_READ(fans[f].tacho);
-          #endif
         }
       #endif
 
@@ -1501,12 +1463,8 @@ void EEPROM::reset() {
 
   #endif // HEATER_COUNT > 0
 
-  // Fans && Tachometric
+  // Fans
   #if FAN_COUNT > 0
-
-    #if ENABLED(TACHOMETRIC)
-      constexpr pin_t tacho_temp_pin[] = { TACHO0_PIN, TACHO1_PIN, TACHO2_PIN, TACHO3_PIN, TACHO4_PIN, TACHO5_PIN };
-    #endif
 
     Fan *fan;
     fan_data_t *fdata;
@@ -1545,10 +1503,6 @@ void EEPROM::reset() {
     filamentrunout.factory_parameters();
   #endif
 
-  #if HAS_POWER_CHECK
-    powerManager.factory_parameters();
-  #endif
-
   #if ENABLED(FWRETRACT)
     fwretract.reset();
   #endif
@@ -1562,7 +1516,7 @@ void EEPROM::reset() {
     #endif
 
     for (uint8_t q = 0; q < COUNT(tools.filament_size); q++)
-      tools.filament_size[q] = DEFAULT_NOMINAL_FILAMENT_DIA;
+      tools.filament_size[q] = NOMINAL_FILAMENT_DIA;
 
   #endif
 

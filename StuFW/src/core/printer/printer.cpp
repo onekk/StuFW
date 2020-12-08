@@ -92,7 +92,7 @@ void Printer::setup() {
 
   setup_pinout();
 
-  #if HAS_POWER_CHECK || HAS_POWER_SWITCH
+  #if HAS_POWER_CHECK
     powerManager.init();
   #endif
 

@@ -471,13 +471,6 @@ void Commands::get_serial() {
       }
     #endif
 
-    #if HAS_POWER_CHECK
-      if (READ(POWER_CHECK_PIN) != endstops.isLogic(POWER_CHECK)) {
-        card.setAbortSDprinting(true);
-        return;
-      }
-    #endif
-
     /**
      * '#' stops reading from SD to the buffer prematurely, so procedural
      * macro calls are possible. If it occurs, stop_buffering is triggered

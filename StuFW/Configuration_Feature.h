@@ -33,7 +33,6 @@
  * - Fan configuration
  * EXTRUDER FEATURES:
  * - Volumetric extrusion
- * - Filament Diameter
  * - Single nozzle
  * - Color Mixing Extruder
  * - Multiextruder old MKR4
@@ -58,7 +57,6 @@
  * - Force Home XY before Home Z
  * - Babystepping
  * - Firmware retract
- * - Dual X Carriage
  * - X-axis two driver
  * - Y-axis two driver
  * - Z-axis two driver
@@ -67,11 +65,8 @@
  * - Skeinforge arc fix
  * SENSORS FEATURES:
  * - Extruder Encoder Control
- * - Filament diameter sensor
  * - Filament Runout sensor
- * - Flow sensor
  * - Door open sensor
- * - Power check sensor
  * ADDON FEATURES:
  * - EEPROM
  * - SDCARD
@@ -96,10 +91,8 @@
  * - Direction Stepper Delay
  * - Adaptive Step Smoothing
  * - Microstepping
- * - Motor's current
- * - I2C DIGIPOT
  * ADVANCED FEATURES:
-  * - Buffer stuff
+* - Buffer stuff
  * - Nozzle Clean Feature
  * - Nozzle Park
  * - Advanced Pause Park
@@ -114,7 +107,7 @@
  * - User menu items
  *
  * Basic-settings can be found in Configuration_Basic.h
- * Mechanisms-settings can be found in Configuration_Xxxxxx.h (where Xxxxxx can be: Cartesian - Delta - Core - Scara)
+ * Mechanisms-settings can be found in Configuration_Mechanics.h
  * Pins-settings can be found in "Configuration_Pins.h"
  *
  */
@@ -146,7 +139,6 @@
 #define X2_DRIVER_TYPE  A4988
 #define Y2_DRIVER_TYPE  A4988
 #define Z2_DRIVER_TYPE  A4988
-#define Z3_DRIVER_TYPE  A4988
 #define E0_DRIVER_TYPE  A4988
 #define E1_DRIVER_TYPE  A4988
 #define E2_DRIVER_TYPE  A4988
@@ -179,9 +171,9 @@
 //=============================== FAN FEATURES ==============================
 //===========================================================================
 
-/****************************************************************************
- ***************************** Fan configuration ****************************
- ****************************************************************************/
+/************************************************************************
+ ***************************** Fan configuration ************************
+ ************************************************************************/
 // This defines the minimal speed for the fan
 // set minimal speed for reliable running (0-255)
 #define FAN_MIN_PWM 0
@@ -202,7 +194,7 @@
 //#define FAN_KICKSTART_TIME 200
 
 // AUTO FAN - Fans for cooling Hotend or Controller Fan
-// Put number Hotend in fan to automatically turn on/off when the associated
+// Put Hotend number to automatically turn on/off when the associated
 // hotend temperature is above/below HOTEND AUTO FAN TEMPERATURE.
 // Or put 7 for controller fan
 // -1 disables auto mode.
@@ -213,13 +205,10 @@
 #define HOTEND_AUTO_FAN_SPEED       255 // 255 = full speed
 #define HOTEND_AUTO_FAN_MIN_SPEED     0
 // Parameters for Controller Fan
-#define CONTROLLERFAN_SECS           60 // How many seconds, after all motors were disabled, the fan should run
+// How many seconds, after all motors were disabled, the fan should run
+#define CONTROLLERFAN_SECS           60
 #define CONTROLLERFAN_SPEED         255 // 255 = full speed
 #define CONTROLLERFAN_MIN_SPEED       0
-
-// Add Tachometric option for fan ONLY FOR DUE. (Add TACHOMETRIC PIN in configuration pins)
-//#define TACHOMETRIC
-/****************************************************************************/
 
 
 //===========================================================================
@@ -247,9 +236,9 @@
  ***********************************************************************
  *                                                                     *
  * Generally expected filament diameter (1.75, 2.85, 3.0, ...)         *
- * Used for Volumetric, Filament Width Sensor, etc.                    *
+ * Used for Volumetric, etc.                                           *
  ***********************************************************************/
-#define DEFAULT_NOMINAL_FILAMENT_DIA 1.75
+#define NOMINAL_FILAMENT_DIA 1.75
 /***********************************************************************/
 
 
@@ -381,51 +370,56 @@
  ***********************************************************************/
 //#define IDLE_OOZING_PREVENT
 #define IDLE_OOZING_MINTEMP           190
-#define IDLE_OOZING_FEEDRATE          50    //default feedrate for retracting (mm/s)
+//default feedrate when retracting (mm/s)
+#define IDLE_OOZING_FEEDRATE          50
 #define IDLE_OOZING_SECONDS           5
-#define IDLE_OOZING_LENGTH            15    //default retract length (positive mm)
-#define IDLE_OOZING_RECOVER_LENGTH    0     //default additional recover length (mm, added to retract length when recovering)
-#define IDLE_OOZING_RECOVER_FEEDRATE  50    //default feedrate for recovering from retraction (mm/s)
+//default retract length (positive mm)
+#define IDLE_OOZING_LENGTH            15
+//default recover length (mm, added to retract length when recovering)
+#define IDLE_OOZING_RECOVER_LENGTH    0
+//default feedrate for recovering from retraction (mm/s)
+#define IDLE_OOZING_RECOVER_FEEDRATE  50
 /***********************************************************************/
 
 
-/*****************************************************************************************
- ***************************** Extruder run-out prevention *******************************
- *****************************************************************************************
- *                                                                                       *
- * If the machine is idle, and the temperature over MINTEMP, every couple of SECONDS     *
- * some filament is extruded                                                             *
- *                                                                                       *
- * Uncomment EXTRUDER RUNOUT PREVENT to enable this feature                              *
- *                                                                                       *
- *****************************************************************************************/
+/***********************************************************************
+ ***************************** Extruder run-out prevention *************
+ ***********************************************************************
+ *                                                                     *
+ * When machine is idle, and the temperature over MINTEMP, every       *
+ * couple of SECONDS some filament is extruded                         *
+ *                                                                     *
+ * Uncomment EXTRUDER RUNOUT PREVENT to enable this feature            *
+ *                                                                     *
+ ***********************************************************************/
 //#define EXTRUDER_RUNOUT_PREVENT
 #define EXTRUDER_RUNOUT_MINTEMP 190
 #define EXTRUDER_RUNOUT_SECONDS  30
 #define EXTRUDER_RUNOUT_SPEED  1500 // mm/m
 #define EXTRUDER_RUNOUT_EXTRUDE   5 // mm
-/*****************************************************************************************/
+/***********************************************************************/
 
 
-/*****************************************************************************************
- ****************** Extruder Advance Linear Pressure Control *****************************
- *****************************************************************************************
- *                                                                                       *
- * Linear Pressure Control v1.5                                                          *
- *                                                                                       *
- * Assumption: advance [steps] = k * (delta velocity [steps/s])                          *
- * K=0 means advance disabled.                                                           *
- *                                                                                       *
- * NOTE: K values for LIN_ADVANCE 1.5 differ from earlier versions!                      *
- *                                                                                       *
- * Set K around 0.22 for 3mm PLA Direct Drive with ~6.5cm between the                    *
- * drive gear and heatbreak.                                                             *
- * Larger K values will be needed for flexible filament and greater distances.           *
- * If this algorithm produces a higher speed offset than the                             *
- * extruder can handle (compared to E jerk)                                              *
- * print acceleration will be reduced during the affected moves to keep within the limit.*
- *                                                                                       *
- *****************************************************************************************/
+/***********************************************************************
+ ****************** Extruder Advance Linear Pressure Control ***********
+ ***********************************************************************
+ *                                                                     *
+ * Linear Pressure Control v1.5                                        *
+ *                                                                     *
+ * Assumption: advance [steps] = k * (delta velocity [steps/s])        *
+ * K=0 means advance disabled.                                         *
+ *                                                                     *
+ * NOTE: K values for LIN_ADVANCE 1.5 differ from earlier versions!    *
+ *                                                                     *
+ * Set K around 0.22 for 3mm PLA Direct Drive with ~6.5cm between      *
+ * drive gear and heatbreak. Larger K values will be needed for        *
+ * flexible filament and greater distances.                            *
+ * If this algorithm produces a higher speed offset than the           *
+ * extruder can handle (compared to E jerk)                            *
+ * print acceleration will be reduced during affected moves to keep    *
+ * within the limit.                                                   *
+ *                                                                     *
+ ***********************************************************************/
 //#define LIN_ADVANCE
 
 // Unit: mm compression per 1mm/s extruder speed
@@ -433,26 +427,26 @@
 
 // If enabled, this will generate debug information output over Serial.
 //#define LA_DEBUG
-/*****************************************************************************************/
+/***********************************************************************/
 
 
 //===========================================================================
 //============================= MOTION FEATURES =============================
 //===========================================================================
 
-/**************************************************************************
- *************************** Workspace offsets ****************************
- **************************************************************************
- *                                                                        *
- * Enable this option for a leaner build of StuFW that enable all         *
- * workspace offsets, simplifying coordinate transformations,             *
- * leveling, etc.                                                         *
- *                                                                        *
- *  - G92                                                                 *
- *  - M206 and M428 are enabled.                                          *
- **************************************************************************/
+/***********************************************************************
+ *************************** Workspace offsets *************************
+ ***********************************************************************
+ *                                                                     *
+ * Enable this option for a leaner build of StuFW that enable all      *
+ * workspace offsets, simplifying coordinate transformations,          *
+ * leveling, etc.                                                      *
+ *                                                                     *
+ *  - G92                                                              *
+ *  - M206 and M428 are enabled.                                       *
+ ***********************************************************************/
 //#define WORKSPACE_OFFSETS
-/**************************************************************************/
+/***********************************************************************/
 
 
 /***********************************************************************
@@ -470,32 +464,26 @@
 #define DISABLE_INACTIVE_Y
 #define DISABLE_INACTIVE_Z
 #define DISABLE_INACTIVE_E
-/***********************************************************************/
 
-
-/**************************************************************************
- *************************** Software endstops ****************************
- **************************************************************************/
+/***********************************************************************
+ *************************** Software endstops *************************
+ ***********************************************************************/
 // If enabled, axis won't move to coordinates less than MIN POS.
 #define MIN_SOFTWARE_ENDSTOPS
 // If enabled, axis won't move to coordinates greater than MAX POS.
 #define MAX_SOFTWARE_ENDSTOPS
-/**************************************************************************/
 
-
-/**************************************************************************
- *********************** Endstops only for homing *************************
- **************************************************************************
- *                                                                        *
- * If defined the endstops will only be used for homing                   *
- *                                                                        *
- * If you use all six endstop enable ENABLE ALL SIX ENDSTOP               *
- *                                                                        *
- **************************************************************************/
+/***********************************************************************
+ *********************** Endstops only for homing **********************
+ ***********************************************************************
+ *                                                                     *
+ * If defined the endstops will only be used for homing                *
+ *                                                                     *
+ * If you use all six endstop enable ENABLE ALL SIX ENDSTOP            *
+ *                                                                     *
+ ***********************************************************************/
 #define ENDSTOPS_ONLY_FOR_HOMING
 //#define ENABLED_ALL_SIX_ENDSTOP
-/**************************************************************************/
-
 
 /**************************************************************************
  ************************ Abort on endstop hit ****************************
@@ -510,8 +498,6 @@
 //#define ABORT_ON_ENDSTOP_HIT
 
 #define ABORT_ON_ENDSTOP_HIT_DEFAULT true
-/**************************************************************************/
-
 
 /**************************************************************************
  ********************* G38.2 and G38.3 Probe Target ***********************
@@ -526,30 +512,32 @@
 // minimum distance in mm that will produce a move
 // (determined using the print statement in check_move)
 #define G38_MINIMUM_MOVE 0.0275
-/**************************************************************************/
-
 
 /**************************************************************************
  ****************************** R/C Servo *********************************
+ **************************************************************************
+ *                                                                        *
+ * Number of servos                                                       *
+ * If you select a configuration below, this will receive a default value *
+ * and does not need to be set manually                                   *
+ * set it manually if you have more servos than extruders and you wish to *
+ * manually control some.                                                 *
+ * Leaving it defining as 0 will disable the servo subsystem              *
+ * Servo index starts from 0 in M280 command                              *
  **************************************************************************/
 //#define ENABLE_SERVOS
-// Number of servos
-// If you select a configuration below, this will receive a default value and does not need to be set manually
-// set it manually if you have more servos than extruders and wish to manually control some
-// leaving it defining as 0 will disable the servo subsystem
 #define NUM_SERVOS 0
-// Servo index starts with 0 for M280 command
-//
+
 // Servo deactivation
-// With this option servos are powered only during movement, then turned off to prevent jitter.
+// With this option servos are powered only during movement, then turned off
+// to prevent jitter.
 //#define DEACTIVATE_SERVOS_AFTER_MOVE
 
-// Delay (in milliseconds) before turning the servo off. This depends on the servo speed.
-// 300ms is a good value but you can try less delay.
-// If the servo can't reach the requested position, increase it.
+// Delay (in milliseconds) before turning servo off.
+// This depends on the servo speed.
+// 300ms is a good value but you can try different delay.
+// If servo can't reach requested position, increase the value.
 #define SERVO_DEACTIVATION_DELAY 300
-/**************************************************************************/
-
 
 /***********************************************************************
  *************************** Late Z axis *******************************
@@ -562,8 +550,6 @@
  *                                                                     *
  ***********************************************************************/
 //#define Z_LATE_ENABLE
-/***********************************************************************/
-
 
 /***********************************************************************
  ************************* Ahead slowdown ******************************
@@ -574,8 +560,6 @@
  *                                                                     *
  ***********************************************************************/
 #define SLOWDOWN
-/***********************************************************************/
-
 
 /***********************************************************************
  *************************** Quick home ********************************
@@ -586,8 +570,6 @@
  *                                                                     *
  ***********************************************************************/
 //#define QUICK_HOME
-/***********************************************************************/
-
 
 /***********************************************************************
  ************************* Home Y before X *****************************
@@ -597,8 +579,6 @@
  *                                                                     *
  ***********************************************************************/
 //#define HOME_Y_BEFORE_X
-/***********************************************************************/
-
 
 /***********************************************************************
  *********************** Force Home XY before Z ************************
@@ -608,8 +588,6 @@
  *                                                                     *
  ***********************************************************************/
 //#define FORCE_HOME_XY_BEFORE_Z
-/***********************************************************************/
-
 
 /**************************************************************************
  ***************************** Babystepping *******************************
@@ -643,8 +621,6 @@
 //#define BABYSTEP_ZPROBE_GFX_OVERLAY
 // Reverses the direction of the CW/CCW indicators
 //#define BABYSTEP_ZPROBE_GFX_REVERSE
-/**************************************************************************/
-
 
 /**************************************************************************
  *************************** Firmware retract *****************************
@@ -667,105 +643,82 @@
  **************************************************************************/
 //#define FWRETRACT
 
-#define MIN_AUTORETRACT               0.1 // When auto-retract is on, convert E moves of this length and over
-#define MAX_AUTORETRACT              10.0 // Upper limit for auto-retract conversion
-#define RETRACT_LENGTH                3   // Default retract length (positive mm)
-#define RETRACT_LENGTH_SWAP          13   // Default swap retract length (positive mm), for extruder change
-#define RETRACT_FEEDRATE             45   // Default feedrate for retracting (mm/s)
-#define RETRACT_ZLIFT                 0   // Default retract Z-lift
-#define RETRACT_RECOVER_LENGTH        0   // Default additional recover length (mm, added to retract length when recovering)
-#define RETRACT_RECOVER_LENGTH_SWAP   0   // Default additional swap recover length (mm, added to retract length when recovering from extruder change)
-#define RETRACT_RECOVER_FEEDRATE      8   // Default feedrate for recovering from retraction (mm/s)
-#define RETRACT_RECOVER_FEEDRATE_SWAP 8   // Default feedrate for recovering from swap retraction (mm/s)
-/**************************************************************************/
-
-
+// When auto-retract is on, convert E moves of this length and over
+#define MIN_AUTORETRACT               0.1
+// Upper limit for auto-retract conversion
+#define MAX_AUTORETRACT              10.0
+// Default retract length (positive mm)
+#define RETRACT_LENGTH                3
+// Default swap retract length (positive mm), for extruder change
+#define RETRACT_LENGTH_SWAP          13
+// Default feedrate for retracting (mm/s)
+#define RETRACT_FEEDRATE             45
+// Default retract Z-lift
+#define RETRACT_ZLIFT                 0
+// Default additional recover length (mm)
+// added to retract length when recovering)
+#define RETRACT_RECOVER_LENGTH        0
+// Default additional swap recover length (mm)
+// added to retract length when recovering from extruder change
+#define RETRACT_RECOVER_LENGTH_SWAP   0
+// Default feedrate for recovering from retraction (mm/s)
+#define RETRACT_RECOVER_FEEDRATE      8
+// Default feedrate for recovering from swap retraction (mm/s)
+#define RETRACT_RECOVER_FEEDRATE_SWAP 8
 
 // Default settings in "Auto-park Mode"
-#define TOOLCHANGE_PARK_ZLIFT   0.2      // the distance to raise Z axis when parking an extruder
-#define TOOLCHANGE_UNPARK_ZLIFT 1        // the distance to raise Z axis when unparking an extruder
+// Distance to raise Z axis when parking an extruder
+#define TOOLCHANGE_PARK_ZLIFT   0.2
+// the distance to raise Z axis when unparking an extruder
+#define TOOLCHANGE_UNPARK_ZLIFT 1
 
-// Default x offset in duplication mode (typically set to half print bed width)
-#define DEFAULT_DUPLICATION_X_OFFSET 100
-/*****************************************************************************************/
-
-
-/*****************************************************************************************
- ********************************** X-axis two driver ************************************
- *****************************************************************************************
- *                                                                                       *
- * This section will allow you to use extra drivers to drive a second motor for X        *
- * Uncomment this define to utilize a separate stepper driver for each X axis motor.     *
- * If the motors need to spin in opposite directions set INVERT X2 VS X DIR.             *
- * If the second motor needs its own endstop set X TWO ENDSTOPS.                         *
- * Extra endstops will appear in the output of 'M119'.                                   *
- *                                                                                       *
- * ONLY Cartesian                                                                        *
- *                                                                                       *
- *****************************************************************************************/
+/***********************************************************************
+ *               X-axis dual motor driver                              *
+ ***********************************************************************
+ *                                                                     *
+ * Uncomment to utilize separate stepper drivers for each motor.       *
+ * ONLY Cartesian                                                      *
+ *                                                                     *
+ ***********************************************************************/
 //#define X_TWO_STEPPER_DRIVERS
 
+// If motors need to spin in opposite directions set this value to true
 #define INVERT_X2_VS_X_DIR false
+// If second motor needs its own endstop uncomment this value
+// Extra endstops will appear in the output of 'M119'.
 //#define X_TWO_ENDSTOPS
-/*****************************************************************************************/
 
-
-/*****************************************************************************************
- ********************************** Y-axis two driver ************************************
- *****************************************************************************************
- *                                                                                       *
- * This section will allow you to use extra drivers to drive a second motor for Y        *
- * Uncomment this define to utilize a separate stepper driver for each Y axis motor.     *
- * If the motors need to spin in opposite directions set INVERT Y2 VS Y DIR.             *
- * If the second motor needs its own endstop set Y TWO ENDSTOPS.                         *
- * Extra endstops will appear in the output of 'M119'.                                   *
- *                                                                                       *
- * ONLY Cartesian                                                                        *
- *                                                                                       *
- *****************************************************************************************/
+/***********************************************************************
+ *               Y-axis dual motor driver                              *
+ ***********************************************************************
+ *                                                                     *
+ * Uncomment to utilize separate stepper drivers for each motor.       *
+ * ONLY Cartesian                                                      *
+  *                                                                                       *
+ ***********************************************************************/
 //#define Y_TWO_STEPPER_DRIVERS
 
+// If motors need to spin in opposite directions set this value to true
 #define INVERT_Y2_VS_Y_DIR false
+// If second motor needs its own endstop uncomment this value
+// Extra endstops will appear in the output of 'M119'.
 //#define Y_TWO_ENDSTOPS
-/*****************************************************************************************/
 
-
-/*****************************************************************************************
- ********************************** Z-axis two driver ************************************
- *****************************************************************************************
- *                                                                                       *
- * This section will allow you to use extra drivers to drive a second motor for Z        *
- * Uncomment this define to utilize a separate stepper driver for each Z axis motor.     *
- * If the motors need to spin in opposite directions set INVERT Z2 VS Z DIR.             *
- * If the second motor needs its own endstop set Z TWO ENDSTOPS.                         *
- * Extra endstops will appear in the output of 'M119'.                                   *
- *                                                                                       *
- *****************************************************************************************/
+/***********************************************************************
+ *               Z-axis dual motor driver                              *
+ ***********************************************************************
+ *                                                                     *
+ * Uncomment to utilize separate stepper drivers for each motor.       *
+ * ONLY Cartesian                                                      *
+ *                                                                     *
+ ***********************************************************************/
 //#define Z_TWO_STEPPER_DRIVERS
 
+// If motors need to spin in opposite directions set this value to true
 #define INVERT_Z2_VS_Z_DIR false
+// If second motor needs its own endstop uncomment this value
+// Extra endstops will appear in the output of 'M119'.
 //#define Z_TWO_ENDSTOPS
-/*****************************************************************************************/
-
-
-/*****************************************************************************************
- ********************************** Z-axis three driver **********************************
- *****************************************************************************************
- *                                                                                       *
- * This section will allow you to use extra drivers to drive a second or third motor Z   *
- * Uncomment this define to utilize a separate stepper driver for each Z axis motor.     *
- * If the motors need to spin in opposite directions set INVERT Z2 VS Z DIR.             *
- * If the second motor needs its own endstop set Z TWO ENDSTOPS.                         *
- * Extra endstops will appear in the output of 'M119'.                                   *
- *                                                                                       *
- *****************************************************************************************/
-//#define Z_THREE_STEPPER_DRIVERS
-
-#define INVERT_Z2_VS_Z_DIR false
-#define INVERT_Z3_VS_Z_DIR false
-//#define Z_THREE_ENDSTOPS
-/*****************************************************************************************/
-
 
 /*****************************************************************************************
  ********************************** XY Frequency limit ***********************************
@@ -807,7 +760,7 @@
  * You need a movement tracker, that changes a digital signal every x extrusion   *
  * steps.                                                                         *
  *                                                                                *
- * Please define/ Encoder pin for any extruder in configuration pins.              *
+ * Please define/ Encoder pin for any extruder in configuration pins.             *
  *                                                                                *
  **********************************************************************************/
 //#define EXTRUDER_ENCODER_CONTROL
@@ -822,29 +775,6 @@
 /**********************************************************************************/
 
 
-/**********************************************************************************
- *************************** Filament diameter sensor *****************************
- **********************************************************************************
- *                                                                                *
- * Support for a filament diameter sensor                                         *
- * Also allows adjustment of diameter at print time (vs  at slicing)              *
- * Single extruder only at this point (extruder 0)                                *
- *                                                                                *
- * You also need to set FILWIDTH_PIN in Configuration_pins.h                      *
- *                                                                                *
- **********************************************************************************/
-//#define FILAMENT_SENSOR
-
-#define FILAMENT_SENSOR_EXTRUDER_NUM  0   // Index of the extruder that has the filament sensor. :[0,1,2,3,4,5]
-#define MEASUREMENT_DELAY_CM         14   // (cm) The distance from the filament sensor to the melting chamber
-
-#define FILWIDTH_ERROR_MARGIN        1.0  // (mm) If a measurement differs too much from nominal width ignore it
-#define MAX_MEASUREMENT_DELAY        20   // (bytes) Buffer size for stored measurements (1 byte per cm). Must be larger than MEASUREMENT_DELAY_CM.
-
-#define DEFAULT_MEASURED_FILAMENT_DIA  DEFAULT_NOMINAL_FILAMENT_DIA  //set measured to nominal initially
-
-//When using an LCD, uncomment the line below to display the Filament sensor data on the last line instead of status.  Status will appear for 5 sec.
-//#define FILAMENT_LCD_DISPLAY
 /**********************************************************************************/
 
 
@@ -859,17 +789,10 @@
  * low = filament run out                                                         *
  * Set valor for extruder 0 to extruder 5                                         *
  *                                                                                *
- * If you mount DAV system encoder filament runout (By D'angella Vincenzo)        *
- * define FILAMENT RUNOUT DAV SYSTEM                                              *
- * Put DAV_PIN for encoder input in Configuration_Pins.h                          *
- *                                                                                *
  * You also need to set FIL RUNOUT PIN in Configuration_pins.h                    *
  *                                                                                *
  **********************************************************************************/
 //#define FILAMENT_RUNOUT_SENSOR
-
-// DAV system ancoder filament runout
-//#define FILAMENT_RUNOUT_DAV_SYSTEM
 
 // Set true or false should assigned
 #define FIL_RUNOUT_0_LOGIC false
@@ -908,23 +831,6 @@
 #define DOOR_OPEN_LOGIC false
 // Put true for use internal pullup for pin if the sensor is defined.
 #define PULLUP_DOOR_OPEN false
-/**************************************************************************/
-
-
-/**************************************************************************
- *************************** Power Check Sensor ***************************
- **************************************************************************
- *                                                                        *
- * A triggered when the pin detects lack of voltage                       *
- * Setting POWER CHECK PIN in Configuration_Pins.h                        *
- *                                                                        *
- **************************************************************************/
-//#define POWER_CHECK
-
-// Set true or false should assigned
-#define POWER_CHECK_LOGIC false
-// Put true for use internal pullup for pin if the sensor is defined.
-#define PULLUP_POWER_CHECK false
 /**************************************************************************/
 
 

@@ -143,9 +143,7 @@ enum EndstopEnum : uint8_t {
   Y2_MAX,       // Bit 10
   Z2_MIN,       // Bit 11
   Z2_MAX,       // Bit 12
-  Z3_MIN,       // Bit 13
-  Z3_MAX,       // Bit 14
-  DOOR_OPEN,    // Bit 15
+  DOOR_OPEN,    // Bit 13
 };
 
 /**
@@ -268,4 +266,3 @@ enum MeshLevelingStateEnum : uint8_t {
   MeshSetZOffset, // G29 S4
   MeshReset       // G29 S5
 };
-

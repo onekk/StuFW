@@ -48,11 +48,6 @@ Temperature thermalManager;
 /** Private Parameters */
 uint8_t Temperature::pid_pointer = 255;
 
-#if ENABLED(FILAMENT_SENSOR)
-  int8_t    Temperature::meas_shift_index;          // Index of a delayed sample in buffer
-  uint16_t  Temperature::current_raw_filwidth = 0;  // Measured filament diameter - one extruder only
-#endif
-
 #if ENABLED(PROBING_HEATERS_OFF)
   bool Temperature::paused;
 #endif
@@ -83,11 +78,6 @@ void Temperature::set_current_temp_raw() {
         heaters[h].sensor.raw = HAL::AnalogInputValues[heaters[h].sensor.pin];
     }
   #endif
-
-  #if HAS_FILAMENT_SENSOR
-    current_raw_filwidth = HAL::AnalogInputValues[FILWIDTH_PIN];
-  #endif
-
 }
 
 /**
@@ -145,34 +135,8 @@ void Temperature::spin() {
     NOMORE(mcu_lowest_temperature, mcu_current_temperature);
   #endif
 
-  // Control the extruder rate based on the width sensor
-  #if ENABLED(FILAMENT_SENSOR)
-
-    filament_width_meas = analog2widthFil();
-
-    if (filament_sensor) {
-      meas_shift_index = filwidth_delay_index[0] - meas_delay_cm;
-      if (meas_shift_index < 0) meas_shift_index += MAX_MEASUREMENT_DELAY + 1;  //loop around buffer if needed
-      meas_shift_index = constrain(meas_shift_index, 0, MAX_MEASUREMENT_DELAY);
-
-      // Convert the ratio value given by the filament width sensor
-      // into a volumetric multiplier. Conversion differs when using
-      // linear extrusion vs volumetric extrusion.
-      const float nom_meas_ratio = 1.0 + 0.01f * measurement_delay[meas_shift_index],
-                  ratio_2 = sq(nom_meas_ratio);
-
-      tools.volumetric_multiplier[FILAMENT_SENSOR_EXTRUDER_NUM] = printer.isVolumetric()
-        ? ratio_2 / CIRCLE_AREA(filament_width_nominal * 0.5f)  // Volumetric uses a true volumetric multiplier
-        : ratio_2;                                              // Linear squares the ratio, which scales the volume
-
-      tools.refresh_e_factor(FILAMENT_SENSOR_EXTRUDER_NUM);
-    }
-
-  #endif // FILAMENT_SENSOR
-
   // Reset the watchdog after we know we have a temperature measurement.
   watchdog.reset();
-
 }
 
 /**
@@ -446,29 +410,6 @@ bool Temperature::heaters_isActive() {
           act->sensor.raw = act->sensor.read_max6675();
       #endif
     }
-  }
-
-#endif
-
-#if ENABLED(FILAMENT_SENSOR)
-
-  // Convert raw Filament Width to millimeters
-  float Temperature::analog2widthFil() {
-    return current_raw_filwidth * (HAL_VOLTAGE_PIN) * (1.0 / 16383.0);
-  }
-
-  /**
-   * Convert Filament Width (mm) to a simple ratio
-   * and reduce to an 8 bit value.
-   *
-   * A nominal width of 1.75 and measured width of 1.73
-   * gives (100 * 1.75 / 1.73) for a ratio of 101 and
-   * a return value of 1.
-   */
-  int8_t Temperature::widthFil_to_size_ratio() {
-    if (ABS(filament_width_nominal - filament_width_meas) <= FILWIDTH_ERROR_MARGIN)
-      return int(100.0 * filament_width_nominal / filament_width_meas) - 100;
-    return 0;
   }
 
 #endif

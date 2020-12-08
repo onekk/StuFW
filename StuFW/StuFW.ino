@@ -50,7 +50,7 @@
  *          X = Probe X position (default=current probe position)
  *          Y = Probe Y position (default=current probe position)
  *          E = [bool] Stows the probe if 1 (default=1)
-* G38  - Probe target - similar to G28 except it uses the Z_MIN endstop for all three axes
+ * G38  - Probe target - similar to G28 except it uses the Z_MIN endstop for all three axes
  * G42  - Coordinated move to a mesh point. (Requires MESH_BED_LEVELING or AUTO_BED_LEVELING_BILINEAR)
  * G60  - Save current position coordinates (all axes, for active extruder).
  *          S[SLOT] - specifies memory slot # (0-based) to save into (default 0).
@@ -205,10 +205,6 @@
  * M400 - Finish all moves
  * M401 - Lower z-probe if present
  * M402 - Raise z-probe if present
- * M404 - N[dia in mm] Enter the nominal filament width (3mm, 1.75mm ) or will display nominal filament width without parameters
- * M405 - Turn on Filament Sensor extrusion control. Optional D[delay in cm] to set delay in centimeters between sensor and extruder
- * M406 - Turn off Filament Sensor extrusion control
- * M407 - Display measured filament diameter
  * M408 - Report JSON-style response
  * M410 - Quickstop. Abort all the planned moves
  * M413 - S[bool] Enable / Disable Restart Job. (Requires SD_RESTART_FILE)
@@ -233,8 +229,6 @@
  *        E[initial retract] U[Retract distance] L[Extrude distance] S[new temp] B[Number of beep]
  * M603 - Set filament change T[toolhead] U[Retract distance] L[Extrude distance]
  * M604 - Set data Extruder Encoder S[Error steps] (requires EXTRUDER ENCODER)
- * M605 - Set dual x-carriage movement mode: S[mode] [ X[duplication x-offset] R[duplication temp offset] ]
- * M666 - Delta geometry adjustment
  * M666 - Set Two Endstops offsets for X, Y, and/or Z (requires TWO ENDSTOPS)
  * M701 - Load Filament T[toolhead] Z[distance] L[Extrude distance]
  * M702 - Unload Filament T[toolhead] Z[distance] U[Retract distance]
