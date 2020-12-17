@@ -195,7 +195,7 @@
  *        S[temperature] sets the target temperature (default target temperature = 150C), C[cycles], U[Apply result],
  *        R[Method] 0 = Classic Pid, 1 = Some overshoot, 2 = No Overshoot, 3 = Pessen Pid
  * M305 - Set thermistor and ADC parameters: H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER,
- *          A[float] Thermistor resistance at 25°C, B[float] BetaK, C[float] Steinhart-Hart C coefficien, R[float] Pullup resistor value,
+ *          A[float] Thermistor resistance at 25°C, B[float] BetaK, C[float] Steinhart-Hart C coefficient, R[float] Pullup resistor value,
  *          L[int] ADC low offset correction, O[int] ADC high offset correction, P[int] Sensor Pin
  * M306 - Set Heaters parameters: H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER,
  *          A[int] Pid Drive Min, B[int] Pid Drive Max, C[int] Pid Max,

@@ -133,8 +133,8 @@
 #define PID_DRIVE_MIN 40
 #define PID_DRIVE_MAX 230
 #define PID_FUNCTIONAL_RANGE 10
-#define PID_AUTOTUNE_MENU // Add PID Autotune to the LCD "Temperature" menu to run M303 and apply the result.
-//#define PID_DEBUG       // Sends debug data to the serial port.
+#define PID_AUTOTUNE_MENU
+//#define PID_DEBUG
 //#define PID_ADD_EXTRUSION_RATE
 #define LPQ_MAX_LEN 50
 #define DEFAULT_Kp {40,40,40,40}
@@ -142,17 +142,17 @@
 #define DEFAULT_Kd {60,60,60,60}
 #define DEFAULT_Kc {100,100,100,100}
 #define PIDTEMPBED false
-#define BED_HYSTERESIS        2 // Only disable heating if T>target+BED_HYSTERESIS and enable heating if T<target-BED_HYSTERESIS
-#define BED_CHECK_INTERVAL 5000 // ms between checks in bang-bang control
+#define BED_HYSTERESIS        2
+#define BED_CHECK_INTERVAL 5000
 #define DEFAULT_bedKp 10
 #define DEFAULT_bedKi 1
 #define DEFAULT_bedKd 305
 #define PIDTEMPCHAMBER false
-#define CHAMBER_HYSTERESIS        2 // only disable heating if T>target+CHAMBER_HYSTERESIS and enable heating if T<target-CHAMBER_HYSTERESIS
-#define CHAMBER_CHECK_INTERVAL 5000 // ms between checks in bang-bang control
-#define CHAMBER_PID_MAX       255   // Limits current to chamber while in PID mode;       255 = full current
-#define CHAMBER_PID_DRIVE_MIN  80   // Limits min current to chamber while PID is active;   0 = no current
-#define CHAMBER_PID_DRIVE_MAX 255   // Limits max current to chamber while PID is active; 255 = full current
+#define CHAMBER_HYSTERESIS        2
+#define CHAMBER_CHECK_INTERVAL 5000
+#define CHAMBER_PID_MAX       255
+#define CHAMBER_PID_DRIVE_MIN  80
+#define CHAMBER_PID_DRIVE_MAX 255
 #define DEFAULT_chamberKp 10
 #define DEFAULT_chamberKi 1
 #define DEFAULT_chamberKd 305
@@ -208,11 +208,11 @@
 #define Z_PROBE_ENDSTOP_LOGIC false
 //#define ENDSTOP_INTERRUPTS_FEATURE
 #define Z_PROBE_SERVO_NR -1
-#define Z_SERVO_ANGLES {90,0} // Z Servo Deploy and Stow angles
+#define Z_SERVO_ANGLES {90,0}
 //#define PROBE_MANUALLY
 //#define Z_PROBE_FIX_MOUNTED
 //#define BLTOUCH
-//#define BLTOUCH_DELAY 375 // (ms) Enable and increase if needed
+//#define BLTOUCH_DELAY 375
 #define X_PROBE_OFFSET_FROM_NOZZLE 0
 #define Y_PROBE_OFFSET_FROM_NOZZLE 0
 #define Z_PROBE_OFFSET_FROM_NOZZLE -1
@@ -228,15 +228,15 @@
 #define Z_PROBE_LOW_POINT -2
 #define Z_PROBE_OFFSET_RANGE_MIN -50
 #define Z_PROBE_OFFSET_RANGE_MAX  50
-//#define PROBING_HEATERS_OFF       // Turn heaters off when probing
-//#define PROBING_FANS_OFF          // Turn fans off when probing
+//#define PROBING_HEATERS_OFF
+//#define PROBING_FANS_OFF
 //#define LCD_BED_LEVELING
-#define MESH_EDIT_Z_STEP 0.025  // (mm) Step size while manually probing Z axis.
-#define LCD_PROBE_Z_RANGE 4     // (mm) Z Range centered on Z MIN POS for LCD Z adjustment
-//#define MESH_EDIT_MENU        // Add a menu to edit mesh points
+#define MESH_EDIT_Z_STEP 0.025
+#define LCD_PROBE_Z_RANGE 4
+//#define MESH_EDIT_MENU
 //#define LEVEL_BED_CORNERS
-#define LEVEL_CORNERS_INSET 30    // (mm) An inset for corner leveling
-//#define LEVEL_CENTER_TOO        // Move to the center after the last corner
+#define LEVEL_CORNERS_INSET 30
+//#define LEVEL_CENTER_TOO
 #define X_HOME_DIR -1
 #define Y_HOME_DIR -1
 #define Z_HOME_DIR -1
@@ -282,10 +282,10 @@
 //#define MESH_EDIT_GFX_OVERLAY
 #define MESH_INSET 10
 //#define G26_MESH_VALIDATION
-#define MESH_TEST_NOZZLE_SIZE    0.4  // (mm) Diameter of primary nozzle.
-#define MESH_TEST_LAYER_HEIGHT   0.2  // (mm) Default layer height for the G26 Mesh Validation Tool.
-#define MESH_TEST_HOTEND_TEMP  200.0  // (c)  Default nozzle temperature for the G26 Mesh Validation Tool.
-#define MESH_TEST_BED_TEMP      60.0  // (c)  Default bed temperature for the G26 Mesh Validation Tool.
+#define MESH_TEST_NOZZLE_SIZE    0.4
+#define MESH_TEST_LAYER_HEIGHT   0.2
+#define MESH_TEST_HOTEND_TEMP  200.0
+#define MESH_TEST_BED_TEMP      60.0
 #define MESH_MIN_X (X_MIN_POS + (MESH_INSET))
 #define MESH_MAX_X (X_MAX_POS - (MESH_INSET))
 #define MESH_MIN_Y (Y_MIN_POS + (MESH_INSET))
@@ -320,7 +320,7 @@
 #define MANUAL_FEEDRATE {100*60,100*60,2*60,10*60}
 #define DEFAULT_MIN_FEEDRATE          0.0
 #define DEFAULT_MIN_TRAVEL_FEEDRATE   0.0
-#define MINIMUM_PLANNER_SPEED         0.05                      // (mm/sec)
+#define MINIMUM_PLANNER_SPEED         0.05
 #define DEFAULT_MAX_ACCELERATION {3000,3000,50,3000,3000,3000,3000,3000,3000}
 #define DEFAULT_RETRACT_ACCELERATION {10000,10000,10000,10000,10000,10000}
 #define DEFAULT_ACCELERATION 3000
@@ -395,16 +395,16 @@
 #define MKSE6_SERVO_DELAY 1000
 //#define IDLE_OOZING_PREVENT
 #define IDLE_OOZING_MINTEMP           190
-#define IDLE_OOZING_FEEDRATE          50    //default feedrate for retracting (mm/s)
+#define IDLE_OOZING_FEEDRATE          50
 #define IDLE_OOZING_SECONDS           5
-#define IDLE_OOZING_LENGTH            15    //default retract length (positive mm)
-#define IDLE_OOZING_RECOVER_LENGTH    0     //default additional recover length (mm, added to retract length when recovering)
-#define IDLE_OOZING_RECOVER_FEEDRATE  50    //default feedrate for recovering from retraction (mm/s)
+#define IDLE_OOZING_LENGTH            15
+#define IDLE_OOZING_RECOVER_LENGTH    0
+#define IDLE_OOZING_RECOVER_FEEDRATE  50
 //#define EXTRUDER_RUNOUT_PREVENT
 #define EXTRUDER_RUNOUT_MINTEMP 190
 #define EXTRUDER_RUNOUT_SECONDS  30
-#define EXTRUDER_RUNOUT_SPEED  1500 // mm/m
-#define EXTRUDER_RUNOUT_EXTRUDE   5 // mm
+#define EXTRUDER_RUNOUT_SPEED  1500
+#define EXTRUDER_RUNOUT_EXTRUDE   5
 //#define LIN_ADVANCE
 #define LIN_ADVANCE_K 0.22
 //#define LA_DEBUG
@@ -441,18 +441,18 @@
 //#define BABYSTEP_ZPROBE_GFX_OVERLAY
 //#define BABYSTEP_ZPROBE_GFX_REVERSE
 //#define FWRETRACT
-#define MIN_AUTORETRACT               0.1 // When auto-retract is on, convert E moves of this length and over
-#define MAX_AUTORETRACT              10.0 // Upper limit for auto-retract conversion
-#define RETRACT_LENGTH                3   // Default retract length (positive mm)
-#define RETRACT_LENGTH_SWAP          13   // Default swap retract length (positive mm), for extruder change
-#define RETRACT_FEEDRATE             45   // Default feedrate for retracting (mm/s)
-#define RETRACT_ZLIFT                 0   // Default retract Z-lift
-#define RETRACT_RECOVER_LENGTH        0   // Default additional recover length (mm, added to retract length when recovering)
-#define RETRACT_RECOVER_LENGTH_SWAP   0   // Default additional swap recover length (mm, added to retract length when recovering from extruder change)
-#define RETRACT_RECOVER_FEEDRATE      8   // Default feedrate for recovering from retraction (mm/s)
-#define RETRACT_RECOVER_FEEDRATE_SWAP 8   // Default feedrate for recovering from swap retraction (mm/s)
-#define TOOLCHANGE_PARK_ZLIFT   0.2      // the distance to raise Z axis when parking an extruder
-#define TOOLCHANGE_UNPARK_ZLIFT 1        // the distance to raise Z axis when unparking an extruder
+#define MIN_AUTORETRACT               0.1
+#define MAX_AUTORETRACT              10.0
+#define RETRACT_LENGTH                3
+#define RETRACT_LENGTH_SWAP          13
+#define RETRACT_FEEDRATE             45
+#define RETRACT_ZLIFT                 0
+#define RETRACT_RECOVER_LENGTH        0
+#define RETRACT_RECOVER_LENGTH_SWAP   0
+#define RETRACT_RECOVER_FEEDRATE      8
+#define RETRACT_RECOVER_FEEDRATE_SWAP 8
+#define TOOLCHANGE_PARK_ZLIFT   0.2
+#define TOOLCHANGE_UNPARK_ZLIFT 1
 //#define X_TWO_STEPPER_DRIVERS
 #define INVERT_X2_VS_X_DIR false
 //#define X_TWO_ENDSTOPS
@@ -503,20 +503,20 @@
 //#define SD_EXTENDED_DIR
 //#define SD_DISABLED_DETECT
 //#define SD_DETECT_INVERTED
-#define SD_FINISHED_STEPPERRELEASE true           // if sd support and the file is finished: disable steppers?
-#define SD_FINISHED_RELEASECOMMAND "M84 X Y Z E"  // You might want to keep the z enabled so your bed stays in place.
+#define SD_FINISHED_STEPPERRELEASE true
+#define SD_FINISHED_RELEASECOMMAND "M84 X Y Z E"
 //#define MENU_ADDAUTOSTART
 //#define SCROLL_LONG_FILENAMES
 //#define SDCARD_SORT_ALPHA
-#define SDSORT_LIMIT       40     // Maximum number of sorted items (10-256). Costs 27 bytes each.
-#define FOLDER_SORTING     -1     // -1=above  0=none  1=below
-#define SDSORT_GCODE       false  // Allow turning sorting on/off with LCD and M36 g-code.
-#define SDSORT_USES_RAM    false  // Pre-allocate a static array for faster pre-sorting.
-#define SDSORT_USES_STACK  false  // Prefer the stack for pre-sorting to give back some SRAM. (Negated by next 2 options.)
-#define SDSORT_CACHE_NAMES false  // Keep sorted items in RAM longer for speedy performance. Most expensive option.
-#define SDSORT_DYNAMIC_RAM false  // Use dynamic allocation (within SD menus). Least expensive option. Set SDSORT_LIMIT before use!
-#define SDSORT_CACHE_VFATS 2      // Maximum number of 13-byte VFAT entries to use for sorting.
-//#define SD_RESTART_FILE           // Uncomment to enable
+#define SDSORT_LIMIT       40
+#define FOLDER_SORTING     -1
+#define SDSORT_GCODE       false
+#define SDSORT_USES_RAM    false
+#define SDSORT_USES_STACK  false
+#define SDSORT_CACHE_NAMES false
+#define SDSORT_DYNAMIC_RAM false
+#define SDSORT_CACHE_VFATS 2
+//#define SD_RESTART_FILE
 #define SD_RESTART_FILE_SAVE_TIME 1
 #define LCD_LANGUAGE it
 #define DISPLAY_CHARSET_HD44780 JAPANESE
@@ -524,8 +524,8 @@
 //#define REPRAP_DISCOUNT_SMART_CONTROLLER
 #define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
 #define SHOW_BOOTSCREEN
-#define STRING_SPLASH_LINE1 "v" SHORT_BUILD_VERSION   // will be shown during bootup in line 1
-#define STRING_SPLASH_LINE2 STRING_DISTRIBUTION_DATE  // will be shown during bootup in line 2
+#define STRING_SPLASH_LINE1 "v" SHORT_BUILD_VERSION
+#define STRING_SPLASH_LINE2 STRING_DISTRIBUTION_DATE
 #define BOOTSCREEN_TIMEOUT 2500
 //#define SHOW_CUSTOM_BOOTSCREEN
 //#define CUSTOM_STATUS_SCREEN_IMAGE
@@ -535,29 +535,29 @@
 //#define USE_SMALL_INFOFONT
 //#define DOGM_SPI_DELAY_US 5
 //#define OVERLAY_GFX_REVERSE
-//#define STATUS_COMBINE_HEATERS    // Use combined heater images instead of separate ones
-//#define STATUS_HOTEND_NUMBERLESS  // Use plain hotend icons instead of numbered ones (with 2+ hotends)
-#define STATUS_HOTEND_INVERTED      // Show solid nozzle bitmaps when heating (Requires STATUS_HOTEND_ANIM)
-#define STATUS_HOTEND_ANIM          // Use a second bitmap to indicate hotend heating
-#define STATUS_BED_ANIM             // Use a second bitmap to indicate bed heating
-//#define STATUS_ALT_BED_BITMAP     // Use the alternative bed bitmap
-//#define STATUS_ALT_FAN_BITMAP     // Use the alternative fan bitmap
-//#define STATUS_FAN_FRAMES 3       // :[0,1,2,3,4] Number of fan animation frames
-//#define STATUS_HEAT_PERCENT       // Show heating in a progress bar
+//#define STATUS_COMBINE_HEATERS
+//#define STATUS_HOTEND_NUMBERLESS
+#define STATUS_HOTEND_INVERTED
+#define STATUS_HOTEND_ANIM
+#define STATUS_BED_ANIM
+//#define STATUS_ALT_BED_BITMAP
+//#define STATUS_ALT_FAN_BITMAP
+//#define STATUS_FAN_FRAMES 3
+//#define STATUS_HEAT_PERCENT
 //#define NO_LCD_MENUS
 //#define SLIM_LCD_MENUS
 #define ENCODER_PULSES_PER_STEP 5
 #define ENCODER_STEPS_PER_MENU_ITEM 1
-//#define LCD_SCREEN_ROT_90    // Rotate screen orientation for graphics display by 90 degree clockwise
-//#define LCD_SCREEN_ROT_180   // Rotate screen orientation for graphics display by 180 degree clockwise
-//#define LCD_SCREEN_ROT_270   // Rotate screen orientation for graphics display by 270 degree clockwise
-//#define INVERT_CLICK_BUTTON           // Option for invert encoder button logic
-//#define INVERT_BACK_BUTTON            // Option for invert back button logic if avaible
+//#define LCD_SCREEN_ROT_90
+//#define LCD_SCREEN_ROT_180
+//#define LCD_SCREEN_ROT_270
+//#define INVERT_CLICK_BUTTON
+//#define INVERT_BACK_BUTTON
 //#define REVERSE_ENCODER_DIRECTION
 //#define REVERSE_MENU_DIRECTION
-#define ENCODER_RATE_MULTIPLIER         // If defined, certain menu edit operations automatically multiply the steps when the encoder is moved quickly
-#define ENCODER_10X_STEPS_PER_SEC 75    // If the encoder steps per sec exceeds this value, multiply steps moved x10 to quickly advance the value
-#define ENCODER_100X_STEPS_PER_SEC 160  // If the encoder steps per sec exceeds this value, multiply steps moved x100 to really quickly advance the value
+#define ENCODER_RATE_MULTIPLIER
+#define ENCODER_10X_STEPS_PER_SEC 75
+#define ENCODER_100X_STEPS_PER_SEC 160
 #define ULTIPANEL_FEEDMULTIPLY
 //#define SPEAKER
 //#define LCD_FEEDBACK_FREQUENCY_DURATION_MS 2
@@ -569,13 +569,13 @@
 //#define LCD_DECIMAL_SMALL_XY
 //#define LCD_TIMEOUT_TO_STATUS 15000
 //#define LED_CONTROL_MENU
-//#define LED_COLOR_PRESETS             // Enable the Preset Color menu option
-//#define LED_USER_PRESET_STARTUP       // Have the printer display the user preset color on startup
-#define LED_USER_PRESET_RED        255  // User defined RED value
-#define LED_USER_PRESET_GREEN      255  // User defined GREEN value
-#define LED_USER_PRESET_BLUE       255  // User defined BLUE value
-#define LED_USER_PRESET_WHITE      255  // User defined WHITE value
-#define LED_USER_PRESET_BRIGHTNESS 255  // User defined intensity
+//#define LED_COLOR_PRESETS
+//#define LED_USER_PRESET_STARTUP
+#define LED_USER_PRESET_RED        255
+#define LED_USER_PRESET_GREEN      255
+#define LED_USER_PRESET_BLUE       255
+#define LED_USER_PRESET_WHITE      255
+#define LED_USER_PRESET_BRIGHTNESS 255
 //#define LCD_PROGRESS_BAR
 #define PROGRESS_BAR_BAR_TIME 5000
 #define PROGRESS_BAR_MSG_TIME 1500
@@ -584,7 +584,7 @@
 //#define LCD_PROGRESS_BAR_TEST
 //#define PHOTOGRAPH
 //#define CHDK
-#define CHDK_DELAY 50   //How long in ms the pin should stay HIGH before going LOW again
+#define CHDK_DELAY 50
 //#define BLINKM
 //#define RGB_LED
 //#define RGBW_LED
@@ -621,9 +621,9 @@
 #define NUM_POSITON_SLOTS 2
 #define DEFAULT_MIN_SEGMENT_TIME 20000
 #define ARC_SUPPORT
-#define MM_PER_ARC_SEGMENT 1    // Length of each arc segment
-#define N_ARC_CORRECTION  25    // Number of intertpolated segments between corrections
-//#define ARC_P_CIRCLES         // Enable the 'P' parameter to specify complete circles
+#define MM_PER_ARC_SEGMENT 1
+#define N_ARC_CORRECTION  25
+//#define ARC_P_CIRCLES
 #define MIN_STEPS_PER_SEGMENT 6
 //#define M100_FREE_MEMORY_WATCHER
 #define M100_FREE_MEMORY_DUMPER
@@ -658,11 +658,11 @@
 #define PAUSE_PARK_NOZZLE_TIMEOUT 45
 #define PAUSE_PARK_PRINTER_OFF 5
 #define PAUSE_PARK_NUMBER_OF_ALERT_BEEPS 5
-#define PAUSE_PARK_NO_STEPPER_TIMEOUT         // Enable for XYZ steppers to stay powered on during filament change.
-//#define PARK_HEAD_ON_PAUSE                  // Park the nozzle during pause and filament change.
-//#define HOME_BEFORE_FILAMENT_CHANGE         // Ensure homing has been completed prior to parking for filament change
-//#define FILAMENT_LOAD_UNLOAD_GCODES         // Add M701/M702 Load/Unload G-codes, plus Load/Unload in the LCD Prepare menu.
-//#define FILAMENT_UNLOAD_ALL_EXTRUDERS       // Allow M702 to unload all extruders above a minimum target temp (as set by M302)
+#define PAUSE_PARK_NO_STEPPER_TIMEOUT
+//#define PARK_HEAD_ON_PAUSE
+//#define HOME_BEFORE_FILAMENT_CHANGE
+//#define FILAMENT_LOAD_UNLOAD_GCODES
+//#define FILAMENT_UNLOAD_ALL_EXTRUDERS
 //#define INCH_MODE_SUPPORT
 //#define JSON_OUTPUT
 //#define SCAD_MESH_OUTPUT

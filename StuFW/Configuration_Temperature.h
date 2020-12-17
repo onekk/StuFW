@@ -298,7 +298,7 @@
  *                                                                     *
  * PID Tuning Guide here: http://reprap.org/wiki/PID_Tuning            *
  * Select PID or bang-bang with PIDTEMPBED.                            *
- * If bang-bang, BED LIMIT SWITCHING will enable hysteresis            *
+ * If bang-bang, BED_HYSTERESIS will enable hysteresis                 *
  *                                                                     *
  ***********************************************************************/
 // Put true to enable PID on the bed. It uses the same frequency PWM as the hotend.
