@@ -18,9 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- */
-
-/**
+ *-------------------------------------
  * Configuration_Temperature.h
  *
  * This configuration file contains temperature settings.
@@ -178,122 +176,127 @@
 /*******************************************************************************/
 
 
-/******************************************************************************************************
- ************************************** Temperature limits ********************************************
- ******************************************************************************************************/
-// Temperature must be close to target for this long before M109-M190-M191-M192 returns success
-#define TEMP_RESIDENCY_TIME 10  // (seconds)
-#define TEMP_HYSTERESIS 3       // (degC) range of +/- temperatures considered "close" to the target one
-#define TEMP_WINDOW     1       // (degC) Window around target to start the residency timer x degC early.
+/*******************************************************************************
+ *            Temperature limits                                               *
+ *******************************************************************************/
+// Temperature must be close to target for this long before 
+// M109-M190-M191-M192 returns success
+// (seconds)
+#define TEMP_RESIDENCY_TIME 10
+// (degC) range of +/- temperatures considered "close" to the target one
+#define TEMP_HYSTERESIS 3
+// (degC) Window around target to start the residency timer x degC early.
+#define TEMP_WINDOW     1
 
 // When temperature exceeds max temp, your heater will be switched off.
 // This feature exists to protect your hotend from overheating accidentally,
 // but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
-#define HEATER_0_MAXTEMP 275 // (degC)
-#define HEATER_1_MAXTEMP 275 // (degC)
-#define HEATER_2_MAXTEMP 275 // (degC)
-#define HEATER_3_MAXTEMP 275 // (degC)
-#define BED_MAXTEMP      150 // (degC)
-#define CHAMBER_MAXTEMP  100 // (degC)
+// All values in (degC)
+#define HEATER_0_MAXTEMP 275
+#define HEATER_1_MAXTEMP 275
+#define HEATER_2_MAXTEMP 275
+#define HEATER_3_MAXTEMP 275
+#define BED_MAXTEMP      150
+#define CHAMBER_MAXTEMP  100
 
-// The minimal temperature defines temperature below which heater will not be enabled
-// to check that the wiring to the thermistor is not broken.
+// The minimal temperature defines temperature below which heater will not be
+// enabled to check that the wiring to the thermistor is not broken.
 // Otherwise this would lead to the heater being powered on all the time.
-#define HEATER_0_MINTEMP 5 // (degC)
-#define HEATER_1_MINTEMP 5 // (degC)
-#define HEATER_2_MINTEMP 5 // (degC)
-#define HEATER_3_MINTEMP 5 // (degC)
-#define BED_MINTEMP      5 // (degC)
-#define CHAMBER_MINTEMP  5 // (degC)
+// All values in (degC)
+#define HEATER_0_MINTEMP 5
+#define HEATER_1_MINTEMP 5
+#define HEATER_2_MINTEMP 5
+#define HEATER_3_MINTEMP 5
+#define BED_MINTEMP      5
+#define CHAMBER_MINTEMP  5
 
 // Preheat Constants
 #define PREHEAT_1_LABEL       "PLA"
 #define PREHEAT_1_TEMP_HOTEND 190
 #define PREHEAT_1_TEMP_BED     60
-#define PREHEAT_1_FAN_SPEED   255   // Insert Value between 0 and 255
+// Insert Value between 0 and 255
+#define PREHEAT_1_FAN_SPEED   255
 
 #define PREHEAT_2_LABEL       "ABS"
 #define PREHEAT_2_TEMP_HOTEND 240
 #define PREHEAT_2_TEMP_BED    100
-#define PREHEAT_2_FAN_SPEED   255   // Insert Value between 0 and 255
+#define PREHEAT_2_FAN_SPEED   255
 
 #define PREHEAT_3_LABEL       "GUM"
 #define PREHEAT_3_TEMP_HOTEND 230
 #define PREHEAT_3_TEMP_BED     60
-#define PREHEAT_3_FAN_SPEED   255   // Insert Value between 0 and 255
-/*****************************************************************************************/
+#define PREHEAT_3_FAN_SPEED   255
 
 
-/*****************************************************************************************
- ******************************** Automatic temperature **********************************
- *****************************************************************************************
- *                                                                                       *
- * The hotend target temperature is calculated by all the buffered lines of gcode.       *
- * The maximum buffered steps/sec of the extruder motor is called "se".                  *
- * Start autotemp mode with M109 S<mintemp> B<maxtemp> F<factor>                         *
- * The target temperature is set to mintemp+factor*se[steps/sec] and is limited by       *
- * mintemp and maxtemp. Turn this off by excuting M109 without F*                        *
- * Also, if the temperature is set to a value below mintemp, it will not be changed      *
- * by autotemp.                                                                          *
- * On an Ultimaker, some initial testing worked with M109 S215 B260 F1                   *
- * in the start.gcode                                                                    *
- *                                                                                       *
- *****************************************************************************************/
+/*******************************************************************************
+ *            Automatic temperature                                            *
+ *******************************************************************************
+ *                                                                             *
+ * Hotend target temperature is calculated by all the buffered lines of gcode. *
+ * The maximum buffered steps/sec of the extruder motor is called "se".        *
+ * Start autotemp mode with M109 S<mintemp> B<maxtemp> F<factor>               *
+ *                                                                             *
+ * Target temperature is set to mintemp+factor*se[steps/sec] and is limited by *
+ * mintemp and maxtemp. Turn this off by excuting M109 without F word          *
+ * Also, if temperature is set to a value below mintemp, it will not be        *
+ * changed by autotemp.                                                        *
+ *                                                                             *
+ *******************************************************************************/
 //#define AUTOTEMP
 #define AUTOTEMP_OLDWEIGHT 0.98
-/*****************************************************************************************/
 
-
-/***********************************************************************
- ********************* Temperature status LEDs *************************
- ***********************************************************************
- *                                                                     *
- * Temperature status LEDs that display the hotend and bed             *
- * temperature.                                                        *
- * Otherwise the RED led is on. There is 1C hysteresis.                *
- *                                                                     *
- ***********************************************************************/
+/*******************************************************************************
+ *            Temperature status LEDs                                          *
+ *******************************************************************************
+ *                                                                             *
+ * Temperature status LEDs that display the hotend and bed temperature.        *
+ * Otherwise the RED led is on. There is 1C hysteresis.                        *
+ *                                                                             *
+ *******************************************************************************/
 //#define TEMP_STAT_LEDS
-/***********************************************************************/
 
-
-/***********************************************************************
- ********************** PID Settings - HOTEND **************************
- ***********************************************************************
- *                                                                     *
- * PID Tuning Guide here: http://reprap.org/wiki/PID_Tuning            *
- *                                                                     *
- ***********************************************************************/
+/*******************************************************************************
+ *            PID Settings - HOTEND                                            *
+ *******************************************************************************
+ *                                                                             *
+ * PID Tuning Guide here: http://reprap.org/wiki/PID_Tuning                    *
+ *                                                                             *
+ *******************************************************************************/
 // Put to false following line to disable PID and enable bang-bang.
 #define PIDTEMP true
+// Limits current to nozzle while in PID mode;        255 = full current
+#define PID_MAX       255
+// Limits min current to nozzle while PID is active;    0 = no current
+#define PID_DRIVE_MIN  40
+// Limits max current to nozzle while PID is active;  255 = full current
+#define PID_DRIVE_MAX 230
 
-#define PID_MAX       255 // Limits current to nozzle while in PID mode;        255 = full current
-#define PID_DRIVE_MIN  40 // Limits min current to nozzle while PID is active;    0 = no current
-#define PID_DRIVE_MAX 230 // Limits max current to nozzle while PID is active;  255 = full current
-
-// If the temperature difference between the target temperature and the actual temperature
-// is more then PID FUNCTIONAL RANGE then the PID will be shut off and the heater will be set to min/max.
+// If temperature difference between target temperature and actual temperature
+// is more than PID FUNCTIONAL RANGE the PID will be shut off and the heater 
+// will be set to min/max.
 #define PID_FUNCTIONAL_RANGE 10
+// Add PID Autotune to the LCD "Temperature" menu to run M303 and apply the result.
+#define PID_AUTOTUNE_MENU
+// Sends debug data to the serial port.
+//#define PID_DEBUG
 
-#define PID_AUTOTUNE_MENU // Add PID Autotune to the LCD "Temperature" menu to run M303 and apply the result.
-//#define PID_DEBUG       // Sends debug data to the serial port.
-
-// this adds an experimental additional term to the heating power, proportional to the extrusion speed.
-// if Kc is chosen well, the additional required power due to increased melting should be compensated.
+// this adds an experimental additional term to the heating power, proportional 
+// to extrusion speed.
+// if Kc is chosen well, additional required power due to increased melting 
+// should be compensated.
 //#define PID_ADD_EXTRUSION_RATE
 #define LPQ_MAX_LEN 50
 
 //           HotEnd{HE0,HE1,HE2,HE3}
-#define DEFAULT_Kp {40, 40, 40, 40}     // Kp for H0, H1, H2, H3
-#define DEFAULT_Ki {07, 07, 07, 07}     // Ki for H0, H1, H2, H3
-#define DEFAULT_Kd {60, 60, 60, 60}     // Kd for H0, H1, H2, H3
-#define DEFAULT_Kc {100, 100, 100, 100} // heating power = Kc * (e_speed)
-/***********************************************************************/
-
+#define DEFAULT_Kp {40, 40, 40, 40}
+#define DEFAULT_Ki {07, 07, 07, 07}
+#define DEFAULT_Kd {60, 60, 60, 60}
+// heating power = Kc * (e_speed)
+#define DEFAULT_Kc {100, 100, 100, 100}
 
 /***********************************************************************
- ************************ PID Settings - BED ***************************
+ *            PID Settings - BED                                       *
  ***********************************************************************
  *                                                                     *
  * PID Tuning Guide here: http://reprap.org/wiki/PID_Tuning            *
@@ -301,29 +304,33 @@
  * If bang-bang, BED_HYSTERESIS will enable hysteresis                 *
  *                                                                     *
  ***********************************************************************/
-// Put true to enable PID on the bed. It uses the same frequency PWM as the hotend.
-// which is fine for driving a square wave into a resistive load and does not significantly impact you FET heating.
+// Put true to enable PID on bed. It uses the same frequency PWM as hotend.
+// which is fine for driving a square wave into a resistive load and does not
+// significantly impact you MOSFET heating.
 // This also works fine on a Fotek SSR-10DA Solid State Relay into a 250W heater.
-// If your configuration is significantly different than this and you don't understand the issues involved, you probably
-// shouldn't use bed PID until someone else verifies your hardware works.
+// If your configuration is significantly different than this and you don't 
+// understand the issues involved, you probably shouldn't use bed PID until 
+// someone else verifies your hardware works.
 // If this is enabled, find your own PID constants below.
 #define PIDTEMPBED false
-
-#define BED_HYSTERESIS        2 // Only disable heating if T>target+BED_HYSTERESIS and enable heating if T<target-BED_HYSTERESIS
-#define BED_CHECK_INTERVAL 5000 // ms between checks in bang-bang control
+// Only disable heating if T>target+BED_HYSTERESIS and 
+// enable heating if T<target-BED_HYSTERESIS
+#define BED_HYSTERESIS        2
+// ms between checks in bang-bang control
+#define BED_CHECK_INTERVAL 5000
 
 // 120v 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
-// from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
+// from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor
+// of .15 (vs .1, 1, 10)
 #define DEFAULT_bedKp   10.00
 #define DEFAULT_bedKi    0.1
 #define DEFAULT_bedKd  300.0
 
-// FIND YOUR OWN: "M303 H-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
-/***********************************************************************/
-
+// FIND YOUR OWN WITH:
+// "M303 H-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
 
 /***********************************************************************
- ************************ PID Settings - CHAMBER ***********************
+ *            PID Settings - CHAMBER                                   *
  ***********************************************************************
  *                                                                     *
  * PID Tuning Guide here: http://reprap.org/wiki/PID_Tuning            *
@@ -331,33 +338,38 @@
  * If bang-bang, CHAMBER_LIMIT_SWITCHING will enable hysteresis        *
  *                                                                     *
  ***********************************************************************/
-// Put true to enable PID on the chamber. It uses the same frequency PWM as the hotend.
+// Put true to enable PID on the chamber. It uses same PWM frequency as hotend.
 // This also works fine on a Fotek SSR-10DA Solid State Relay into a 250W heater.
-// If your configuration is significantly different than this and you don't understand the issues involved, you probably
-// shouldn't use chamber PID until someone else verifies your hardware works.
+// If your configuration is significantly different than this and you don't 
+// understand the issues involved, you probably shouldn't use chamber PID until 
+// someone else verifies your hardware works.
 // If this is enabled, find your own PID constants below.
 #define PIDTEMPCHAMBER false
-
-#define CHAMBER_HYSTERESIS        2 // only disable heating if T>target+CHAMBER_HYSTERESIS and enable heating if T<target-CHAMBER_HYSTERESIS
-#define CHAMBER_CHECK_INTERVAL 5000 // ms between checks in bang-bang control
+// only disable heating if T>target+CHAMBER_HYSTERESIS and
+// enable heating if T<target-CHAMBER_HYSTERESIS
+#define CHAMBER_HYSTERESIS        2
+// ms between checks in bang-bang control
+#define CHAMBER_CHECK_INTERVAL 5000
 
 // This sets the max power delivered to the chamber.
-// all forms of chamber control obey this (PID, bang-bang, bang-bang with hysteresis)
+// all chamber control forms obey this (PID, bang-bang)
 // setting this to anything other than 255 enables a form of PWM to the chamber,
-// so you shouldn't use it unless you are OK with PWM on your chamber.  (see the comment on enabling PIDTEMPCHAMBER)
-#define CHAMBER_PID_MAX       255   // Limits current to chamber while in PID mode;       255 = full current
-#define CHAMBER_PID_DRIVE_MIN  80   // Limits min current to chamber while PID is active;   0 = no current
-#define CHAMBER_PID_DRIVE_MAX 255   // Limits max current to chamber while PID is active; 255 = full current
+// so you shouldn't use it unless you are OK with PWM on your chamber.
+// (see the comment on enabling PIDTEMPCHAMBER)
 
-// 120v 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
-// from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
+// Limits current to chamber while in PID mode;       255 = full current
+#define CHAMBER_PID_MAX       255
+// Limits min current to chamber while PID is active;   0 = no current
+#define CHAMBER_PID_DRIVE_MIN  80
+// Limits max current to chamber while PID is active; 255 = full current
+#define CHAMBER_PID_DRIVE_MAX 255
+
 #define DEFAULT_chamberKp   10.00
 #define DEFAULT_chamberKi    0.1
 #define DEFAULT_chamberKd  300.0
-/***********************************************************************/
 
 /*******************************************************************************
- **************************** Inverted PINS ************************************
+ *            Inverted PINS                                                    *
  *******************************************************************************
  *                                                                             *
  * For inverted logical Heater, Bed, Chamber pins                              *
@@ -368,48 +380,59 @@
 #define INVERTED_CHAMBER_PIN false
 
 
-/**********************************************************************************
- ************************ Thermal runaway protection ******************************
- **********************************************************************************
- *                                                                                *
- * This protects your printer from damage and fire if a thermistor                *
- * falls out or temperature sensors fail in any way.                              *
- *                                                                                *
- * The issue: If a thermistor falls out or a temperature sensor fails,            *
- * StuFW can no longer sense the actual temperature. Since a                      *
- * disconnected thermistor reads as a low temperature, the firmware               *
- * will keep the heater on.                                                *
- *                                                                                *
- * The solution: Once the temperature reaches the target, start                   *
- * observing. If the temperature stays too far below the                          *
- * target(hysteresis) for too long, the firmware will halt                        *
- * as a safety precaution.                                                        *
- *                                                                                *
- * Put THERMAL PROTECTION HOTENDS at true to enable this feature for all hotends. *
- * Put THERMAL PROTECTION BED at true to enable this feature for the heated bed.  *
- * Put THERMAL PROTECTION CHAMBER at true to enable this feature for the chamber. *
- *                                                                                *
- **********************************************************************************/
+/*******************************************************************************
+ *            Thermal runaway protection                                       *
+ *******************************************************************************
+ *                                                                             *
+ * This protects your printer from damage and fire if a thermistor falls out   *
+ * or temperature sensors fail in any way.                                     *
+ *                                                                             *
+ * Issue:                                                                      *
+ * If a thermistor falls out or a temperature sensor fails,                    *
+ * StuFW can no longer sense the actual temperature. Since a disconnected      *
+ * thermistor reads as a low temperature, the firmware will keep heater on.    *
+ *                                                                             *
+ * Solution:                                                                   *
+ * Once the temperature reaches the target, start observing.                   *
+ * If the temperature stays below THERMAL_PROTECTION_HYSTERESIS value for a    *
+ * time longer than THERMAL_PROTECTION_PERIOD, firmware will halt as a safety  *
+ * measure                                                                     *
+ *                                                                             *
+ * put them to true to enable the feature for the corresponding heater element *
+ *                                                                             *
+ * THERMAL PROTECTION HOTENDS    control this feature for all hotends.         *
+ * THERMAL PROTECTION BED        control this feature for the heated bed.      *
+ * THERMAL PROTECTION CHAMBER    control this feature for the chamber.         *
+ *                                                                             *
+ *******************************************************************************/
 #define THERMAL_PROTECTION_HOTENDS false
 #define THERMAL_PROTECTION_BED false
 #define THERMAL_PROTECTION_CHAMBER false
 
-#define THERMAL_PROTECTION_PERIOD    40     // Seconds
-#define THERMAL_PROTECTION_HYSTERESIS 4     // Degrees Celsius
+// Seconds
+#define THERMAL_PROTECTION_PERIOD    40
+// Degrees Celsius
+#define THERMAL_PROTECTION_HYSTERESIS 4
 
-// If thermal protection hotends is true, this parameter adapt fan speed if temperature drops
+// If THERMAL_PROTECTION_HOTENDS is true
+// this parameter adapt fan speed if temperature drops
 //#define ADAPTIVE_FAN_SPEED
 
-/**
- * When ever increases the target temperature the firmware will wait for the
- * WATCH TEMP PERIOD to expire, and if the temperature hasn't increased by WATCH TEMP INCREASE
- * degrees, the machine is halted, requiring a hard reset.
- *
- * If you get false positives for "Heating failed" increase WATCH TEMP PERIOD and/or decrease WATCH TEMP INCREASE
- * WATCH TEMP INCREASE should not be below 2.
- */
-#define WATCH_TEMP_PERIOD  20               // Seconds
-#define WATCH_TEMP_INCREASE 2               // Degrees Celsius
+/*******************************************************************************
+ * When ever increases target temperature, firmware will wait for              *
+ * WATCH TEMP PERIOD to expire.                                                *
+ * and if temperature hasn't increased by at least WATCH TEMP INCREASE value   *
+ * ( in degrees), machine is halted, requiring a hard reset.                   *
+ *                                                                             *
+ * If you get false positives for "Heating failed"                             *
+ * increase WATCH TEMP PERIOD and/or decrease WATCH TEMP INCREASE              *
+ * WATCH TEMP INCREASE should not be below 2.                                  *
+ *                                                                             *
+ *******************************************************************************/
+// Seconds
+#define WATCH_TEMP_PERIOD  20
+// Degrees Celsius
+#define WATCH_TEMP_INCREASE 2
 
 #define WATCH_BED_TEMP_PERIOD 60
 #define WATCH_BED_TEMP_INCREASE 2
@@ -417,22 +440,20 @@
 #define WATCH_CHAMBER_TEMP_PERIOD 60
 #define WATCH_CHAMBER_TEMP_INCREASE 2
 
-/***********************************************************************/
-
-
-/***********************************************************************
- ************************ Prevent cold extrusion ***********************
- ***********************************************************************
- * This option prevents extrusion if the temperature is                *
- * below EXTRUDE MINTEMP.                                              *
- * Add M302 to set the minimum extrusion temperature and/or turn       *
- * cold extrusion prevention on and off.                               *
- *                                                                     *
- *      IT IS HIGHLY RECOMMENDED TO LEAVE THIS OPTION ENABLED!         *
- *                                                                     *
- ***********************************************************************/
+/*******************************************************************************
+ *            Prevent cold extrusion                                           *
+ *******************************************************************************
+ * This option prevents extrusion if the temperature is below EXTRUDE MINTEMP. *
+ *                                                                             *
+ * Add MCode M302 to set the minimum extrusion temperature and/or turn         *
+ * cold extrusion prevention on and off.                                       *
+ *                                                                             *
+ *      IT IS HIGHLY RECOMMENDED TO LEAVE THIS OPTION ENABLED!                 *
+ *                                                                             *
+ *******************************************************************************/
 #define PREVENT_COLD_EXTRUSION
-#define EXTRUDE_MINTEMP 170                 // Degree Celsius
+// Degree Celsius
+#define EXTRUDE_MINTEMP 170
 
 // Prevent a single extrusion longer than EXTRUDE MAXLENGTH.
 // Note: For Bowden Extruders make this large enough to allow load/unload.
